@@ -1,4 +1,4 @@
-# ML Marketing
+# ML&T Marketing
 
 Firemný web s balíkmi služieb a cenami: rezervácie s mapou pre kempy, weby pre futbalové kluby, weby pre malé firmy a 3D zábery produktov.
 
@@ -11,8 +11,9 @@ Pracovná verzia. Stránka má `noindex`, kontakty v nej sú zástupné (`data-c
 ## Ako je to postavené
 
 - `index.html` je celá stránka, bez buildu. Štýly a skript sú v súbore.
-- `assets/fonts` obsahuje písma Sora, Funnel Sans a Geist Mono (licencia SIL OFL), stiahnuté cez `node tools/fonts.mjs`.
-- `assets/img` sú zábery vlastných prác. Vzniknú cez `node tools/shots.mjs <priečinok>` (zábery živých ukážok) a `python tools/prep.py <priečinok>` (prevod na WebP).
-- `node tools/view.mjs <out.png> <selector> [šírka] [dark]` urobí záber časti stránky na kontrolu.
-
-Svetlý a tmavý režim sa riadi nastavením zariadenia, vynútiť sa dá parametrom `?theme=light` alebo `?theme=dark`.
+- Farby sú v pomere približne 50 % biela, 40 % kobaltová modrá a 10 % limetkový akcent. Stránka má len svetlý režim.
+- Ceny sú na troch miestach, ktoré sa musia zhodovať: pole `AREAS` v skripte (výber balíka v úvode), karty `.pack` v sekciách a `<option>` vo formulári.
+- `assets/fonts` obsahuje písma Wix Madefor Display a Wix Madefor Text (licencia SIL OFL), stiahnuté cez `node tools/fonts.mjs`.
+- `assets/img` sú zábery vlastných prác: `node tools/shots.mjs <priečinok>` a `node tools/shots-extra.mjs <priečinok>` urobia zábery živých ukážok, `python tools/prep.py <priečinok>` a `python tools/prep-extra.py <priečinok>` ich prevedú na WebP.
+- `node tools/view.mjs <out.png> <selector> [šírka]` urobí záber časti stránky na kontrolu.
+- `node tools/form-test.mjs <out.png>` vyskúša výber balíka a formulár na mobile.
