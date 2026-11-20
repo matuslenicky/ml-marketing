@@ -11,6 +11,12 @@
         ],
         "createdAt": "2026-11-20T22:14:11.186Z",
         "reason": "assistant decided: false positive, sections and lists are inset with clamp() padding (56-112 px) that the static scan does not resolve; verified on desktop and 390 px phone screenshots"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "createdAt": "2026-11-20T22:43:07.349Z",
+        "reason": "assistant decided: misdetected as primary font; Geist Mono is used only for prices and small labels, headings are Sora and body text is Funnel Sans"
       }
     ]
   }
