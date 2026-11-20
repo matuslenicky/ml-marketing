@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ML Marketing – weby, rezervácie a 3D mapy s cenou vopred</title>
+<meta name="description" content="Weby pre kempy, futbalové kluby a malé firmy, rezervácie s mapou parciel a 3D zábery produktov. Každá služba má balík s pevnou cenou.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f7f5ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121210" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="ML Marketing – weby, rezervácie a 3D mapy s cenou vopred">
+<meta property="og:description" content="Každá služba má balík s pevnou cenou. Kempy od 990 €, klubové weby od 49 € mesačne, firemné weby od 390 €.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23ffdf3d'/%3E%3Cpath d='M11 45V19h7l7 14 7-14h7v26h-7V31l-5 10h-4l-5-10v14zM43 45V19h7v20h9v6z' fill='%2316150f'/%3E%3C/svg%3E">
+<link rel="preload" href="assets/fonts/sora-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/funnel-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/funnel-sans-normal-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<script>
+(function () {
+  var t = new URLSearchParams(location.search).get('theme');
+  if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+<style>
+:root {
+  --paper: #f7f5ef;
+  --card: #ffffff;
+  --ink: #16150f;
+  --muted: #5a574b;
+  --line: #dbd7ca;
+  --field-line: #8f8b7c;
+  --soft: #efece3;
+  --mark: #ffdf3d;
+  --mark-ink: #16150f;
+  --display: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  --text: 'Funnel Sans', 'Segoe UI', system-ui, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, Consolas, monospace;
+  --wrap: 1180px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121210;
+    --card: #1b1a17;
+    --ink: #f1eee4;
+    --muted: #aba797;
+    --line: #33312a;
+    --field-line: #6e6a5c;
+    --soft: #1b1a17;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121210;
+  --card: #1b1a17;
+  --ink: #f1eee4;
+  --muted: #aba797;
+  --line: #33312a;
+  --field-line: #6e6a5c;
+  --soft: #1b1a17;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 84px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1.0625rem/1.6 var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+h1, h2, h3, p, ul, ol, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.08; letter-spacing: -0.015em; text-wrap: balance; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+.wrap { width: min(100% - 40px, var(--wrap)); margin-inline: auto; }
+.skip { position: absolute; left: -9999px; top: 8px; background: var(--mark); color: var(--mark-ink); padding: 12px 16px; border-radius: 6px; z-index: 50; }
+.skip:focus { left: 8px; }
+
+.hl { background: var(--mark); color: var(--mark-ink); padding: 0.02em 0.22em; border-radius: 0.14em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.eyebrow { font: 500 0.8125rem/1.3 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.nw { white-space: nowrap; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5em;
+  min-height: 48px; padding: 0 22px; border-radius: 999px;
+  font: 600 1rem/1 var(--text); text-decoration: none; cursor: pointer;
+  border: 1.5px solid var(--ink); background: var(--ink); color: var(--paper);
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+@media (hover: hover) { .btn:hover { background: var(--mark); color: var(--mark-ink); border-color: var(--mark-ink); } }
+.btn-ghost { background: transparent; color: var(--ink); }
+.btn-small { min-height: 44px; padding: 0 18px; font-size: 0.9375rem; }
+
+/* Hlavička */
+.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.top-in { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 68px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; text-decoration: none; font: 700 1.1875rem/1 var(--display); letter-spacing: -0.01em; }
+.brand-ml { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 8px; background: var(--mark); color: var(--mark-ink); font-size: 1.0625rem; letter-spacing: -0.03em; }
+.nav { display: none; align-items: center; gap: 4px; }
+.nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 0.9688rem; }
+.nav a:hover { background: var(--soft); }
+@media (min-width: 860px) { .nav { display: flex; } }
+
+/* Úvod */
+.hero { padding: clamp(44px, 8vw, 96px) 0 clamp(32px, 5vw, 56px); }
+.hero h1 { font-size: clamp(2rem, 6.3vw, 4.5rem); font-weight: 700; max-width: 14.5em; line-height: 1.12; }
+.hero h1 .hl { display: inline-block; margin-top: 0.14em; padding: 0.04em 0.2em 0.08em; border-radius: 0.12em; }
+.hero-lead { margin-top: clamp(18px, 2.4vw, 28px); max-width: 56ch; font-size: clamp(1.0625rem, 1.5vw, 1.25rem); color: var(--muted); }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+@media (max-width: 479px) { .hero-cta { flex-direction: column; align-items: flex-start; } }
+
+/* Cenník v skratke */
+.board { padding-bottom: clamp(48px, 7vw, 88px); }
+.board-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--ink); }
+.board-head h2 { font-size: 1.125rem; font-weight: 600; letter-spacing: 0; }
+.row { display: grid; grid-template-columns: 1fr; gap: 6px 24px; padding: 20px 0; border-bottom: 1px solid var(--line); text-decoration: none; transition: background-color 0.15s; }
+.row-thumb { display: none; }
+.row-name { font: 600 clamp(1.3rem, 2.4vw, 1.75rem)/1.15 var(--display); letter-spacing: -0.01em; }
+.row-desc { color: var(--muted); font-size: 1rem; }
+.row-price { justify-self: start; margin-top: 6px; font: 600 1.0625rem/1 var(--mono); white-space: nowrap; }
+.row-price .hl { display: inline-block; padding: 0.42em 0.6em; border-radius: 6px; }
+.row-go { display: none; }
+@media (min-width: 720px) {
+  .row { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.3fr) 200px 28px; align-items: center; padding: 22px 12px; margin-inline: -12px; border-radius: 10px; }
+  .row-price { justify-self: end; margin-top: 0; }
+  .row-go { display: block; font-size: 1.375rem; line-height: 1; transition: transform 0.15s; }
+}
+@media (min-width: 720px) and (hover: hover) {
+  .row:hover { background: var(--soft); }
+  .row:hover .row-go { transform: translateX(4px); }
+}
+@media (min-width: 1020px) {
+  .row { grid-template-columns: 120px minmax(0, 1.1fr) minmax(0, 1.3fr) 200px 28px; }
+  .row-thumb { display: block; width: 120px; height: 75px; object-fit: cover; object-position: top left; border-radius: 6px; border: 1px solid var(--line); }
+}
+
+/* Zásady */
+.rules { background: var(--soft); border-block: 1px solid var(--line); }
+.rules ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 28px 36px; padding: clamp(36px, 5vw, 56px) 0; }
+.rules h3 { font-size: 1.1875rem; font-weight: 600; letter-spacing: 0; }
+.rules p { margin-top: 8px; color: var(--muted); font-size: 1rem; }
+
+/* Oblasti */
+.area { padding: clamp(56px, 9vw, 112px) 0; border-bottom: 1px solid var(--line); }
+.area-head { display: grid; gap: 14px; max-width: 760px; }
+.area-head h2 { font-size: clamp(1.85rem, 4.4vw, 3.1rem); font-weight: 700; }
+.area-head p { color: var(--muted); font-size: clamp(1.0625rem, 1.4vw, 1.1875rem); max-width: 62ch; }
+.shots { display: grid; gap: 16px; margin-top: clamp(28px, 4vw, 44px); }
+.shots.two { grid-template-columns: 1fr; }
+.shots.three { grid-template-columns: 1fr; }
+@media (min-width: 640px) { .shots.three { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 820px) { .shots.two { grid-template-columns: 1.25fr 1fr; } }
+.shot a { display: block; text-decoration: none; }
+.shot img { width: 100%; border-radius: 10px; border: 1px solid var(--line); background: var(--soft); }
+.shot.fill { display: flex; flex-direction: column; }
+.shot.fill img { flex: 1 1 auto; min-height: 0; object-fit: cover; }
+@media (min-width: 820px) { .shots.two .shot.fill img { flex-basis: 0; } }
+.shot figcaption { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; margin-top: 10px; font-size: 0.9375rem; color: var(--muted); }
+.shot figcaption b { color: var(--ink); font-weight: 600; }
+.shot a:hover figcaption b { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 639px) { .shots.three .shot:nth-child(n+3) { display: none; } }
+
+.packs { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 16px; margin-top: clamp(28px, 4vw, 44px); align-items: stretch; }
+.pack { position: relative; display: flex; flex-direction: column; padding: 26px 24px 24px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+.pack.best { border: 2px solid var(--ink); padding: 25px 23px 23px; }
+.pack-tag { position: absolute; top: -13px; left: 20px; padding: 5px 10px; border-radius: 6px; background: var(--mark); color: var(--mark-ink); font: 600 0.75rem/1 var(--mono); letter-spacing: 0.05em; text-transform: uppercase; }
+.pack h3 { font-size: 1.375rem; font-weight: 600; }
+.pack-for { margin-top: 6px; color: var(--muted); font-size: 1rem; min-height: 3.2em; }
+.pack-price { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 18px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+.pack-price strong { font: 600 1.9rem/1 var(--mono); letter-spacing: -0.03em; white-space: nowrap; }
+.pack-price strong.hl { padding: 0.18em 0.3em; border-radius: 8px; }
+.pack-price span { font-size: 0.9375rem; color: var(--muted); line-height: 1.35; }
+.pack ul { display: grid; gap: 10px; margin: 20px 0 24px; }
+.pack li { position: relative; padding-left: 26px; font-size: 1rem; line-height: 1.45; }
+.pack li::before { content: ""; position: absolute; left: 2px; top: 0.42em; width: 12px; height: 7px; border-left: 2.5px solid var(--ink); border-bottom: 2.5px solid var(--ink); transform: rotate(-45deg); }
+.pack .btn { margin-top: auto; align-self: flex-start; }
+.area-note { margin-top: 20px; max-width: 70ch; color: var(--muted); font-size: 1rem; }
+.area-note b { color: var(--ink); }
+
+/* Postup */
+.steps { padding: clamp(56px, 9vw, 112px) 0; border-bottom: 1px solid var(--line); }
+.steps h2, .faq h2, .contact h2 { font-size: clamp(1.85rem, 4.4vw, 3.1rem); font-weight: 700; }
+.steps ol { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 28px 36px; margin-top: clamp(28px, 4vw, 44px); counter-reset: s; }
+.steps li { counter-increment: s; padding-top: 18px; border-top: 2px solid var(--ink); }
+.steps li::before { content: "0" counter(s); display: block; font: 500 0.875rem/1 var(--mono); color: var(--muted); margin-bottom: 14px; }
+.steps h3 { font-size: 1.3125rem; font-weight: 600; }
+.steps p { margin-top: 8px; color: var(--muted); }
+
+/* Otázky */
+.faq { padding: clamp(56px, 9vw, 112px) 0; border-bottom: 1px solid var(--line); }
+.faq-list { margin-top: clamp(24px, 3vw, 36px); max-width: 820px; border-top: 1px solid var(--line); }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; padding: 14px 0; cursor: pointer; list-style: none; font: 600 1.125rem/1.3 var(--display); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; flex: none; font: 400 1.5rem/1 var(--mono); }
+.faq details[open] summary::after { content: "–"; }
+.faq details p { padding: 0 0 20px; max-width: 64ch; color: var(--muted); }
+
+/* Kontakt */
+.contact { padding: clamp(56px, 9vw, 112px) 0; }
+.contact-in { display: grid; gap: 36px 56px; }
+@media (min-width: 900px) { .contact-in { grid-template-columns: 1fr 1.05fr; align-items: start; } }
+.contact-lead { margin-top: 16px; color: var(--muted); max-width: 46ch; font-size: clamp(1.0625rem, 1.4vw, 1.1875rem); }
+.contact-ways { display: grid; gap: 4px; margin-top: 24px; }
+.contact-ways a { display: inline-flex; align-items: center; min-height: 44px; font: 500 1.125rem/1.2 var(--mono); text-underline-offset: 4px; width: fit-content; }
+.form { display: grid; gap: 16px; padding: clamp(22px, 3vw, 32px); background: var(--card); border: 1px solid var(--line); border-radius: 16px; }
+.field { display: grid; gap: 6px; }
+.field label { font-weight: 600; font-size: 0.9688rem; }
+.field input, .field select, .field textarea {
+  width: 100%; min-height: 50px; padding: 12px 14px; border-radius: 10px;
+  border: 1.5px solid var(--field-line); background: var(--paper); color: var(--ink);
+  font: 400 1rem/1.4 var(--text);
+}
+.field [aria-invalid="true"] { border-color: var(--ink); border-width: 2.5px; }
+.field textarea { min-height: 120px; resize: vertical; }
+.field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible { outline: 3px solid var(--ink); outline-offset: 1px; border-color: var(--ink); }
+.form-note { font-size: 0.9375rem; color: var(--muted); }
+.form-note.is-error { font-weight: 600; padding: 10px 12px; border-radius: 8px; background: var(--mark); color: var(--mark-ink); }
+.foot-nav { display: flex; flex-wrap: wrap; gap: 0 4px; margin-inline: -10px; }
+.foot-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; text-underline-offset: 4px; }
+
+.foot { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--muted); font-size: 0.9375rem; }
+.foot-in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; }
+</style>
+</head>
+<body>
+<a class="skip" href="#obsah">Preskočiť na obsah</a>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#" aria-label="ML Marketing, na začiatok stránky"><span class="brand-ml" aria-hidden="true">ML</span> <span>Marketing</span></a>
+    <nav class="nav" aria-label="Hlavná navigácia">
+      <a href="#kempy">Kempy</a>
+      <a href="#kluby">Kluby</a>
+      <a href="#firmy">Firmy</a>
+      <a href="#vizualizacie">3D zábery</a>
+      <a href="#postup">Postup</a>
+    </nav>
+    <a class="btn btn-small" href="#kontakt">Napísať mi</a>
+  </div>
+</header>
+
+<main id="obsah">
+  <section class="hero">
+    <div class="wrap">
+      <h1>Weby, rezervácie a&nbsp;3D mapy. <span class="hl">Cenu vidíte vopred.</span></h1>
+      <p class="hero-lead">Robím weby pre kempy, futbalové kluby a&nbsp;malé firmy. Každá služba má balík s&nbsp;pevnou cenou, takže viete, koľko zaplatíte, ešte kým mi napíšete.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#balicky">Pozrieť balíky</a>
+        <a class="btn btn-ghost" href="#kontakt">Chcem ukážku zadarmo</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="board" id="balicky" aria-labelledby="h-board">
+    <div class="wrap">
+      <div class="board-head">
+        <h2 id="h-board">Čo robím a&nbsp;za koľko</h2>
+        <span class="eyebrow">Cenník 2026/27</span>
+      </div>
+      <a class="row" href="#kempy">
+        <img class="row-thumb" src="assets/img/kemp-3d-640.webp" width="640" height="400" alt="">
+        <span class="row-name">Rezervácie s&nbsp;mapou pre kempy</span>
+        <span class="row-desc">Hosť si vyberie parcelu na mape a&nbsp;rezervuje priamo u&nbsp;vás, bez provízie portálu.</span>
+        <span class="row-price"><span class="hl">od 990&nbsp;€</span></span>
+        <span class="row-go" aria-hidden="true">→</span>
+      </a>
+      <a class="row" href="#kluby">
+        <img class="row-thumb" src="assets/img/klub-krajne-640.webp" width="640" height="400" alt="">
+        <span class="row-name">Weby pre futbalové kluby</span>
+        <span class="row-desc">Program, výsledky a&nbsp;tabuľka sa po každom kole doplnia samy.</span>
+        <span class="row-price"><span class="hl">od 49&nbsp;€ mesačne</span></span>
+        <span class="row-go" aria-hidden="true">→</span>
+      </a>
+      <a class="row" href="#firmy">
+        <img class="row-thumb" src="assets/img/hlbina-640.webp" width="640" height="400" alt="">
+        <span class="row-name">Weby pre malé firmy</span>
+        <span class="row-desc">Stránka, na ktorej zákazník nájde cenu a&nbsp;rovno sa objedná.</span>
+        <span class="row-price"><span class="hl">od 390&nbsp;€</span></span>
+        <span class="row-go" aria-hidden="true">→</span>
+      </a>
+      <a class="row" href="#vizualizacie">
+        <img class="row-thumb" src="assets/img/hlbina-dusk-640.webp" width="640" height="360" alt="">
+        <span class="row-name">3D zábery produktov</span>
+        <span class="row-desc">Zábery produktu z&nbsp;modelu v&nbsp;Blenderi, bez fotografa a&nbsp;ateliéru.</span>
+        <span class="row-price"><span class="hl">od 290&nbsp;€</span></span>
+        <span class="row-go" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="rules" aria-label="Ako pracujem">
+    <div class="wrap">
+      <ul>
+        <li><h3>Cena vopred</h3><p>Balík má pevnú cenu. Čokoľvek navyše nacením skôr, než začnem.</p></li>
+        <li><h3>Najprv ukážka</h3><p>Návrh na vašich podkladoch uvidíte skôr, než niečo zaplatíte.</p></li>
+        <li><h3>Všetko patrí vám</h3><p>Doména, obsah aj údaje vašich zákazníkov sú vaše.</p></li>
+        <li><h3>Zmerané na mobile</h3><p>Každú stránku pred odovzdaním zmeriam: rýchlosť, čitateľnosť a&nbsp;prístupnosť.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="area" id="kempy" aria-labelledby="h-kempy">
+    <div class="wrap">
+      <div class="area-head">
+        <span class="eyebrow">Kempy, glampingy, chatové osady</span>
+        <h2 id="h-kempy">Hosť si vyberie parcelu na mape a&nbsp;rezervuje priamo u&nbsp;vás</h2>
+        <p>Nakreslím mapu vášho areálu. Hosť na nej vidí voľné parcely, cenu pobytu aj to, či sa mu na parcelu zmestí obytné auto s&nbsp;markízou. Z&nbsp;rezervácií si neberiem žiadne percentá.</p>
+      </div>
+      <div class="shots two">
+        <figure class="shot fill">
+          <img src="assets/img/kemp-3d-1120.webp" srcset="assets/img/kemp-3d-640.webp 640w, assets/img/kemp-3d-1120.webp 1120w" sizes="(min-width: 820px) 56vw, 100vw" width="1120" height="700" loading="lazy" alt="3D model ukážkového kempu: parcely v radoch pri jazere, cesty, budovy a obytné autá">
+          <figcaption><b>3D model areálu</b><span>ukážkový kemp, vymodelovaný v&nbsp;Blenderi</span></figcaption>
+        </figure>
+        <figure class="shot">
+          <a href="https://matuslenicky.github.io/parcela/" target="_blank" rel="noopener">
+            <img src="assets/img/parcela-1120.webp" srcset="assets/img/parcela-640.webp 640w, assets/img/parcela-1120.webp 1120w" sizes="(min-width: 820px) 44vw, 100vw" width="1120" height="700" loading="lazy" alt="Web služby Parcela s nadpisom Hosť si vyberie parcelu na mape a rezervuje priamo u vás">
+            <figcaption><b>Vyskúšať ukážku ako hosť ↗</b><span>služba beží pod značkou Parcela</span></figcaption>
+          </a>
+        </figure>
+      </div>
+      <div class="packs">
+        <article class="pack">
+          <h3>Mapa</h3>
+          <p class="pack-for">Areál na mape a&nbsp;žiadosti o&nbsp;rezerváciu <span class="nw">e-mailom</span>.</p>
+          <p class="pack-price"><strong class="hl">990&nbsp;€</strong><span>jednorazovo<br>+ 29&nbsp;€ mesačne</span></p>
+          <ul>
+            <li>Mapa areálu na vašom webe</li>
+            <li>Voľné a&nbsp;obsadené parcely</li>
+            <li>Cenník a&nbsp;výpočet pobytu</li>
+            <li>Žiadosť o&nbsp;rezerváciu <span class="nw">e-mailom</span></li>
+            <li>Tri jazyky</li>
+          </ul>
+          <a class="btn btn-ghost btn-small" href="#kontakt" data-pack="Kempy – Mapa">Mám záujem</a>
+        </article>
+        <article class="pack best">
+          <span class="pack-tag">Odporúčam</span>
+          <h3>Priame rezervácie</h3>
+          <p class="pack-for">Hosť si parcelu rezervuje a&nbsp;zálohu zaplatí sám.</p>
+          <p class="pack-price"><strong class="hl">2&nbsp;400&nbsp;€</strong><span>jednorazovo<br>+ 79&nbsp;€ mesačne</span></p>
+          <ul>
+            <li>Všetko z&nbsp;balíka Mapa</li>
+            <li>Plánovač „zmestí sa?“ v&nbsp;mierke</li>
+            <li>Záloha kartou na váš účet</li>
+            <li>Zosúladenie obsadenosti s&nbsp;Bookingom</li>
+            <li>Automatické <span class="nw">e-maily</span> hosťom</li>
+            <li>Šesť jazykov a&nbsp;prehľad pre recepciu</li>
+          </ul>
+          <a class="btn btn-small" href="#kontakt" data-pack="Kempy – Priame rezervácie">Mám záujem</a>
+        </article>
+        <article class="pack">
+          <h3>Sezóna</h3>
+          <p class="pack-for">Priame rezervácie a&nbsp;kemp, ktorý si hosť prejde v&nbsp;3D.</p>
+          <p class="pack-price"><strong class="hl">3&nbsp;900&nbsp;€</strong><span>jednorazovo<br>+ 129&nbsp;€ mesačne</span></p>
+          <ul>
+            <li>Všetko z&nbsp;balíka Priame rezervácie</li>
+            <li>3D model areálu z&nbsp;Blendera</li>
+            <li>3D prechádzka s&nbsp;výberom parcely</li>
+            <li>Report sezóny s&nbsp;ušetrenou províziou</li>
+          </ul>
+          <a class="btn btn-ghost btn-small" href="#kontakt" data-pack="Kempy – Sezóna">Mám záujem</a>
+        </article>
+      </div>
+      <p class="area-note"><b>Pilot na sezónu 2027.</b> Prvé tri kempy dostanú jednorazovú cenu o&nbsp;polovicu nižšiu, výmenou za referenciu. Ak spustenie nestihnem pred sezónou, prvá sezóna je bez mesačného poplatku.</p>
+    </div>
+  </section>
+
+  <section class="area" id="kluby" aria-labelledby="h-kluby">
+    <div class="wrap">
+      <div class="area-head">
+        <span class="eyebrow">Futbalové kluby</span>
+        <h2 id="h-kluby">Klubový web, ktorý sa po zápase aktualizuje sám</h2>
+        <p>Program, výsledky, tabuľka, súpisky aj strelci sa načítavajú zo Sportnetu, takže ich nikto neprepisuje. Každý klub dostane vlastný vzhľad podľa erbu a&nbsp;obce, nie spoločnú šablónu.</p>
+      </div>
+      <div class="shots three">
+        <figure class="shot">
+          <a href="https://matuslenicky.github.io/tj-slovan-rovnost-krajne/" target="_blank" rel="noopener">
+            <img src="assets/img/klub-krajne-640.webp" width="640" height="400" loading="lazy" alt="Návrh webu TJ Slovan Rovnosť Krajné s veľkým číslom miesta v tabuľke na úvodnej stránke">
+            <figcaption><b>Tabuľka na titulke ↗</b><span>návrh pre klub VI. ligy</span></figcaption>
+          </a>
+        </figure>
+        <figure class="shot">
+          <a href="https://matuslenicky.github.io/ofk-kovarce/" target="_blank" rel="noopener">
+            <img src="assets/img/klub-kovarce-640.webp" width="640" height="400" loading="lazy" alt="Návrh webu OFK Kovarce so zápasmi v mesačnom kalendári">
+            <figcaption><b>Mesačný kalendár ↗</b><span>návrh pre klub VI. ligy</span></figcaption>
+          </a>
+        </figure>
+        <figure class="shot">
+          <a href="https://matuslenicky.github.io/fk-melcice-lieskove/" target="_blank" rel="noopener">
+            <img src="assets/img/klub-melcice-640.webp" width="640" height="400" loading="lazy" alt="Čiernobiely návrh webu FK Melčice-Lieskové s rozcestníkom na úvodnej stránke">
+            <figcaption><b>Rozcestník ↗</b><span>návrh pre klub VI. ligy</span></figcaption>
+          </a>
+        </figure>
+      </div>
+      <div class="packs">
+        <article class="pack">
+          <h3>Klubový web</h3>
+          <p class="pack-for">Všetko, čo fanúšik hľadá pred zápasom aj po ňom.</p>
+          <p class="pack-price"><strong class="hl">49&nbsp;€</strong><span>mesačne<br>vrátane prevádzky</span></p>
+          <ul>
+            <li>Vzhľad podľa erbu a&nbsp;farieb klubu</li>
+            <li>Program, výsledky a&nbsp;tabuľka zo Sportnetu</li>
+            <li>Súpisky a&nbsp;strelci áčka aj mládeže</li>
+            <li>Zápas jedným ťuknutím do kalendára</li>
+            <li>História a&nbsp;kontakty klubu</li>
+          </ul>
+          <a class="btn btn-ghost btn-small" href="#kontakt" data-pack="Kluby – Klubový web">Mám záujem</a>
+        </article>
+        <article class="pack best">
+          <span class="pack-tag">Odporúčam</span>
+          <h3>Klubový web s&nbsp;redakciou</h3>
+          <p class="pack-for">Klub si články, fotky a&nbsp;sponzorov spravuje sám.</p>
+          <p class="pack-price"><strong class="hl">89&nbsp;€</strong><span>mesačne<br>vrátane prevádzky</span></p>
+          <ul>
+            <li>Všetko z&nbsp;balíka Klubový web</li>
+            <li>Správa obsahu bez programátora</li>
+            <li>Články a&nbsp;fotogalérie zo zápasov</li>
+            <li>Sponzori a&nbsp;partneri s&nbsp;logami</li>
+            <li>Úpravy na požiadanie v&nbsp;cene</li>
+          </ul>
+          <a class="btn btn-small" href="#kontakt" data-pack="Kluby – Klubový web s redakciou">Mám záujem</a>
+        </article>
+      </div>
+      <p class="area-note">Na obrázkoch sú návrhy, ktoré som pripravil vopred. Klub uvidí hotový web so svojimi výsledkami skôr, než sa rozhodne.</p>
+    </div>
+  </section>
+
+  <section class="area" id="firmy" aria-labelledby="h-firmy">
+    <div class="wrap">
+      <div class="area-head">
+        <span class="eyebrow">Malé firmy, remeslá, značky</span>
+        <h2 id="h-firmy">Web, na ktorom zákazník nájde cenu a&nbsp;objedná sa</h2>
+        <p>Pre služby, dielne a&nbsp;malé značky. Stránku staviam okolo toho, čo zákazník hľadá ako prvé: čo robíte, za koľko a&nbsp;ako sa k&nbsp;vám dostane.</p>
+      </div>
+      <div class="shots two">
+        <figure class="shot">
+          <a href="https://matuslenicky.github.io/hlbina/" target="_blank" rel="noopener">
+            <img src="assets/img/hlbina-1120.webp" srcset="assets/img/hlbina-640.webp 640w, assets/img/hlbina-1120.webp 1120w" sizes="(min-width: 820px) 56vw, 100vw" width="1120" height="700" loading="lazy" alt="Úvod webu HLBINA: sklenená fľaša vody na kameni v krajine a veľký názov značky">
+            <figcaption><b>HLBINA, voda zo studne v&nbsp;skle ↗</b><span>koncept značky, web aj zábery</span></figcaption>
+          </a>
+        </figure>
+        <figure class="shot fill">
+          <img src="assets/img/hlbina-detail-1120.webp" srcset="assets/img/hlbina-detail-640.webp 640w, assets/img/hlbina-detail-1120.webp 1120w" sizes="(min-width: 820px) 44vw, 100vw" width="1120" height="630" loading="lazy" alt="Detail spodnej časti sklenenej fľaše s vyrytým názvom">
+          <figcaption><b>Detail z&nbsp;toho istého webu</b><span>zábery vznikli v&nbsp;3D, nie vo fotoateliéri</span></figcaption>
+        </figure>
+      </div>
+      <div class="packs">
+        <article class="pack">
+          <h3>Jednostránkový web</h3>
+          <p class="pack-for">Keď potrebujete byť dohľadateľní a&nbsp;mať kam poslať zákazníka.</p>
+          <p class="pack-price"><strong class="hl">390&nbsp;€</strong><span>jednorazovo</span></p>
+          <ul>
+            <li>Služby, cenník, fotky a&nbsp;kontakt</li>
+            <li>Objednávka formulárom, cez Messenger alebo Instagram</li>
+            <li>Mapa a&nbsp;otváracie hodiny</li>
+            <li>Texty upravím z&nbsp;vašich podkladov</li>
+          </ul>
+          <a class="btn btn-ghost btn-small" href="#kontakt" data-pack="Firmy – Jednostránkový web">Mám záujem</a>
+        </article>
+        <article class="pack best">
+          <span class="pack-tag">Odporúčam</span>
+          <h3>Firemný web</h3>
+          <p class="pack-for">Viac služieb, viac otázok zákazníkov, viac podstránok.</p>
+          <p class="pack-price"><strong class="hl">890&nbsp;€</strong><span>jednorazovo</span></p>
+          <ul>
+            <li>Do šiestich podstránok</li>
+            <li>Galéria prác alebo „pred a&nbsp;po“</li>
+            <li>Časté otázky a&nbsp;recenzie</li>
+            <li>Základ pre vyhľadávače a&nbsp;meranie návštevnosti</li>
+            <li>Svetlý aj tmavý režim</li>
+          </ul>
+          <a class="btn btn-small" href="#kontakt" data-pack="Firmy – Firemný web">Mám záujem</a>
+        </article>
+        <article class="pack">
+          <h3>Prevádzka a&nbsp;úpravy</h3>
+          <p class="pack-for">Voliteľne k&nbsp;obom webom, keď sa o&nbsp;stránku nechcete starať.</p>
+          <p class="pack-price"><strong class="hl">15&nbsp;€</strong><span>mesačne</span></p>
+          <ul>
+            <li>Prevádzka webu a&nbsp;zálohy</li>
+            <li>Drobné úpravy textov, cien a&nbsp;fotiek</li>
+            <li>Kontrola rýchlosti raz za štvrťrok</li>
+          </ul>
+          <a class="btn btn-ghost btn-small" href="#kontakt" data-pack="Firmy – Prevádzka a úpravy">Mám záujem</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="area" id="vizualizacie" aria-labelledby="h-3d">
+    <div class="wrap">
+      <div class="area-head">
+        <span class="eyebrow">3D zábery produktov</span>
+        <h2 id="h-3d">Zábery produktu bez fotografa a&nbsp;bez ateliéru</h2>
+        <p>Produkt vymodelujem v&nbsp;Blenderi podľa fotiek a&nbsp;rozmerov a&nbsp;postavím ho do prostredia, ktoré sa k&nbsp;značke hodí. Svetlo, uhol aj pozadie sa dajú kedykoľvek zmeniť bez nového fotenia.</p>
+      </div>
+      <div class="shots two">
+        <figure class="shot">
+          <img src="assets/img/hlbina-duo-1120.webp" srcset="assets/img/hlbina-duo-640.webp 640w, assets/img/hlbina-duo-1120.webp 1120w" sizes="(min-width: 820px) 56vw, 100vw" width="1120" height="630" loading="lazy" alt="Dve sklenené fľaše vody na kameni, v pozadí zelená pahorkatina za denného svetla">
+          <figcaption><b>Deň</b><span>model, krajina aj svetlo sú z&nbsp;Blendera</span></figcaption>
+        </figure>
+        <figure class="shot fill">
+          <img src="assets/img/hlbina-dusk-1120.webp" srcset="assets/img/hlbina-dusk-640.webp 640w, assets/img/hlbina-dusk-1120.webp 1120w" sizes="(min-width: 820px) 44vw, 100vw" width="1120" height="630" loading="lazy" alt="Tá istá fľaša na kameni pri západe slnka, krajina v teplom oranžovom svetle">
+          <figcaption><b>Súmrak</b><span>tá istá scéna, iné svetlo</span></figcaption>
+        </figure>
+      </div>
+      <div class="packs">
+        <article class="pack">
+          <h3>Tri zábery</h3>
+          <p class="pack-for">Jeden produkt, pripravený na web <span class="nw">a&nbsp;e-shop</span>.</p>
+          <p class="pack-price"><strong class="hl">290&nbsp;€</strong><span>jednorazovo</span></p>
+          <ul>
+            <li>3D model produktu podľa fotiek a&nbsp;rozmerov</li>
+            <li>Tri zábery na čistom pozadí</li>
+            <li>Výrezy pre web aj mobil</li>
+          </ul>
+          <a class="btn btn-ghost btn-small" href="#kontakt" data-pack="3D – Tri zábery">Mám záujem</a>
+        </article>
+        <article class="pack best">
+          <span class="pack-tag">Odporúčam</span>
+          <h3>Séria v&nbsp;prostredí</h3>
+          <p class="pack-for">Produkt v&nbsp;krajine alebo interiéri, ktorý patrí k&nbsp;značke.</p>
+          <p class="pack-price"><strong class="hl">690&nbsp;€</strong><span>jednorazovo</span></p>
+          <ul>
+            <li>3D model produktu</li>
+            <li>Prostredie na mieru</li>
+            <li>Osem záberov vrátane detailov</li>
+            <li>Dve nálady svetla, napríklad deň a&nbsp;súmrak</li>
+          </ul>
+          <a class="btn btn-small" href="#kontakt" data-pack="3D – Séria v prostredí">Mám záujem</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="steps" id="postup" aria-labelledby="h-postup">
+    <div class="wrap">
+      <h2 id="h-postup">Ako to prebieha</h2>
+      <ol>
+        <li><h3>Napíšete mi, čo potrebujete</h3><p>Stačí názov kempu, klubu alebo firmy a&nbsp;balík, ktorý vás zaujal. Ozvem sa do jedného pracovného dňa.</p></li>
+        <li><h3>Pošlem ukážku na vašich podkladoch</h3><p>Do týždňa uvidíte návrh s&nbsp;vaším názvom, cenami a&nbsp;fotkami. Je zadarmo a&nbsp;k&nbsp;ničomu vás nezaväzuje.</p></li>
+        <li><h3>Doladíme a&nbsp;spustím</h3><p>Ak sa vám návrh páči, potvrdím cenu a&nbsp;termín písomne. Po spustení sa o&nbsp;prevádzku starám ďalej.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="faq" id="otazky" aria-labelledby="h-faq">
+    <div class="wrap">
+      <h2 id="h-faq">Časté otázky</h2>
+      <div class="faq-list">
+        <details>
+          <summary>Je cena balíka naozaj konečná?</summary>
+          <p>Pre rozsah, ktorý je pri balíku vypísaný, áno. Ak potrebujete niečo navyše, cenu vám napíšem skôr, než na tom začnem pracovať. Pri kempoch ju potvrdím po hovore podľa veľkosti areálu.</p>
+        </details>
+        <details>
+          <summary>Robíte aj reklamné kampane a&nbsp;správu sociálnych sietí?</summary>
+          <p>Nie. Robím weby, rezervačné mapy a&nbsp;3D zábery. Reklamu a&nbsp;sociálne siete nechávam ľuďom, ktorí sa im venujú naplno.</p>
+        </details>
+        <details>
+          <summary>Mám už web. Dá sa k&nbsp;nemu niečo doplniť?</summary>
+          <p>Áno. Mapu s&nbsp;rezerváciami viem vložiť ako novú podstránku do existujúceho webu, vo vašom vzhľade. Na zvyšku webu sa nič nemení.</p>
+        </details>
+        <details>
+          <summary>Čo odo mňa potrebujete?</summary>
+          <p>Logo, pár fotiek, cenník a&nbsp;pri kempoch plán areálu, stačí aj ručne kreslený. Texty a&nbsp;zvyšok pripravím ja.</p>
+        </details>
+        <details>
+          <summary>Komu web po dokončení patrí?</summary>
+          <p>Vám. Doména je registrovaná na vás, obsah aj údaje zákazníkov sú vaše a&nbsp;pri rezerváciách idú platby priamo na váš účet.</p>
+        </details>
+        <details>
+          <summary>Ako dlho trvá spustenie?</summary>
+          <p>Ukážku posielam do týždňa. Jednostránkový web alebo mapa kempu beží do 14&nbsp;dní od chvíle, keď mám podklady. Väčšie veci majú termín napísaný v&nbsp;ponuke.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="kontakt" aria-labelledby="h-kontakt">
+    <div class="wrap contact-in">
+      <div>
+        <h2 id="h-kontakt">Napíšte mi, ukážku pošlem do týždňa</h2>
+        <p class="contact-lead">Uveďte, o&nbsp;ktorý balík ide a&nbsp;pre koho. Návrh na vašich podkladoch je zadarmo a&nbsp;nezáväzný.</p>
+        <div class="contact-ways">
+          <a href="tel:+421000000000" data-contact="phone">+421 000 000 000</a>
+          <a href="mailto:kontakt@example.com" data-contact="email">kontakt@example.com</a>
+        </div>
+      </div>
+      <form class="form" id="form" novalidate>
+        <div class="field">
+          <label for="f-name">Vaše meno</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="f-reach">Telefón alebo e-mail</label>
+          <input id="f-reach" name="reach" type="text" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="f-pack">O&nbsp;čo máte záujem</label>
+          <select id="f-pack" name="pack">
+            <option value="">Ešte neviem, poraďte mi</option>
+            <optgroup label="Kempy">
+              <option>Kempy – Mapa</option>
+              <option>Kempy – Priame rezervácie</option>
+              <option>Kempy – Sezóna</option>
+            </optgroup>
+            <optgroup label="Futbalové kluby">
+              <option>Kluby – Klubový web</option>
+              <option>Kluby – Klubový web s redakciou</option>
+            </optgroup>
+            <optgroup label="Malé firmy">
+              <option>Firmy – Jednostránkový web</option>
+              <option>Firmy – Firemný web</option>
+              <option>Firmy – Prevádzka a úpravy</option>
+            </optgroup>
+            <optgroup label="3D zábery">
+              <option>3D – Tri zábery</option>
+              <option>3D – Séria v prostredí</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-msg">Pre koho to má byť a&nbsp;čo potrebujete</label>
+          <textarea id="f-msg" name="msg" rows="4"></textarea>
+        </div>
+        <p class="form-note" id="form-note" role="status">Otvorí sa váš <span class="nw">e-mail</span> s&nbsp;vyplnenou správou, stačí ju odoslať.</p>
+        <button class="btn" type="submit">Poslať správu</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <span>ML Marketing · weby, rezervácie a&nbsp;3D mapy · © 2026</span>
+    <nav class="foot-nav" aria-label="Odkazy v pätičke">
+      <a href="#balicky">Cenník</a>
+      <a href="#postup">Postup</a>
+      <a href="#otazky">Časté otázky</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var select = document.getElementById('f-pack');
+  document.querySelectorAll('[data-pack]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      var want = a.getAttribute('data-pack');
+      Array.prototype.forEach.call(select.options, function (o) {
+        if (o.text === want) select.value = o.value;
+      });
+    });
+  });
+
+  var form = document.getElementById('form');
+  var note = document.getElementById('form-note');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = form.elements.name.value.trim();
+    var reach = form.elements.reach.value.trim();
+    form.elements.name.setAttribute('aria-invalid', name ? 'false' : 'true');
+    form.elements.reach.setAttribute('aria-invalid', reach ? 'false' : 'true');
+    note.classList.toggle('is-error', !name || !reach);
+    if (!name || !reach) {
+      note.textContent = 'Doplňte, prosím, meno a\u00a0telefón alebo e-\u2060mail.';
+      (name ? form.elements.reach : form.elements.name).focus();
+      return;
+    }
+    var to = document.querySelector('[data-contact="email"]').textContent.trim();
+    var pack = select.value || 'Ešte neviem, poraďte mi';
+    var body = 'Meno: ' + name + '\nKontakt: ' + reach + '\nZáujem: ' + pack + '\n\n' + form.elements.msg.value.trim();
+    location.href = 'mailto:' + to + '?subject=' + encodeURIComponent('Dopyt: ' + pack) + '&body=' + encodeURIComponent(body);
+    note.textContent = 'Otvoril sa váš e-\u2060mail s\u00a0vyplnenou správou. Ak nie, napíšte priamo na ' + to + '.';
+  });
+})();
+</script>
+</body>
+</html>
