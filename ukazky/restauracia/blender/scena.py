@@ -26,6 +26,9 @@ JSON_OUT = arg('--json', '')
 ASPECT = 1100 / 1600 if VIEW == 'main' else 1000 / 1600
 SEAT_IDS = [int(x) for x in arg('--stoly', '').split(',') if x]   # --view seat: ktoré stoly (prázdne = všetky)
 SEAT_DIR = os.path.abspath(arg('--outdir', 'render/pohlady'))
+PANO = '--pano' in argv                                   # --view seat --pano: 360° rovnobežkovo-poludníková panoráma z miesta hosťa
+if VIEW == 'seat' and PANO:
+    ASPECT = 0.5
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 scene = bpy.context.scene
@@ -811,6 +814,10 @@ def build_terrace():
     mb.obj()
     if VIEW != 'seat':                               # v pohľade hosťa by svietilo priamo do markízy nad ním
         point((12.15, 2.6, 2.0), 110, size=0.3)
+    elif PANO:                                       # 360° z terasy: hosť vidí aj terasu okolo seba, bez svetla by bola čierna
+        point((12.15, 2.6, 1.7), 45, size=0.6)
+        point((11.4, 1.0, 1.9), 18, size=0.5)
+        point((11.4, 4.3, 1.9), 18, size=0.5)
 
 def build_hero_shell():
     mb = MB('strop')
@@ -980,6 +987,13 @@ elif VIEW == 'seat':
     cam_d.clip_start = 0.05
     cam_d.dof.use_dof = True
     cam_d.dof.aperture_fstop = float(arg('--fstop', '4.0'))
+    if PANO:
+        cam_d.type = 'PANO'
+        try:
+            cam_d.panorama_type = 'EQUIRECTANGULAR'
+        except Exception:
+            cam_d.cycles.panorama_type = 'EQUIRECTANGULAR'
+        cam_d.dof.use_dof = False
     HALL = Vector((5.6, 3.9))
     def seat_camera(tid):
         t = [t for t in TABLES if t['id'] == tid][0]
@@ -996,7 +1010,7 @@ elif VIEW == 'seat':
         eye2 = ch + d1 * 0.06
         eye = Vector((eye2.x, eye2.y, best[2] + eye_h))
         tgt = Vector((eye.x + d.x * 4.0, eye.y + d.y * 4.0, eye.z - 0.62))
-        look_at(cam, eye, tgt)
+        look_at(cam, eye, Vector((tgt.x, tgt.y, eye.z)) if PANO else tgt)   # panoráma: obzor v strede obrázka, stred = smer k sále
         cam_d.dof.focus_distance = max(1.6, (tc - ch).length + 1.4)
         return dict(oko=[round(v, 3) for v in eye], ciel=[round(v, 3) for v in tgt])
 else:
@@ -1070,7 +1084,7 @@ if VIEW == 'seat':
     for tid in ids:
         info[tid] = seat_camera(tid)
         bpy.context.view_layer.update()
-        scene.render.filepath = os.path.join(SEAT_DIR, 'stol-%02d.png' % tid)
+        scene.render.filepath = os.path.join(SEAT_DIR, 'stol-%02d%s.png' % (tid, '-360' if PANO else ''))
         if '--norender' not in argv:
             bpy.ops.render.render(write_still=True)
         print('POHLAD', tid, info[tid])

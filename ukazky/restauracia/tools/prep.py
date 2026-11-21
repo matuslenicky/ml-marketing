@@ -1,6 +1,7 @@
 # Prevedie rendery z Blenderu (PNG) na WebP pre stránku.
 # Spustenie: python tools/prep.py <main.png>
 #            python tools/prep.py --pohlady <priečinok so stol-NN.png>   (pohľady hostí od stolov)
+#            python tools/prep.py --pano <priečinok so stol-NN-360.png>  (360° panorámy z miesta hosťa)
 import sys, os, glob
 from PIL import Image
 
@@ -14,7 +15,11 @@ def save(img, name, width, quality, **kw):
     img.save(p, 'WEBP', quality=quality, method=6, **kw)
     print(name, img.size, os.path.getsize(p) // 1024, 'kB')
 
-if sys.argv[1] == '--pohlady':
+if sys.argv[1] == '--pano':
+    os.makedirs(os.path.join(out, 'pohlad'), exist_ok=True)
+    for f in sorted(glob.glob(os.path.join(sys.argv[2], 'stol-[0-9][0-9]-360.png'))):
+        save(Image.open(f).convert('RGB'), 'pohlad/%s.webp' % os.path.basename(f)[:-4], 2048, 78)
+elif sys.argv[1] == '--pohlady':
     os.makedirs(os.path.join(out, 'pohlad'), exist_ok=True)
     for f in sorted(glob.glob(os.path.join(sys.argv[2], 'stol-[0-9][0-9].png'))):
         im = Image.open(f).convert('RGB'); n = os.path.basename(f)[:-4]

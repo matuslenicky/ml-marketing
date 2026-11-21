@@ -162,6 +162,13 @@ button,input,textarea{font:inherit;color:inherit}
 .seat-tag strong{display:block;font-size:1rem;color:var(--cream)}
 .seat-back{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;border:0;background:var(--cream);color:var(--ink);font-weight:700;font-size:.9375rem;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35)}
 .seat-back:hover{background:#fff}
+/* 360° pohľad hosťa: ťahaním sa otáča, na dotyk len vodorovne (zvislý ťah posúva stránku) */
+.seat-pano{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
+.seat-pano:active{cursor:grabbing}
+.seat-pano:focus-visible{outline:3px solid var(--gold);outline-offset:-3px;border-radius:18px}
+.seat-hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(12,29,24,.8);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:.875rem;font-weight:600;color:var(--cream);white-space:nowrap;pointer-events:none;transition:opacity .45s}
+.seat-hint svg{width:18px;height:18px}
+.seat-hint.is-gone{opacity:0}
 .seat-back svg{width:18px;height:18px}
 .room.is-seat .map-scroll,.room.is-seat .pan-hint,.room.is-seat .legend-row{display:none}
 .map-inner{transform-origin:var(--ox,50%) var(--oy,50%)}
@@ -324,6 +331,8 @@ button,input,textarea{font:inherit;color:inherit}
       </figure>
       <figure class="seat" id="seat" hidden>
         <img id="seat-img" src="assets/pohlad/stol-09-720.webp" alt="" width="1440" height="900" loading="lazy" decoding="async">
+        <canvas class="seat-pano" id="seat-pano" role="img" tabindex="0" hidden></canvas>
+        <span class="seat-hint" id="seat-hint" hidden><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9l-4 3 4 3M17 9l4 3-4 3M3 12h18"/></svg>Potiahnutím sa rozhliadnete dookola</span>
         <figcaption class="seat-bar">
           <span class="seat-tag" id="seat-tag"></span>
           <button type="button" class="seat-back" id="seat-back"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>Celá sála</button>
@@ -554,7 +563,7 @@ button,input,textarea{font:inherit;color:inherit}
     svg('rect', { x: -48, y: -17, width: 96, height: 34, rx: 17 }, p);
     svg('text', { x: 0, y: 1 }, p);
     nodes[t.id] = g;
-    g.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') { hot(t.id, true); showTip(t); if (stateOf(t) === 'free') preloadSeat(t.id); } });
+    g.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') { hot(t.id, true); showTip(t); if (stateOf(t) === 'free') { preloadSeat(t.id); panoLoad(t.id).catch(function () {}); } } });
     g.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') { hot(t.id, false); hideTip(); } });
   });
   function fitHits() {
@@ -700,12 +709,118 @@ button,input,textarea{font:inherit;color:inherit}
     room.classList.toggle('is-zooming', z > 0.0005);
   };
   var enter = new Spring(1, { response: 0.6, damping: 1 });
+  var panoEl = $('seat-pano'), panoHint = $('seat-hint');
   enter.onUpdate = function (e) {
     var k = 1 - e, on = k > 0.0005;
-    seatImg.style.transform = on ? 'scale(' + (1 + 0.2 * k).toFixed(4) + ')' : '';
-    seatImg.style.opacity = on ? Math.min(1, e * 1.7).toFixed(3) : '';
-    seatImg.style.filter = on ? 'blur(' + (6 * k).toFixed(2) + 'px)' : '';
+    [seatImg, panoEl].forEach(function (el) {
+      el.style.transform = on ? 'scale(' + (1 + 0.2 * k).toFixed(4) + ')' : '';
+      el.style.opacity = on ? Math.min(1, e * 1.7).toFixed(3) : '';
+      el.style.filter = on ? 'blur(' + (6 * k).toFixed(2) + 'px)' : '';
+    });
   };
+
+  // ---- 360° panoráma z miesta hosťa (assets/pohlad/stol-NN-360.webp, z Blendera). Bez WebGL alebo kým panoráma nie je, ostáva plochý záber.
+  var pano = { gl: null, tex: null, u: {}, yaw: 0, pitch: -0.1, v: 0, raf: 0, id: null, cache: {}, ok: null };
+  var VFOV = 1.15;
+  function panoSetup() {
+    if (pano.ok !== null) return pano.ok;
+    var gl = null;
+    try { gl = panoEl.getContext('webgl', { antialias: false, alpha: false }); } catch (e) {}
+    if (!gl) return (pano.ok = false);
+    function sh(type, src) { var x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x); return gl.getShaderParameter(x, gl.COMPILE_STATUS) ? x : null; }
+    var vs = sh(gl.VERTEX_SHADER, 'attribute vec2 a;varying vec2 p;void main(){p=a;gl_Position=vec4(a,0.,1.);}');
+    var fs = sh(gl.FRAGMENT_SHADER, 'precision highp float;uniform sampler2D t;uniform float yaw,pitch,th,tv;varying vec2 p;' +
+      'void main(){vec3 d=normalize(vec3(p.x*th,p.y*tv,-1.));float cp=cos(pitch),sp=sin(pitch);d=vec3(d.x,d.y*cp-d.z*sp,d.y*sp+d.z*cp);' +
+      'float cy=cos(yaw),sy=sin(yaw);d=vec3(d.x*cy-d.z*sy,d.y,d.x*sy+d.z*cy);' +
+      'gl_FragColor=texture2D(t,vec2(atan(d.x,-d.z)/6.2831853+.5,.5-asin(clamp(d.y,-1.,1.))/3.1415927));}');
+    if (!vs || !fs) return (pano.ok = false);
+    var pr = gl.createProgram(); gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return (pano.ok = false);
+    gl.useProgram(pr);
+    var b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    var loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    ['yaw', 'pitch', 'th', 'tv'].forEach(function (n) { pano.u[n] = gl.getUniformLocation(pr, n); });
+    pano.tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, pano.tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    pano.gl = gl; return (pano.ok = true);
+  }
+  function panoUrl(id) { return 'assets/pohlad/stol-' + pad(id) + '-360.webp'; }
+  function panoLoad(id) {
+    if (pano.cache[id]) return pano.cache[id];
+    return (pano.cache[id] = new Promise(function (res, rej) { var im = new Image(); im.onload = function () { res(im); }; im.onerror = rej; im.src = panoUrl(id); }));
+  }
+  function panoDraw() {
+    var gl = pano.gl; if (!gl || panoEl.hidden) return;
+    var dpr = Math.min(2, window.devicePixelRatio || 1), w = Math.round(panoEl.clientWidth * dpr), h = Math.round(panoEl.clientHeight * dpr);
+    if (!w || !h) return;
+    if (panoEl.width !== w || panoEl.height !== h) { panoEl.width = w; panoEl.height = h; }
+    gl.viewport(0, 0, w, h);
+    var tv = Math.tan(VFOV / 2);
+    gl.uniform1f(pano.u.yaw, pano.yaw); gl.uniform1f(pano.u.pitch, pano.pitch); gl.uniform1f(pano.u.tv, tv); gl.uniform1f(pano.u.th, tv * w / h);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+  function panoShow(t) {
+    if (!panoSetup()) return;
+    panoLoad(t.id).then(function (im) {
+      if (seatFor !== t.id) return;
+      var gl = pano.gl; gl.bindTexture(gl.TEXTURE_2D, pano.tex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, im);
+      pano.id = t.id; pano.yaw = 0; pano.pitch = -0.1; pano.v = 0;
+      panoEl.setAttribute('aria-label', 'Sála bistra Kôrka dookola z miesta hosťa pri stole ' + t.id + ' (' + t.where + '). Šípkami vľavo a vpravo sa otáčate.');
+      panoEl.hidden = false; seatImg.style.visibility = 'hidden';
+      panoHint.hidden = false; panoHint.classList.remove('is-gone');
+      panoDraw();
+    }).catch(function () { panoHide(); });
+  }
+  function panoHide() { cancelAnimationFrame(pano.raf); pano.raf = 0; pano.v = 0; panoEl.hidden = true; panoHint.hidden = true; seatImg.style.visibility = ''; }
+  function panoSpin() {                               // dobeh po švihnutí: rýchlosť klesá ako pri skrolovaní (0,998 za ms)
+    var last = performance.now();
+    cancelAnimationFrame(pano.raf);
+    pano.raf = requestAnimationFrame(function f(now) {
+      var dt = Math.min(50, now - last); last = now;
+      pano.yaw += pano.v * dt / 1000; pano.v *= Math.pow(0.998, dt);
+      panoDraw();
+      if (Math.abs(pano.v) > 0.02) pano.raf = requestAnimationFrame(f); else pano.raf = 0;
+    });
+  }
+  (function () {
+    var drag = null, track = new Spring.Tracker();
+    function perPx() { return 2 * Math.atan(Math.tan(VFOV / 2) * panoEl.clientWidth / panoEl.clientHeight) / panoEl.clientWidth; }
+    panoEl.addEventListener('pointerdown', function (e) {
+      cancelAnimationFrame(pano.raf); pano.raf = 0; pano.v = 0;   // chytenie zastaví dobeh hneď
+      drag = { x: e.clientX, y: e.clientY, id: e.pointerId, on: e.pointerType === 'mouse' };
+      track.reset(); track.add(pano.yaw);
+      if (drag.on) panoEl.setPointerCapture(e.pointerId);
+      panoHint.classList.add('is-gone');
+    });
+    panoEl.addEventListener('pointermove', function (e) {
+      if (!drag || e.pointerId !== drag.id) return;
+      var dx = e.clientX - drag.x, dy = e.clientY - drag.y, k = perPx();
+      if (!drag.on) {                                  // dotyk: vodorovný ťah otáča, zvislý patrí stránke
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        if (Math.abs(dy) > Math.abs(dx)) { drag = null; return; }
+        drag.on = true; try { panoEl.setPointerCapture(e.pointerId); } catch (err) {}
+      }
+      pano.yaw -= dx * k;
+      if (e.pointerType === 'mouse') pano.pitch = Math.max(-1.05, Math.min(1.05, pano.pitch + dy * k));
+      drag.x = e.clientX; drag.y = e.clientY; track.add(pano.yaw);
+      panoDraw();
+    });
+    function end(e) {
+      if (!drag || e.pointerId !== drag.id) return;
+      var was = drag.on; drag = null;
+      if (!was || reduce.matches) return;
+      pano.v = track.velocity(); if (Math.abs(pano.v) > 0.05) panoSpin();
+    }
+    panoEl.addEventListener('pointerup', end);
+    panoEl.addEventListener('pointercancel', end);
+    panoEl.addEventListener('keydown', function (e) {
+      var d = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0, u = e.key === 'ArrowUp' ? 1 : e.key === 'ArrowDown' ? -1 : 0;
+      if (!d && !u) return;
+      e.preventDefault(); pano.yaw += d * 0.18; pano.pitch = Math.max(-1.05, Math.min(1.05, pano.pitch + u * 0.12)); panoHint.classList.add('is-gone'); panoDraw();
+    });
+    window.addEventListener('resize', panoDraw);
+  })();
   function openSeat(t) {
     var wasOpen = room.classList.contains('is-seat'), done = false;
     seatFor = t.id;
@@ -722,6 +837,7 @@ button,input,textarea{font:inherit;color:inherit}
       seatImg.alt = 'Sála bistra Kôrka z miesta hosťa pri stole ' + t.id + ' (' + t.where + ').';
       room.classList.add('is-seat');
       seatFig.hidden = false;
+      panoHide(); panoShow(t);
       if (reduce.matches) enter.set(1);
       else { enter.set(wasOpen ? 0.45 : 0); enter.to(1); }
       if (window.matchMedia('(max-width: 1079.98px)').matches) {
@@ -742,6 +858,7 @@ button,input,textarea{font:inherit;color:inherit}
     var was = room.classList.contains('is-seat');
     room.classList.remove('is-seat');
     seatFig.hidden = true;
+    panoHide();
     enter.set(1);
     if (animate && !reduce.matches) {
       if (was) zoom.set(1);                           // späť tou istou cestou: sála sa vzdiali od stola
