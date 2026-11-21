@@ -61,7 +61,9 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.06; l
 .skip:focus { left: 8px; }
 
 /* Tlačidlá */
-.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 26px; border-radius: 999px; border: 2px solid var(--blue); background: var(--blue); color: var(--white); font: 600 1rem/1.1 var(--text); text-decoration: none; cursor: pointer; transition: background-color 0.16s, border-color 0.16s, color 0.16s; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 26px; border-radius: 999px; border: 2px solid var(--blue); background: var(--blue); color: var(--white); font: 600 1rem/1.1 var(--text); text-decoration: none; cursor: pointer; transition: background-color 0.16s, border-color 0.16s, color 0.16s, transform 0.1s ease-out; }
+/* odozva hneď pri stlačení, nie až po pustení */
+.btn:active, .show-tab:active, .menu-btn:active, .faq-list summary:active { transform: scale(0.97); }
 .btn-line { background: transparent; color: var(--blue); border-color: var(--field-line); }
 .btn-accent { background: var(--accent); border-color: var(--accent); color: var(--ink); }
 .btn-white { background: var(--white); border-color: var(--white); color: var(--blue); }
@@ -74,7 +76,9 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.06; l
 }
 
 /* Hlavička */
-.top { position: sticky; top: 0; z-index: 40; background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.top { position: sticky; top: 0; z-index: 40; background: rgba(255, 255, 255, 0.74); -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid rgba(11, 20, 55, 0.07); }
+@media (prefers-reduced-transparency: reduce) { .top { background: var(--white); -webkit-backdrop-filter: none; backdrop-filter: none; } }
+@media (prefers-contrast: more) { .top { background: var(--white); -webkit-backdrop-filter: none; backdrop-filter: none; border-bottom-color: var(--ink); } }
 .top-in { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 72px; }
 .brand { display: inline-flex; align-items: baseline; gap: 7px; min-height: 44px; padding-block: 8px; text-decoration: none; font: 500 1.1875rem/1 var(--display); letter-spacing: -0.02em; color: var(--ink); }
 .brand b { font-weight: 800; color: var(--blue); letter-spacing: -0.04em; font-size: 1.3125rem; }
@@ -85,7 +89,9 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.06; l
 .menu-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--line); background: var(--white); font-weight: 600; font-size: 0.9688rem; cursor: pointer; }
 .menu-btn i { display: block; width: 18px; height: 2px; background: var(--ink); box-shadow: 0 6px 0 var(--ink), 0 -6px 0 var(--ink); }
 .menu { display: none; border-top: 1px solid var(--line); background: var(--white); max-height: calc(100vh - 73px); max-height: calc(100dvh - 73px); overflow-y: auto; overscroll-behavior: contain; }
-.menu.is-open { display: block; }
+.menu.is-open { display: block; transform-origin: top right; animation: menu-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes menu-in { from { opacity: 0; transform: translateY(-8px) scale(0.985); } }
+@media (prefers-reduced-motion: reduce) { .menu.is-open { animation: menu-fade 0.15s ease-out; } @keyframes menu-fade { from { opacity: 0; } } }
 .menu a { display: flex; align-items: center; min-height: 52px; text-decoration: none; font: 600 1.125rem/1.2 var(--display); border-bottom: 1px solid var(--line); }
 .menu .btn { margin: 16px 0 20px; width: 100%; color: var(--white); border-bottom: 2px solid var(--blue); font: 600 1rem/1.1 var(--text); }
 @media (min-width: 940px) {
@@ -109,9 +115,13 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.06; l
 
 /* Ukážky v úvode */
 .show { background: var(--blue); color: var(--white); border-radius: var(--r-lg); padding: clamp(16px, 2.2vw, 26px); }
-.show-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; background: var(--blue-2); border-radius: 999px; }
-.show-tab { min-height: 46px; padding: 0 6px; border: 0; border-radius: 999px; background: transparent; color: var(--white); font-weight: 600; font-size: 0.9688rem; cursor: pointer; }
+.show-tabs { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; background: var(--blue-2); border-radius: 999px; }
+.show-thumb { position: absolute; left: 0; top: 4px; bottom: 4px; border-radius: 999px; background: var(--white); box-shadow: 0 2px 10px rgba(11, 20, 55, 0.22); pointer-events: none; }
+.show-tab { position: relative; z-index: 1; min-height: 46px; padding: 0 6px; border: 0; border-radius: 999px; background: transparent; color: var(--white); font-weight: 600; font-size: 0.9688rem; cursor: pointer; transition: color 0.2s, transform 0.1s ease-out; }
 .show-tab[aria-selected="true"] { background: var(--white); color: var(--blue); }
+.has-thumb .show-tab[aria-selected="true"] { background: transparent; }
+.show .frame { touch-action: pan-y; }
+.show-panel { will-change: auto; }
 .show-panel { margin-top: 16px; }
 .show-panel[hidden] { display: none; }
 .show .frame { border-radius: 12px; box-shadow: none; }
@@ -683,6 +693,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.06; l
   </div>
 </footer>
 
+<script src="assets/spring.js"></script>
 <script>
 (function () {
   'use strict';
@@ -701,16 +712,89 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.06; l
     if (e.key === 'Escape' && menu.classList.contains('is-open')) { setMenu(false); menuBtn.focus(); }
   });
 
-  /* Prepínanie ukážok v úvode */
+  /* Prepínanie ukážok v úvode: biely jazdec ide na pružine z miesta, kde práve je (dá sa prerušiť),
+     nový panel prichádza zo strany, kam sa prepína; na dotyk sa dá medzi ukážkami švihnúť. */
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.show-tab'));
-  function showTab(tab) {
+  var tabsBox = document.querySelector('.show-tabs');
+  var thumb = document.createElement('span');
+  thumb.className = 'show-thumb'; thumb.setAttribute('aria-hidden', 'true');
+  tabsBox.insertBefore(thumb, tabsBox.firstChild); tabsBox.classList.add('has-thumb');
+  var tx = new Spring(0, { response: 0.35, damping: 1, eps: 0.3 });
+  tx.onUpdate = function (x) { thumb.style.transform = 'translateX(' + x.toFixed(2) + 'px)'; };
+  var panelX = new Spring(0, { response: 0.4, damping: 1, eps: 0.3 }), livePanel = null;
+  panelX.onUpdate = function (x) {
+    if (!livePanel) return;
+    livePanel.style.transform = x ? 'translateX(' + x.toFixed(2) + 'px)' : '';
+    livePanel.style.opacity = x ? String(Math.max(0, 1 - Math.abs(x) / 260).toFixed(3)) : '';
+  };
+  function selected() { return tabs.filter(function (t) { return t.getAttribute('aria-selected') === 'true'; })[0]; }
+  function placeThumb(tab, animate) {
+    thumb.style.width = tab.offsetWidth + 'px';
+    if (animate && !Spring.reduced()) tx.to(tab.offsetLeft); else tx.set(tab.offsetLeft);
+  }
+  function panelOf(t) { return document.getElementById(t.getAttribute('aria-controls')); }
+  function showTab(tab, opts) {
+    opts = opts || {};
+    var old = selected(), dir = tabs.indexOf(tab) - tabs.indexOf(old);
     tabs.forEach(function (t) {
       var on = t === tab;
       t.setAttribute('aria-selected', on ? 'true' : 'false');
       t.tabIndex = on ? 0 : -1;
-      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      panelOf(t).hidden = !on;
     });
+    placeThumb(tab, true);
+    if (livePanel && livePanel !== panelOf(tab)) { livePanel.style.transform = ''; livePanel.style.opacity = ''; }
+    livePanel = panelOf(tab);
+    if (Spring.reduced() || !dir) { panelX.set(0); return; }
+    var from = opts.from != null ? opts.from : (dir > 0 ? 60 : -60);
+    panelX.set(from); panelX.to(0, { velocity: opts.velocity || 0 });
   }
+  placeThumb(selected(), false);
+  window.addEventListener('resize', function () { placeThumb(selected(), false); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placeThumb(selected(), false); });
+
+  // švihnutie medzi ukážkami (dotyk a pero; myš klikne na záložku)
+  var drag = null, track = new Spring.Tracker();
+  document.querySelectorAll('.show .frame').forEach(function (fr) {
+    fr.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse') return;
+      drag = { fr: fr, x0: e.clientX, y0: e.clientY, on: false, id: e.pointerId, base: panelX.x };
+      track.reset(); track.add(e.clientX);
+    });
+  });
+  window.addEventListener('pointermove', function (e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+    if (!drag.on) {
+      if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { drag = null; return; }   // skrolovanie vyhralo
+      if (Math.abs(dx) < 10) return;
+      drag.on = true; drag.x0 = e.clientX - (drag.base || 0);
+      livePanel = panelOf(selected());
+      try { drag.fr.setPointerCapture(e.pointerId); } catch (err) {}
+      dx = e.clientX - drag.x0;
+    }
+    var i = tabs.indexOf(selected()), w = drag.fr.offsetWidth;
+    if ((dx > 0 && i === 0) || (dx < 0 && i === tabs.length - 1)) dx = Spring.rubber(dx, w);   // na konci len mäkko
+    track.add(e.clientX);
+    panelX.set(dx);
+  });
+  function endDrag(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var d = drag; drag = null;
+    if (!d.on) return;
+    var v = track.velocity(), x = panelX.x, w = d.fr.offsetWidth, i = tabs.indexOf(selected());
+    var end = x + Spring.project(v), step = end < -w * 0.35 ? 1 : end > w * 0.35 ? -1 : 0;
+    var next = tabs[i + step];
+    if (step && next) {
+      // panel odletí v smere švihu a nový pribehne z druhej strany so zdedenou rýchlosťou
+      showTab(next, { from: x + (step > 0 ? w * 0.6 : -w * 0.6), velocity: v });
+    } else {
+      panelX.to(0, { velocity: v, damping: Math.abs(v) > 600 ? 0.8 : 1 });
+    }
+  }
+  window.addEventListener('pointerup', endDrag);
+  window.addEventListener('pointercancel', endDrag);
+
   tabs.forEach(function (t, i) {
     t.addEventListener('click', function () { showTab(t); });
     t.addEventListener('keydown', function (e) {

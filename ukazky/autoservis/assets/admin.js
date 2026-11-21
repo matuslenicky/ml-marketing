@@ -54,6 +54,7 @@
     links.appendChild(t); links.appendChild(m); li.appendChild(links);
     var dl = el('dl');
     riadok(dl, 'Auto', r.auto);
+    if (r.problem) riadok(dl, 'Problém', r.problem);
     if (r.poznamka) riadok(dl, 'Odkaz zákazníka', r.poznamka);
     if (r.poznamkaServisu) riadok(dl, 'Poznámka servisu', r.poznamkaServisu);
     li.appendChild(dl);

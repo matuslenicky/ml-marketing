@@ -24,6 +24,8 @@ SAMPLES = int(arg('--samples', '24'))
 OUT = os.path.abspath(arg('--out', 'test.png'))
 JSON_OUT = arg('--json', '')
 ASPECT = 1100 / 1600 if VIEW == 'main' else 1000 / 1600
+SEAT_IDS = [int(x) for x in arg('--stoly', '').split(',') if x]   # --view seat: ktoré stoly (prázdne = všetky)
+SEAT_DIR = os.path.abspath(arg('--outdir', 'render/pohlady'))
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 scene = bpy.context.scene
@@ -314,6 +316,8 @@ def inst(me, name, loc=(0, 0, 0), rz=0.0, bevel=0.0):
 RX, RY, WH, WT = 10.8, 7.5, 2.6, 0.22
 TABLES = []
 LIGHTS = []
+SEATS = {}          # id stola -> [(x, y, z0, druh)] miesta hostí (pre pohľad hosťa)
+CUR = [None]
 PEND = float(arg('--pend', '1.6'))
 
 def point(loc, power, color=(1.0, 0.72, 0.42), size=0.06):
@@ -362,6 +366,8 @@ def chairs_init():
 def seat(kind, x, y, tx, ty, z=0.0):
     rz = atan2(ty - y, tx - x) - pi / 2
     o = inst(CH[kind], 'sedenie', (x, y, z), rz, 0.006)
+    if CUR[0] is not None:
+        SEATS.setdefault(CUR[0], []).append((x, y, z, kind))
     return o
 
 def setting(mb, px, py, dx, dy, h, napkin):
@@ -386,6 +392,7 @@ def register(tid, seats, zone, kde, tvar, pts, cx, cy, z):
 
 def table_rect(tid, seats, zone, kde, cx, cy, w, d, sides, h=0.75, top='oak', legs='legs', chair='a',
                napkin='ochre', plates=None, runner=False, tvar='obdĺžnikový', deco=True, z0=0.0):
+    CUR[0] = tid
     mb = MB('stol%d' % tid)
     mb.box((w, d, 0.045), (cx, cy, z0 + h - 0.0225), M[top])
     if legs == 'legs':
@@ -424,12 +431,14 @@ def table_rect(tid, seats, zone, kde, cx, cy, w, d, sides, h=0.75, top='oak', le
                 centerpiece(mb, cx + ox, cy, hz2, vase=(ox != 0.0))
         else:
             centerpiece(mb, cx - 0.04, cy, hz2, vase=(w >= 1.0 or d >= 1.0))
+    CUR[0] = None
     mb.obj(bevel=0.008)
     pts = [(cx - w / 2, cy - d / 2), (cx + w / 2, cy - d / 2), (cx + w / 2, cy + d / 2), (cx - w / 2, cy + d / 2)]
     register(tid, seats, zone, kde, tvar, pts, cx, cy, hz)
 
 def table_round(tid, seats, zone, kde, cx, cy, r, n, h=0.75, top='oak', chair='a', napkin='ochre',
                 kind='chair', a0=0.0, tvar='okrúhly', z0=0.0):
+    CUR[0] = tid
     mb = MB('stol%d' % tid)
     mb.cyl(r, 0.045, (cx, cy, z0 + h - 0.0225), M[top], segs=40)
     mb.cyl(0.05, h - 0.07, (cx, cy, z0 + 0.025 + (h - 0.07) / 2), M['black'], segs=14)
@@ -444,6 +453,7 @@ def table_round(tid, seats, zone, kde, cx, cy, r, n, h=0.75, top='oak', chair='a
             setting(mb, cx + cos(a) * (r - 0.2), cy + sin(a) * (r - 0.2), -cos(a), -sin(a), hz, M[napkin])
         else:
             mb.cyl(0.03, 0.09, (cx + cos(a) * (r - 0.14), cy + sin(a) * (r - 0.14), hz + 0.045), M['glass'], segs=10)
+    CUR[0] = None
     centerpiece(mb, cx, cy, hz, vase=(r >= 0.45))
     mb.obj(bevel=0.008)
     pts = [(cx + cos(i * 2 * pi / 28) * r, cy + sin(i * 2 * pi / 28) * r) for i in range(28)]
@@ -614,6 +624,7 @@ def build_booths():
         table_rect(i + 1, 4, 'box', 'v boxe pri stene', 0.85, yc, 1.15, 0.7, {}, legs='ped', top='oak',
                    napkin='ochre', tvar='box',
                    plates=[(0.57, yc - 0.17, 0, 1), (1.13, yc - 0.17, 0, 1), (0.57, yc + 0.17, 0, -1), (1.13, yc + 0.17, 0, -1)])
+        SEATS[i + 1] = [(0.95, yc - 0.6, 0.0, 'lavica'), (0.95, yc + 0.6, 0.0, 'lavica')]
         pendant(0.85, yc, 1.7, style=0)
         mb = MB('obraz')
         mb.box((0.03, 0.74, 0.54), (0.02, yc, 1.72), M['walnut'])
@@ -798,7 +809,8 @@ def build_terrace():
         mb.cyl(0.045, 0.14, (x, y, zt + 0.1), M['tealight'], segs=10)
         point((x, y, zt + 0.42), 14)
     mb.obj()
-    point((12.15, 2.6, 2.0), 110, size=0.3)
+    if VIEW != 'seat':                               # v pohľade hosťa by svietilo priamo do markízy nad ním
+        point((12.15, 2.6, 2.0), 110, size=0.3)
 
 def build_hero_shell():
     mb = MB('strop')
@@ -809,6 +821,76 @@ def build_hero_shell():
     mb.box((0.1, 2.3, WH), (RX + 0.05, 6.35, WH / 2), M['wall'])
     mb.obj()
 
+def build_full_shell():
+    # uzavretá sála pre pohľady hostí: strop, južná stena s oknami, presklená východná stena na terasu
+    build_hero_shell_ceiling()
+    SILL, WTOP = 0.8, 2.25
+    # juh (y = 0): tri okná do ulice
+    yw = -WT / 2
+    wins = [(2.6, 3.9), (6.1, 7.4), (8.4, 9.4)]
+    mb = MB('stena_juh')
+    mb.box((RX + WT, WT, SILL), ((RX - WT) / 2, yw, SILL / 2), M['wall'])
+    mb.box((RX + WT, WT, WH - WTOP), ((RX - WT) / 2, yw, (WH + WTOP) / 2), M['wall'])
+    piers = [(-WT, wins[0][0])] + [(wins[i][1], wins[i + 1][0]) for i in range(len(wins) - 1)] + [(wins[-1][1], RX + WT)]
+    for a, b in piers:
+        mb.box((b - a, WT, WTOP - SILL), ((a + b) / 2, yw, (SILL + WTOP) / 2), M['wall'])
+    mb.box((RX, 0.025, SILL), (RX / 2, 0.0125, SILL / 2), M['wains'])
+    mb.box((RX, 0.05, 0.035), (RX / 2, 0.025, SILL + 0.0175), M['walnut'])
+    mb.obj()
+    mb = MB('okna_juh')
+    for a, b in wins:
+        cx, w, hh, cz = (a + b) / 2, b - a, WTOP - SILL, (WTOP + SILL) / 2
+        mb.box((w, 0.012, hh), (cx, -0.11, cz), M['pane'])
+        for xx in (a + 0.025, b - 0.025, cx):
+            mb.box((0.05, 0.06, hh), (xx, -0.11, cz), M['black'])
+        for zz in (SILL + 0.025, WTOP - 0.025, SILL + hh * 0.62):
+            mb.box((w, 0.06, 0.05), (cx, -0.11, zz), M['black'])
+        mb.box((w + 0.1, 0.2, 0.04), (cx, -0.03, SILL + 0.045), M['oak'])
+    mb.obj()
+    mb = MB('sumrak_juh')
+    mb.poly([(9.8, -0.4, 0.15), (2.2, -0.4, 0.15), (2.2, -0.4, 2.6), (9.8, -0.4, 2.6)], M['dusk'])
+    mb.obj()
+    # východ (x = RX): presklené dvere na terasu medzi y 0.55 a 4.85, ďalej plná stena
+    xw = RX + WT / 2
+    G0, G1, GT = 0.55, 4.85, 2.3
+    mb = MB('stena_vychod')
+    mb.box((WT, G0 + WT, WH), (xw, (G0 - WT) / 2, WH / 2), M['wall'])
+    mb.box((WT, RY + WT - G1, WH), (xw, (G1 + RY + WT) / 2, WH / 2), M['wall'])
+    mb.box((WT, G1 - G0, WH - GT), (xw, (G0 + G1) / 2, (WH + GT) / 2), M['wall'])
+    mb.box((0.025, RY - G1, SILL), (RX - 0.0125, (G1 + RY) / 2, SILL / 2), M['wains'])
+    mb.obj()
+    mb = MB('presklenie')
+    n = 4
+    for i in range(n):
+        a = G0 + (G1 - G0) * i / n
+        b = G0 + (G1 - G0) * (i + 1) / n
+        c = (a + b) / 2
+        mb.box((0.012, b - a, GT), (xw, c, GT / 2), M['pane'])
+        mb.box((0.07, 0.06, GT), (xw, a + 0.03, GT / 2), M['black'])
+        mb.box((0.07, 0.06, GT), (xw, b - 0.03, GT / 2), M['black'])
+        for zz in (0.03, 1.0, GT - 0.03):
+            mb.box((0.07, b - a, 0.06 if zz != 1.0 else 0.04), (xw, c, zz), M['black'])
+    mb.obj()
+    # markíza nad terasou
+    mb = MB('markiza')
+    platno = pbr('markiza', '#1E2C25', 0.95)
+    mb.poly([(RX + WT, 0.35, 2.48), (RX + WT, 5.05, 2.48), (13.75, 5.05, 2.2), (13.75, 0.35, 2.2)], platno)
+    for y in (0.4, 2.7, 5.0):
+        mb.box((0.05, 0.05, 2.2), (13.7, y, 1.1 - 0.04), M['black'])
+    mb.box((0.05, 4.7, 0.05), (13.7, 2.7, 2.2), M['black'])
+    mb.obj()
+    # za terasou: múrik a koruny stromov proti súmraku, aby sa za zábradlím nekončil svet
+    mb = MB('ulica')
+    mb.box((40, 40, 0.02), (12, 2.7, -0.32), M['base'])
+    mb.obj()
+
+def build_hero_shell_ceiling():
+    mb = MB('strop')
+    mb.box((RX + WT, RY + WT, 0.1), ((RX - WT) / 2, (RY + WT) / 2, WH + 0.05), M['ceiling'])
+    for y in (1.3, 3.25, 5.2, 7.15):
+        mb.box((RX, 0.14, 0.18), (RX / 2, y, WH - 0.09), M['walnut'])
+    mb.obj()
+
 mk and chairs_init()
 build_room()
 build_booths()
@@ -817,6 +899,8 @@ build_hall()
 build_terrace()
 if VIEW == 'hero':
     build_hero_shell()
+elif VIEW == 'seat':
+    build_full_shell()
 
 # ---------------------------------------------------------------- svetlo a svet
 world = bpy.data.worlds.new('svet')
@@ -846,10 +930,11 @@ else:
     al = bpy.data.lights.new('fill', 'AREA')
     al.energy = float(arg('--fill', '120'))
     al.color = (1.0, 0.8, 0.6)
-    al.size = 4.0
+    al.size = float(arg('--fillsize', '4.0'))
     ao = bpy.data.objects.new('fill', al)
-    ao.location = (7.5, 2.5, 2.4)
+    ao.location = (7.5, 2.5, float(arg('--fillz', '2.4')))
     COL.objects.link(ao)
+    LIGHTS.append(ao)                                # v pohľade z terasy by bolo vidno samotný svetelný panel
 
 # ---------------------------------------------------------------- kamera
 cam_d = bpy.data.cameras.new('kamera')
@@ -890,6 +975,30 @@ if VIEW == 'main':
         cam.location += (mw @ Vector((1, 0, 0))) * (cx - 0.5) * vw + (mw @ Vector((0, 1, 0))) * (cy - 0.5) * vw * H / W
         cam_d.lens *= 0.955 / max(maxx - minx, maxy - miny)
     bpy.context.view_layer.update()
+elif VIEW == 'seat':
+    cam_d.lens = float(arg('--ohnisko', '20'))
+    cam_d.clip_start = 0.05
+    cam_d.dof.use_dof = True
+    cam_d.dof.aperture_fstop = float(arg('--fstop', '4.0'))
+    HALL = Vector((5.6, 3.9))
+    def seat_camera(tid):
+        t = [t for t in TABLES if t['id'] == tid][0]
+        tc = Vector((t['c'].x, t['c'].y))
+        best = max(SEATS[tid], key=lambda q: (Vector((q[0], q[1])) - HALL).length)
+        ch = Vector((best[0], best[1]))
+        d1 = (tc - ch).normalized()
+        far = (HALL - ch)
+        d2 = far.normalized() if far.length > 1.2 else d1
+        d = (d1 * 0.42 + d2 * 0.58).normalized()
+        if best[3] == 'lavica':                       # z boxu pri stene sa hosť pozerá šikmo do sály
+            d = Vector((0.82, 0.57 if best[1] < tc.y else -0.57)).normalized()
+        eye_h = {'s': 1.52, 's2': 1.52, 'lavica': 1.12}.get(best[3], 1.17)
+        eye2 = ch + d1 * 0.06
+        eye = Vector((eye2.x, eye2.y, best[2] + eye_h))
+        tgt = Vector((eye.x + d.x * 4.0, eye.y + d.y * 4.0, eye.z - 0.62))
+        look_at(cam, eye, tgt)
+        cam_d.dof.focus_distance = max(1.6, (tc - ch).length + 1.4)
+        return dict(oko=[round(v, 3) for v in eye], ciel=[round(v, 3) for v in tgt])
 else:
     look_at(cam, (float(arg('--kx', '8.6')), float(arg('--ky', '1.7')), float(arg('--kz', '1.2'))),
             (float(arg('--ax', '4.0')), float(arg('--ay', '6.2')), float(arg('--az2', '0.95'))))
@@ -950,6 +1059,23 @@ for look in (arg('--look', 'AgX - Medium High Contrast'), 'Medium High Contrast'
         pass
 scene.view_settings.exposure = float(arg('--exposure', '0.0'))
 scene.render.filepath = OUT
-if '--norender' not in argv:
+if VIEW == 'seat':
+    scene.render.use_persistent_data = True
+    for o in LIGHTS:                                 # svetlá nevidno priamo ani cez sklo (prechod sklom je transmission, nie camera)
+        for attr in ('visible_camera', 'visible_transmission'):
+            setattr(o, attr, False)
+    os.makedirs(SEAT_DIR, exist_ok=True)
+    ids = SEAT_IDS or sorted(SEATS)
+    info = {}
+    for tid in ids:
+        info[tid] = seat_camera(tid)
+        bpy.context.view_layer.update()
+        scene.render.filepath = os.path.join(SEAT_DIR, 'stol-%02d.png' % tid)
+        if '--norender' not in argv:
+            bpy.ops.render.render(write_still=True)
+        print('POHLAD', tid, info[tid])
+    with open(os.path.join(SEAT_DIR, 'kamery.json'), 'w', encoding='utf-8') as f:
+        json.dump(info, f, indent=1)
+elif '--norender' not in argv:
     bpy.ops.render.render(write_still=True)
     print('RENDER', OUT)

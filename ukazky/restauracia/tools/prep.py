@@ -1,6 +1,7 @@
 # Prevedie rendery z Blenderu (PNG) na WebP pre stránku.
-# Spustenie: python tools/prep.py <main.png> [<hero.png>]
-import sys, os
+# Spustenie: python tools/prep.py <main.png>
+#            python tools/prep.py --pohlady <priečinok so stol-NN.png>   (pohľady hostí od stolov)
+import sys, os, glob
 from PIL import Image
 
 root = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
@@ -13,10 +14,13 @@ def save(img, name, width, quality, **kw):
     img.save(p, 'WEBP', quality=quality, method=6, **kw)
     print(name, img.size, os.path.getsize(p) // 1024, 'kB')
 
-main = Image.open(sys.argv[1]).convert('RGBA')
-save(main, 'sala.webp', 1600, 88, alpha_quality=92)
-save(main, 'sala-1000.webp', 1000, 84, alpha_quality=92)
-if len(sys.argv) > 2:
-    hero = Image.open(sys.argv[2]).convert('RGB')
-    save(hero, 'uvod.webp', 1600, 84)
-    save(hero, 'uvod-900.webp', 900, 78)
+if sys.argv[1] == '--pohlady':
+    os.makedirs(os.path.join(out, 'pohlad'), exist_ok=True)
+    for f in sorted(glob.glob(os.path.join(sys.argv[2], 'stol-[0-9][0-9].png'))):
+        im = Image.open(f).convert('RGB'); n = os.path.basename(f)[:-4]
+        save(im, 'pohlad/%s.webp' % n, 1440, 80)
+        save(im, 'pohlad/%s-720.webp' % n, 720, 76)
+else:
+    main = Image.open(sys.argv[1]).convert('RGBA')
+    save(main, 'sala.webp', 1600, 88, alpha_quality=92)
+    save(main, 'sala-1000.webp', 1000, 84, alpha_quality=92)

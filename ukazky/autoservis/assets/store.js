@@ -8,26 +8,35 @@
   var SLUZBY = [
     { id: 'pneumatiky', nazov: 'Prezúvanie pneumatík', kratko: 'Pneumatiky', cena: 29, trvanie: '45 min',
       popis: 'Prezujeme, vyvážime a skontrolujeme. Druhú sadu vám uskladníme do ďalšej sezóny.',
+      problemy: ['Prezutie na zimné alebo letné', 'Auto ťahá do strany', 'Volant sa pri rýchlosti trasie', 'Defekt, pneumatika stráca vzduch', 'Ojazdené pneumatiky, chcem nové'],
       zahrna: ['Prezutie a vyváženie štyroch kolies', 'Kontrola dezénu, tlaku a ventilov', 'Dotiahnutie momentovým kľúčom', 'Uskladnenie sady za príplatok'] },
     { id: 'brzdy', nazov: 'Brzdy', kratko: 'Brzdy', cena: 49, trvanie: '1,5 h',
       popis: 'Platničky, kotúče aj kvapalina. Pred výmenou vám ukážeme, koľko materiálu ešte ostáva.',
+      problemy: ['Brzdy pískajú alebo škrípu', 'Pedál je mäkký, ide hlboko', 'Pri brzdení sa trasie volant', 'Svieti kontrolka bŕzd', 'Pri brzdení ťahá do strany'],
       zahrna: ['Výmena platničiek a kotúčov', 'Výmena brzdovej kvapaliny', 'Kontrola hadíc a strmeňov', 'Skúšobná jazda po oprave'] },
     { id: 'motor', nazov: 'Motor a olej', kratko: 'Motor a olej', cena: 59, trvanie: '1 h',
       popis: 'Olej a filtre podľa predpisu výrobcu, k tomu prehliadka motora a zápis do servisnej knižky.',
+      problemy: ['Pravidelná výmena oleja a filtrov', 'Svieti kontrolka motora alebo oleja', 'Motor stráca výkon', 'Z motora ide zvláštny zvuk', 'Pod autom kvapká olej alebo kvapalina'],
       zahrna: ['Výmena oleja a olejového filtra', 'Vzduchový a palivový filter', 'Kontrola rozvodov a únikov', 'Zápis do servisnej knižky'] },
     { id: 'svetla', nazov: 'Svetlá a elektrika', kratko: 'Svetlá a elektrika', cena: 15, trvanie: '30 min',
       popis: 'Od žiarovky po autobatériu. Svetlomety nastavíme na prístroji, nie od oka.',
+      problemy: ['Nesvieti svetlo alebo smerovka', 'Svetlá oslepujú, sú zle nastavené', 'Auto ťažko štartuje (batéria)', 'Nefunguje elektrika (okná, zásuvka)'],
       zahrna: ['Nastavenie svetlometov', 'Výmena žiaroviek a poistiek', 'Test a výmena autobatérie', 'Kontrola nabíjania'] },
     { id: 'klima', nazov: 'Klimatizácia', kratko: 'Klimatizácia', cena: 45, trvanie: '1 h',
       popis: 'Doplníme chladivo, vyčistíme rozvody a vymeníme kabínový filter, aby klíma chladila a nezapáchala.',
+      problemy: ['Klimatizácia nechladí', 'Z klímy zapácha', 'Klíma hučí alebo píska', 'Pravidelný servis klimatizácie'],
       zahrna: ['Plnenie chladiva podľa hmotnosti', 'Dezinfekcia výparníka a rozvodov', 'Výmena kabínového filtra', 'Skúška tesnosti okruhu'] },
     { id: 'diagnostika', nazov: 'Diagnostika', kratko: 'Diagnostika', cena: 25, trvanie: '30 min',
       popis: 'Svieti kontrolka? Načítame riadiace jednotky a povieme vám po slovensky, čo auto hlási.',
+      problemy: ['Svieti kontrolka na palubnej doske', 'Auto prešlo do núdzového režimu', 'Chyba sa objavuje len občas', 'Kontrola pred kúpou auta'],
       zahrna: ['Načítanie chýb všetkých jednotiek', 'Meranie živých hodnôt', 'Vymazanie uložených závad', 'Protokol s odporúčaním'] },
     { id: 'vyfuk', nazov: 'Výfuk', kratko: 'Výfuk', cena: 35, trvanie: '1 h',
       popis: 'Hrkoce alebo je hlučný? Vymeníme tlmič, spoje aj závesy a skontrolujeme emisie.',
+      problemy: ['Výfuk je hlučný alebo hrkoce', 'V aute cítiť výfukové plyny', 'Neprešli emisie pred STK', 'Výfuk je prehrdzavený alebo visí'],
       zahrna: ['Výmena tlmičov a spojov', 'Zváranie a oprava závesov', 'Kontrola lambda sondy', 'Meranie emisií pred STK'] }
   ];
+
+  var NEVIEM = 'Neviem príčinu – opíšem';
 
   var STAVY = {
     nova: 'Nová', potvrdena: 'Potvrdená', caka: 'Čaká na zákazníka',
@@ -97,7 +106,7 @@
       id: noveId(list), stav: 'nova', vytvorene: new Date().toISOString(),
       sluzba: udaje.sluzba, datum: udaje.datum, cas: udaje.cas,
       meno: udaje.meno, telefon: udaje.telefon, email: udaje.email, auto: udaje.auto,
-      poznamka: udaje.poznamka || '', poznamkaServisu: '', navrh: null, moja: !!udaje.moja
+      problem: udaje.problem || '', poznamka: udaje.poznamka || '', poznamkaServisu: '', navrh: null, moja: !!udaje.moja
     };
     list.push(r); uloz(list);
     return r;
@@ -169,7 +178,7 @@
   window.Rampa = {
     KEY: KEY, SLUZBY: SLUZBY, STAVY: STAVY,
     sluzba: sluzba, dni: dni, casyDna: casyDna, volneCasy: volneCasy, obsadene: obsadene,
-    nacitaj: nacitaj, pridaj: pridaj, zmen: zmen, vymaz: vymaz, vzorove: vzorove,
+    NEVIEM: NEVIEM, nacitaj: nacitaj, pridaj: pridaj, zmen: zmen, vymaz: vymaz, vzorove: vzorove,
     fmtDatum: fmtDatum, fmtTermin: fmtTermin, fmtPred: fmtPred
   };
 })();

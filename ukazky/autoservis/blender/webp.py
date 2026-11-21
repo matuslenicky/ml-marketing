@@ -1,6 +1,6 @@
 # Prevedie vyrenderované PNG na WebP pre stránku a zapíše polohy bodov služieb.
 #   python webp.py <priečinok s f00.png … a body.json> [rozpočet sekvencie v kB, predvolene 1750]
-# Výstup: ../assets/seq/fNN.webp, ../assets/detail.webp (ak je detail.png), ../assets/body.js a kópia body.json vedľa skriptu.
+# Výstup: ../assets/seq/fNN.webp, ../assets/det/det-<služba>.webp (z det-*.png), ../assets/body.js a kópia body.json vedľa skriptu.
 import glob, io, json, os, shutil, sys
 from PIL import Image
 
@@ -12,6 +12,7 @@ SEQ = os.path.join(ASSETS, 'seq')
 os.makedirs(SEQ, exist_ok=True)
 
 frames = sorted(glob.glob(os.path.join(SRC, 'f[0-9][0-9].png')))
+if not frames: print('sekvencia: žiadne zábery, ostáva pôvodná')
 imgs = [Image.open(f).convert('RGB') for f in frames]
 
 def pack(q):
@@ -27,15 +28,15 @@ while lo <= hi:                                   # najvyššia kvalita, ktorá 
     else: hi = q - 1
 if best is None: best = (40, pack(40))
 q, data = best
-for old in glob.glob(os.path.join(SEQ, 'f*.webp')): os.remove(old)
+for old in (glob.glob(os.path.join(SEQ, 'f*.webp')) if frames else []): os.remove(old)
 for f, d in zip(frames, data):
     open(os.path.join(SEQ, os.path.basename(f)[:-4] + '.webp'), 'wb').write(d)
 print('sekvencia: %d záberov, kvalita %d, spolu %.0f kB' % (len(data), q, sum(len(d) for d in data) / 1024))
 
-det = os.path.join(SRC, 'detail.png')
-if os.path.exists(det):
-    im = Image.open(det).convert('RGB'); p = os.path.join(ASSETS, 'detail.webp'); im.save(p, 'WEBP', quality=78, method=6)
-    print('detail.webp %.0f kB' % (os.path.getsize(p) / 1024))
+DET = os.path.join(ASSETS, 'det'); os.makedirs(DET, exist_ok=True)
+for f in sorted(glob.glob(os.path.join(SRC, 'det-*.png'))):
+    im = Image.open(f).convert('RGB'); p = os.path.join(DET, os.path.basename(f)[:-4] + '.webp'); im.save(p, 'WEBP', quality=80, method=6)
+    print('%s %.0f kB' % (os.path.basename(p), os.path.getsize(p) / 1024))
 
 body = json.load(open(os.path.join(SRC, 'body.json'), encoding='utf-8'))
 shutil.copyfile(os.path.join(SRC, 'body.json'), os.path.join(HERE, 'body.json'))

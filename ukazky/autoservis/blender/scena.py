@@ -1,10 +1,12 @@
 # Dielňa RAMPA 7: auto (auto.glb) v servisnom státí, kamera ide spredu do pohľadu zboku-zhora.
-#   blender -b --factory-startup -P scena.py -- --out <priečinok PNG> [--frames all|0,12,23] [--n 24]
-#           [--res 1200x900] [--samples 48] [--json body.json] [--still detail] [--blend scena.blend]
+#   blender -b --factory-startup -P scena.py -- --out <priečinok PNG> [--frames all|none|0,12,23] [--n 24]
+#           [--res 1200x900] [--samples 48] [--json body.json] [--detaily all|motor,brzdy] [--blend scena.blend]
+# Auto stojí na dvojstĺpovom zdviháku, pri skrolovaní sa dvíha. --detaily vyrenderuje záber každej služby
+# (det-<id>.png): otvorená kapota s motorom, koleso dole s kotúčom, regloskop, stanica klimatizácie, tablet, výfuk zospodu.
 # Výstup: <out>/f00.png … a body.json s polohami bodov služieb v koncovom zábere (percentá šírky a výšky).
 # Len Cycles na CPU. Materiály vznikajú až po read_factory_settings.
 import bpy, bmesh, json, math, os, sys
-from mathutils import Vector
+from mathutils import Vector, Matrix
 from bpy_extras.object_utils import world_to_camera_view
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -15,11 +17,11 @@ def arg(name, default=None):
 OUT = os.path.abspath(arg('out', os.path.join(HERE, 'render')))
 N = int(arg('n', '24'))
 FRAMES = arg('frames', 'all')
-FRAMES = list(range(N)) if FRAMES == 'all' else [int(x) for x in FRAMES.split(',') if x != '']
+FRAMES = list(range(N)) if FRAMES == 'all' else [] if FRAMES == 'none' else [int(x) for x in FRAMES.split(',') if x != '']
+DETAILY = arg('detaily', '')
 RX, RY = [int(x) for x in arg('res', '1200x900').split('x')]
 SAMPLES = int(arg('samples', '48'))
 JSON_OUT = arg('json', os.path.join(OUT, 'body.json'))
-STILL = arg('still')
 os.makedirs(OUT, exist_ok=True)
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -196,22 +198,6 @@ box('stop', (BX + 1.0, 0, .004), (.1, 2.2, .008), M_white)
 box('chodnik', (4.9, -4.6, .004), (9.5, .08, .008), M_white)
 # susedné státie so zdvihákom
 
-# ------------------------------------------------------------------ dvojstĺpový zdvihák v susednom státí
-LY = -5.0; LXc = -4.2
-for s in (-1, 1):
-    y = LY + s * 1.5
-    box('zdvihak platna', (LXc, y, .012), (.62, .52, .024), M_steel, .004)
-    box('zdvihak stlp', (LXc, y, 1.95), (.3, .34, 3.9), M_lift, .012)
-    box('zdvihak vozik', (LXc, y - s * .2, .62), (.36, .1, .62), M_steel, .008)
-    box('zdvihak vrch', (LXc, y, 3.86), (.34, .38, .1), M_orange, .008)
-    for a in (-1, 1):
-        ang = a * .62 * (1 if s < 0 else -1)
-        o = box('rameno', (LXc + a * .47, y - s * .52, .43), (1.12, .1, .07), M_steel, .006, rz=ang * s)
-        cyl('tanier', (LXc + a * .92, y - s * .93, .49), .075, .04, M_rubber)
-box('zdvihak priecnik', (LXc, LY, 3.98), (.22, 3.34, .14), M_lift, .01)
-box('zdvihak ovladac', (LXc + .2, LY - 1.5, 1.35), (.12, .22, .3), M_dark, .006)
-box('zdvihak tlacidlo', (LXc + .262, LY - 1.5, 1.4), (.01, .06, .06), M_orange)
-
 # ------------------------------------------------------------------ pravá stena (y = Y1): pracovný stôl, tabuľa s náradím, skriňa, regál s pneumatikami
 WY = Y1 - .42
 box('stol doska', (-.4, WY, .93), (3.4, .78, .06), M_wood, .008)
@@ -328,18 +314,8 @@ bpy.ops.import_scene.gltf(filepath=os.path.join(HERE, 'auto.glb'))
 car_objs = [o for o in bpy.data.objects if o not in before]
 spec = json.load(open(os.path.join(HERE, 'auto.json'), encoding='utf-8'))
 CL = spec['L'] / 1000; XF = CL / 2 - spec['fo'] / 1000; XR = XF - spec['wb'] / 1000; TRK = spec['trackF'] / 2000
-ZC = .1                                             # auto stojí na nájazdovej rampe
+ZC = 0.0                                            # auto stojí na podlahe medzi stĺpmi zdviháka
 WR = .339 + ZC
-for o in car_objs:
-    if o.parent is None: o.location.z += ZC
-# nájazdová rampa (nízky plošinový zdvihák) pod kolesami
-for s in (-1, 1):
-    box('rampa plosina', (-.05, s * TRK, ZC / 2), (4.9, .64, ZC), M_steel, .008)
-    box('rampa hrana', (-.05, s * (TRK + .325), ZC / 2 + .003), (4.9, .03, ZC + .006), M_orange)
-    box('rampa nabeh', (2.4 + .345, s * TRK, ZC / 2 - .004), (.71, .64, .014), M_steel, 0, 0, 0, math.atan2(ZC, .69))
-    box('rampa doraz', (-2.44, s * TRK, ZC + .04), (.06, .6, .08), M_orange, .006)
-box('rampa agregat', (-1.0, 0, .06), (1.6, .5, .1), M_dado, .01)
-
 def tune(name, **kw):
     for m in bpy.data.materials:
         if m.name == name or m.name.startswith(name + '.') or (name.endswith('*') and m.name.startswith(name[:-1])):
@@ -373,6 +349,274 @@ for X in (XF, XR):
             a = math.radians(180 - 28 + k * 14)
             box('strmen', (X + .17 * math.cos(a), s * (TRK + .03), WR + .17 * math.sin(a)), (.075, .06, .05), M_orange, .006, 0, 0, -a + math.pi / 2)
 
+# ------------------------------------------------------------------ rig auta: všetko, čo sa dvíha so zdvihákom
+RIG = bpy.data.objects.new('auto rig', None); COL.objects.link(RIG)
+def to_rig(o):
+    o.parent = RIG
+    return o
+for o in car_objs:
+    if o.parent is None: to_rig(o)
+for o in [o for o in bpy.data.objects if o.name.startswith('strmen')]: to_rig(o)
+
+M_engine = mat('motor blok', '#2b2f35', .45, .7)
+M_cover = mat('motor kryt', '#16181b', .35, 0, .3)
+M_bayin = mat('motorovy priestor', '#101113', .7)
+M_yellow = mat('vicko olej', '#f2c230', .4)
+M_blue = mat('vicko ostrekovac', '#2f7bd8', .4)
+M_tank = mat('nadrzka', '#e8e4da', .3, 0, 0)
+M_pink = mat('chladiaca', '#e8508a', .3)
+M_red = mat('plus pol', '#d42a1e', .45)
+M_hose = mat('hadica', '#1a1b1d', .6)
+M_hblue = mat('hadica modra', '#2563c9', .45)
+M_hred = mat('hadica cervena', '#c9302c', .45)
+M_pipe = mat('vyfuk', '#6d655d', .5, .8)
+M_cat = mat('katalyzator', '#8b8f94', .35, .9)
+M_disc = mat('kotuc', '#9aa0a6', .25, 1.0)
+M_hub = mat('naboj', '#3b3f45', .45, .8)
+M_scrbg = mat('tablet pozadie', '#0d1726', .2, emit=1.2, emit_hex='#13233a')
+M_scrok = mat('tablet ok', '#2bd47d', .3, emit=3.0, emit_hex='#2bd47d')
+M_scrwarn = mat('tablet chyba', '#ffb020', .3, emit=3.0, emit_hex='#ffb020')
+M_scror = mat('tablet listy', ORANGE, .3, emit=2.4, emit_hex=ORANGE)
+M_scrtx = mat('tablet text', '#c9d6e6', .3, emit=1.6, emit_hex='#c9d6e6')
+M_gauge = mat('manometer', '#f4f4f0', .3)
+M_lens = mat('regloskop sosovka', '#cfd8e0', .05, 0, 1.0)
+
+def rig_box(*a, **k): return to_rig(box(*a, **k))
+def rig_cyl(*a, **k): return to_rig(cyl(*a, **k))
+
+# ------------------------------------------------------------------ kapota: vyrežeme ju z karosérie, aby sa dala otvoriť
+body = max((o for o in car_objs if o.type == 'MESH'), key=lambda o: len(o.data.vertices))
+me = body.data; mw = body.matrix_world.copy(); nmat = mw.to_3x3().inverted().transposed()
+lak = {i for i, m in enumerate(me.materials) if m and m.name.startswith('lak')}
+sklo = {i for i, m in enumerate(me.materials) if m and m.name == 'sklo'}
+bm = bmesh.new(); bm.from_mesh(me); bm.faces.ensure_lookup_table()
+def wc(f): return mw @ f.calc_center_median()
+def wn(f): return (nmat @ f.normal).normalized()
+ws = [mw @ v.co for f in bm.faces if f.material_index in sklo and wn(f).x > .35 for v in f.verts]
+X_COWL = max(p.x for p in ws) + .015
+HY, HZ0 = .70, .62                                  # polovičná šírka kapoty, spodná hranica pri nárazníku
+# karosériu prerežeme rovnými rovinami, aby mala kapota čisté okraje (nie zuby podľa siete)
+mwi = mw.inverted(); m3t = mw.to_3x3().transposed()
+for co, no in (((X_COWL, 0, 0), (1, 0, 0)), ((0, HY, 0), (0, 1, 0)), ((0, -HY, 0), (0, 1, 0)), ((0, 0, HZ0), (0, 0, 1))):
+    bmesh.ops.bisect_plane(bm, geom=bm.verts[:] + bm.edges[:] + bm.faces[:], dist=1e-5,
+                           plane_co=mwi @ Vector(co), plane_no=(m3t @ Vector(no)).normalized())
+bm.faces.ensure_lookup_table(); bm.edges.ensure_lookup_table(); bm.verts.ensure_lookup_table()
+def inside(f):
+    c = wc(f)
+    return f.material_index in lak and c.x > X_COWL and abs(c.y) < HY and c.z > HZ0
+sel = {f.index for f in bm.faces if inside(f)}
+hp = [mw @ v.co for i in sel for v in bm.faces[i].verts]
+X_HF = max(p.x for p in hp); Z_HLO = min(p.z for p in hp)
+Z_HINGE = max(p.z for p in hp if p.x < X_COWL + .08)
+print('KAPOTA tvarov %d, pánt x %.3f z %.3f, predok x %.3f, najnižšie z %.3f' % (len(sel), X_COWL, Z_HINGE, X_HF, Z_HLO))
+SEAL_EDGES = []                                     # hrany medzi kapotou a zvyškom karosérie: sem príde gumové tesnenie
+for e in bm.edges:
+    a = sum(1 for f in e.link_faces if f.index in sel)
+    if 0 < a < len(e.link_faces):
+        SEAL_EDGES.append((mw @ e.verts[0].co, mw @ e.verts[1].co))
+hood = body.copy(); hood.data = me.copy(); hood.name = 'kapota'; COL.objects.link(hood)
+bm2 = bmesh.new(); bm2.from_mesh(hood.data); bm2.faces.ensure_lookup_table()
+bmesh.ops.delete(bm2, geom=[f for f in bm2.faces if f.index not in sel], context='FACES')
+bm2.to_mesh(hood.data); bm2.free()
+bmesh.ops.delete(bm, geom=[bm.faces[i] for i in sel], context='FACES')
+bm.to_mesh(me); bm.free()
+sol = hood.modifiers.new('hrubka', 'SOLIDIFY'); sol.thickness = .012; sol.offset = -1
+HINGE = bpy.data.objects.new('pant kapoty', None); COL.objects.link(HINGE)
+HINGE.location = (X_COWL, 0, Z_HINGE); to_rig(HINGE)
+bpy.context.view_layer.update()
+hood.parent = HINGE; hood.matrix_parent_inverse = Matrix.Identity(4); hood.matrix_world = mw
+def ribbon(name, edges, w, lift):
+    verts, faces = [], []
+    for p0, q0 in edges:
+        d = q0 - p0; d.z = 0
+        if d.length < 1e-6: continue
+        n = Vector((-d.y, d.x, 0)).normalized() * w; up = Vector((0, 0, lift))
+        i = len(verts); verts += [p0 - n + up, p0 + n + up, q0 + n + up, q0 - n + up]; faces.append((i, i + 1, i + 2, i + 3))
+    m_ = bpy.data.meshes.new(name); m_.from_pydata(verts, [], faces)
+    o = bpy.data.objects.new(name, m_); COL.objects.link(o); m_.materials.append(M_rubber)
+    sd = o.modifiers.new('hrubka', 'SOLIDIFY'); sd.thickness = .01; sd.offset = 0
+    return o
+SEAL_BODY = to_rig(ribbon('skara kapoty', SEAL_EDGES, .006, .001))
+SEAL_HOOD = ribbon('tesnenie kapota', SEAL_EDGES, .008, .004)
+SEAL_HOOD.parent = HINGE; SEAL_HOOD.matrix_parent_inverse = Matrix.Identity(4); SEAL_HOOD.matrix_world = Matrix.Identity(4)
+print('TESNENIE hrán', len(SEAL_EDGES))
+# vzpera kapoty
+STRUT = cyl('vzpera kapoty', (0, 0, 0), .007, 1.0, M_tool)
+
+# ------------------------------------------------------------------ motorový priestor
+ZF = WR - .06                                       # dno priestoru
+ZT = Z_HLO - .03                                    # pod najnižším miestom kapoty
+XB0, XB1 = X_COWL - .04, X_HF - .16                 # stena za motorom … chladič
+BW = HY - .01
+rig_box('priestor dno', ((XB0 + XB1) / 2, 0, ZF), (XB1 - XB0, BW * 2, .03), M_bayin)
+for s in (-1, 1):
+    rig_box('priestor bok', ((XB0 + XB1) / 2, s * BW, (ZF + ZT) / 2), (XB1 - XB0, .03, ZT - ZF), M_bayin)
+    rig_box('priestor lem', ((XB0 + XB1) / 2, s * (BW - .02), ZT - .01), (XB1 - XB0 + .02, .07, .02), M_dark)
+    rig_box('podbeh', (XF, s * .655, (ZF + .72) / 2), (.86, .21, .72 - ZF), M_bayin, .02)      # zakryje vnútro kolesa
+    rig_cyl('tlmic hlava', (XF - .05, s * .64, .735), .07, .03, M_alu, bevel=.006)
+rig_box('priestor stena', (XB0, 0, (ZF + Z_HINGE) / 2), (.03, BW * 2, Z_HINGE - ZF), M_bayin)
+rig_box('chladic ram', (XB1, 0, (ZF + ZT) / 2), (.05, BW * 2, ZT - ZF), M_dark)
+rig_box('chladic', (XB1 - .03, 0, (ZF + ZT) / 2 + .01), (.02, BW * 1.7, (ZT - ZF) * .8), M_steel)
+for k in range(9):
+    rig_box('chladic rebro', (XB1 - .045, -BW * .8 + k * BW * .2, (ZF + ZT) / 2 + .01), (.01, .012, (ZT - ZF) * .78), M_dark)
+HA = ZT - ZF - .04                                  # výška, ktorá je k dispozícii
+EX = (XB0 + XB1) / 2 - .02
+rig_box('blok motora', (EX, .05, ZF + HA * .32), (.5, .62, HA * .6), M_engine, .02)
+rig_box('kryt ventilov', (EX + .01, .05, ZF + HA * .7), (.36, .56, HA * .22), M_cover, .03)
+for k in range(5):
+    rig_box('rebro krytu', (EX + .01, -.15 + k * .1, ZF + HA * .82), (.3, .02, .012), M_engine, .004)
+rig_cyl('vicko oleja', (EX + .12, .26, ZF + HA * .83), .03, .03, M_yellow, bevel=.004)
+rig_cyl('sanie', (EX - .2, .05, ZF + HA * .6), .055, .64, M_alu, 'y', bevel=.01)
+for k in range(4):
+    rig_cyl('sanie rameno', (EX - .12, -.17 + k * .15, ZF + HA * .55), .025, .14, M_alu, 'x')
+rig_box('vzduchovy filter', (XB1 - .25, .48, ZF + HA * .62), (.3, .3, HA * .3), M_dark, .025)
+rig_cyl('privod vzduchu', (XB1 - .25, .24, ZF + HA * .66), .045, .3, M_hose, 'y')
+rig_box('autobateria', (X_COWL + .2, -.5, ZF + HA * .35), (.26, .18, HA * .62), M_dark, .01)
+rig_cyl('bateria plus', (X_COWL + .15, -.45, ZF + HA * .68), .018, .03, M_red)
+rig_cyl('bateria minus', (X_COWL + .25, -.45, ZF + HA * .68), .018, .03, M_hose)
+rig_box('nadrzka chladiva', (X_COWL + .2, .5, ZF + HA * .45), (.16, .2, HA * .5), M_tank, .02)
+rig_box('hladina chladiva', (X_COWL + .2, .5, ZF + HA * .38), (.165, .205, HA * .3), M_pink)
+rig_cyl('vicko chladiva', (X_COWL + .2, .5, ZF + HA * .72), .035, .03, M_dark)
+rig_cyl('vicko ostrekovaca', (XB1 - .12, -.55, ZF + HA * .6), .03, .03, M_blue)
+rig_cyl('nadrzka brzd', (X_COWL + .12, -.18, ZF + HA * .6), .04, HA * .25, M_tank)
+for (a, b, z) in ((.3, -.3, .5), (-.1, .4, .45)):
+    rig_cyl('hadica', (EX + a * .5, b * .6, ZF + HA * z), .02, .4, M_hose, 'x')
+
+# ------------------------------------------------------------------ výfuk pod autom
+ZU = .2                                             # pod podlahou karosérie
+rig_cyl('vyfuk predny', ((XB0 + XB1) / 2 - .05, .1, ZU + .05), .028, .5, M_pipe, 'x')
+rig_cyl('katalyzator', (XB0 - .2, .05, ZU), .065, .45, M_cat, 'x', bevel=.01)
+rig_cyl('vyfuk stred', (-.2, -.02, ZU), .028, 2.2, M_pipe, 'x')
+rig_cyl('rezonator', (-.3, -.04, ZU - .01), .07, .5, M_cat, 'x', bevel=.01)
+rig_box('tlmic zadny', (XR - .55, -.25, ZU + .02), (.6, .38, .17), M_cat, .04)
+rig_cyl('vyfuk koncovka', (XR - 1.0, -.42, ZU + .04), .036, .3, M_tool, 'x')
+for x in (-.9, .5, XR - .3):
+    rig_box('zaves', (x, -.02, ZU + .07), (.03, .05, .08), M_rubber)
+
+# ------------------------------------------------------------------ dvojstĺpový zdvihák v státí
+LXc = (XF + XR) / 2 + .05; LYp = 1.48
+GC = .14                                            # svetlá výška, sem siahajú tanieriky ramien
+LIFT_PARTS = []
+for s in (-1, 1):
+    y = s * LYp
+    box('zdvihak platna', (LXc, y, .012), (.62, .52, .024), M_steel, .004)
+    box('zdvihak stlp', (LXc, y, 1.95), (.3, .34, 3.9), M_lift, .012)
+    box('zdvihak vrch', (LXc, y, 3.86), (.34, .38, .1), M_orange, .008)
+    LIFT_PARTS.append(box('zdvihak vozik', (LXc, y - s * .2, .55), (.36, .1, .62), M_steel, .008))
+    for (px, pyy) in ((XF - .5, s * .62), (XR + .42, s * .62)):
+        ax, ay = LXc, y - s * .22
+        dx, dy = px - ax, pyy - ay; L = math.hypot(dx, dy)
+        LIFT_PARTS.append(box('rameno', ((ax + px) / 2, (ay + pyy) / 2, GC - .07), (L, .09, .07), M_steel, .006, math.atan2(dy, dx)))
+        LIFT_PARTS.append(cyl('tanier', (px, pyy, GC - .02), .07, .04, M_rubber))
+box('zdvihak priecnik', (LXc, 0, 3.98), (.22, LYp * 2 + .34, .14), M_lift, .01)
+box('zdvihak ovladac', (LXc + .2, -LYp - .2, 1.35), (.12, .22, .3), M_dark, .006)
+box('zdvihak tlacidlo', (LXc + .262, -LYp - .2, 1.4), (.01, .06, .06), M_orange)
+LIFT_BASE = [(o, o.location.z) for o in LIFT_PARTS]
+
+# ------------------------------------------------------------------ kolesá: ktoré je ľavé zadné / ľavé predné (strana ku kamere je y < 0)
+wheels = [o for o in car_objs if o.name.startswith('koleso')]
+def wpos(o):
+    bb = [o.matrix_world @ Vector(c) for c in o.bound_box]
+    return sum(bb, Vector()) / 8
+W_RL = min(wheels, key=lambda o: wpos(o).x + wpos(o).y)
+W_FL = min(wheels, key=lambda o: -wpos(o).x + wpos(o).y)
+# kotúč a náboj pod ľavým zadným kolesom (vidno, keď je koleso dole)
+BRAKE = [rig_cyl('kotuc', (XR, -TRK + .03, WR), .165, .026, M_disc, 'y', 56),
+         rig_cyl('kotuc stred', (XR, -TRK + .02, WR), .085, .05, M_hub, 'y'),
+         rig_cyl('naboj', (XR, -TRK - .005, WR), .06, .03, M_tool, 'y')]
+for k in range(5):
+    a = 2 * math.pi * k / 5
+    BRAKE.append(rig_cyl('skrutka', (XR + .05 * math.cos(a), -TRK - .03, WR + .05 * math.sin(a)), .009, .05, M_tool, 'y'))
+for o in BRAKE: o.hide_render = True
+WHEEL_DOWN = W_RL.copy(); COL.objects.link(WHEEL_DOWN); WHEEL_DOWN.parent = None
+WHEEL_DOWN.matrix_world = Matrix.Translation((XR + .15, -TRK - 1.0, .125)) @ Matrix.Rotation(math.pi / 2, 4, 'X') @ Matrix.Translation(-(W_RL.matrix_world.inverted() @ wpos(W_RL)))
+WHEEL_DOWN.hide_render = True
+
+# ------------------------------------------------------------------ rekvizity služieb (zobrazujú sa len v detailných záberoch)
+PROPS = {k: [] for k in ('pneumatiky', 'svetla', 'klima', 'diagnostika')}
+def prop(key, o): PROPS[key].append(o); o.hide_render = True; return o
+# nové pneumatiky pri prednom kolese
+for k in range(4):
+    prop('pneumatiky', torus('nova pneu', (XF - .75, -TRK - 1.25, .11 + k * .225), .23, .1, M_rubber, 'z'))
+# regloskop pred ľavým svetlometom
+RG = (XF + 1.35, -.62)
+prop('svetla', box('regloskop zaklad', (RG[0], RG[1], .06), (.5, .5, .08), M_dark, .01))
+prop('svetla', cyl('regloskop stlp', (RG[0] + .12, RG[1], .55), .03, 1.0, M_alu))
+prop('svetla', box('regloskop hlava', (RG[0], RG[1], .66), (.42, .36, .3), M_orange, .02))
+prop('svetla', cyl('regloskop sosovka', (RG[0] - .215, RG[1], .66), .13, .02, M_lens, 'x'))
+prop('svetla', box('regloskop displej', (RG[0] + .05, RG[1], .83), (.2, .22, .03), M_screen))
+# servisná stanica klimatizácie pri pravom blatníku
+AC = (XF + .1, 1.55)
+prop('klima', box('klima stanica', (AC[0], AC[1], .55), (.55, .48, .9), M_orange, .02))
+prop('klima', box('klima vrch', (AC[0], AC[1], 1.03), (.57, .5, .06), M_dark, .01))
+prop('klima', box('klima displej', (AC[0] - .2, AC[1] - .245, .86), (.004, .22, .14), M_screen, 0, 0, 0, 0))
+for k, mm in enumerate((M_hblue, M_hred)):
+    prop('klima', cyl('manometer', (AC[0] - .05 + k * .2, AC[1] - .245, .7), .055, .012, M_gauge, 'y'))
+    prop('klima', torus('manometer ram', (AC[0] - .05 + k * .2, AC[1] - .25, .7), .058, .008, mm, 'y'))
+    for w in (-1, 1):
+        prop('klima', cyl('koliesko', (AC[0] + w * .2, AC[1] - .2 + k * .4, .05), .05, .04, M_rubber, 'y'))
+def hose(name, pts, m, r=.014):
+    cu = bpy.data.curves.new(name, 'CURVE'); cu.dimensions = '3D'; cu.bevel_depth = r; cu.bevel_resolution = 4
+    sp = cu.splines.new('BEZIER'); sp.bezier_points.add(len(pts) - 1)
+    for p, c in zip(sp.bezier_points, pts):
+        p.co = c; p.handle_left_type = p.handle_right_type = 'AUTO'
+    o = bpy.data.objects.new(name, cu); COL.objects.link(o); cu.materials.append(m)
+    return o
+prop('klima', hose('hadica nizky tlak', [(AC[0] - .05, AC[1] - .2, .98), (AC[0] - .2, AC[1] - .35, 1.25), (X_COWL + .45, .9, ZT + .25), (X_COWL + .32, .45, ZT - .02)], M_hblue))
+prop('klima', hose('hadica vysoky tlak', [(AC[0] + .1, AC[1] - .2, .98), (AC[0] + .05, AC[1] - .4, 1.35), (XB1 - .2, .85, ZT + .3), (XB1 - .14, .3, ZT - .02)], M_hred))
+# diagnostický tablet na stojane pri dverách vodiča
+TB = (1.2, -1.72)
+prop('diagnostika', box('stojan zaklad', (TB[0], TB[1], .03), (.42, .42, .04), M_dark, .01))
+prop('diagnostika', cyl('stojan tyc', (TB[0], TB[1], .6), .02, 1.15, M_alu))
+TAB = prop('diagnostika', box('tablet', (TB[0], TB[1] - .03, 1.2), (.36, .025, .25), M_dark, .01, 0, math.radians(-14), 0))
+def scr(x, z, w, h, m):
+    o = box('tablet obsah', (0, 0, 0), (w, .002, h), m)
+    o.parent = TAB; o.location = (x, -.0135, z); return prop('diagnostika', o)
+scr(0, 0, .33, .22, M_scrbg)
+scr(0, .095, .33, .03, M_scror)
+for k in range(5):
+    scr(-.13, .055 - k * .036, .014, .014, M_scrwarn if k == 1 else M_scrok)
+    scr(-.06, .055 - k * .036, .1, .007, M_scrtx)
+for k, h in enumerate((.05, .08, .065, .11, .09, .12, .07)):
+    scr(.035 + k * .02, -.09 + h / 2, .012, h, M_scror if k == 3 else M_scrtx)
+prop('diagnostika', hose('kabel obd', [(TB[0] + .1, TB[1] - .02, 1.08), (TB[0] + .05, TB[1] + .1, .7), (.55, -1.0, .45), (.45, -.93, .62)], M_hose, .007))
+
+def worklight(name, loc, watts, size=.25):
+    ld = bpy.data.lights.new(name, 'POINT'); ld.energy = watts; ld.shadow_soft_size = size; ld.color = (1.0, .97, .92)
+    o = bpy.data.objects.new(name, ld); COL.objects.link(o); o.location = loc
+    try: o.visible_camera = False
+    except Exception: pass
+    o.hide_render = True
+    return o
+LAMP_BAY = to_rig(worklight('lampa pod kapotou', (EX + .1, -.1, ZT + .45), 40))
+LAMP_UNDER = worklight('lampa pod autom', (XR - .3, -.55, 1.0), 90, .4)
+
+# ------------------------------------------------------------------ stav scény: výška zdviháka, kapota, koleso, rekvizity
+SHOW = set()
+def stav(lift=0.0, kapota=0.0, koleso_dole=False, rekvizity=(), svetla=False, spodok=False):
+    RIG.location.z = lift
+    for o, z in LIFT_BASE: o.location.z = z + lift
+    HINGE.rotation_euler = (0, -math.radians(kapota), 0)
+    bpy.context.view_layer.update()
+    # vzpera od blatníka k spodku otvorenej kapoty
+    if kapota > 1:
+        a = Vector((XB1 - .1, -BW + .03, ZT - .02 + lift))
+        tip = HINGE.matrix_world @ Vector((X_HF - X_COWL - .25, -BW + .1, -.02))
+        d = tip - a
+        STRUT.location = (a + tip) / 2; STRUT.scale = (1, 1, d.length)
+        STRUT.rotation_euler = d.to_track_quat('Z', 'Y').to_euler(); STRUT.hide_render = False
+    else:
+        STRUT.hide_render = True
+    W_RL.hide_render = koleso_dole; WHEEL_DOWN.hide_render = not koleso_dole
+    for o in BRAKE: o.hide_render = not koleso_dole
+    for k, objs in PROPS.items():
+        for o in objs: o.hide_render = k not in rekvizity
+    tune('led biela', emit=60.0 if svetla else 14.0)
+    LAMP_BAY.hide_render = kapota < 1
+    SEAL_HOOD.hide_render = kapota < 1
+    LAMP_UNDER.hide_render = not spodok
+    bpy.context.view_layer.update()
+
 # ------------------------------------------------------------------ body služieb (prázdne objekty na aute)
 dg = bpy.context.evaluated_depsgraph_get(); dg.update()
 def snap(origin, direction):
@@ -382,15 +626,15 @@ def snap(origin, direction):
 SPOTS = [
     ('pneumatiky', (XF, -TRK - .14, WR)),
     ('brzdy', (XR, -TRK - .14, WR)),
-    ('motor', snap((XF - .02, .02, 3), (0, 0, -1))),
-    ('svetla', snap((3.2, -.66, .665 + ZC), (-1, 0, 0))),
-    ('klima', snap((.25, -1.4, 1.13 + ZC), (0, 1, 0))),
+    ('motor', snap((X_HF - .4, .02, 3), (0, 0, -1))),
+    ('svetla', snap((3.2, -.66, .665), (-1, 0, 0))),
+    ('klima', snap((X_COWL - .1, .45, 3), (0, 0, -1))),
     ('diagnostika', snap((.42, .3, 3), (0, 0, -1))),
     ('vyfuk', snap((-2.2, -.42, 3), (0, 0, -1))),
 ]
 empties = []
 for name, loc in SPOTS:
-    e = bpy.data.objects.new('bod ' + name, None); e.empty_display_size = .1; e.location = loc; COL.objects.link(e); empties.append(e)
+    e = bpy.data.objects.new('bod ' + name, None); e.empty_display_size = .1; e.location = loc; COL.objects.link(e); empties.append(to_rig(e))
 
 # ------------------------------------------------------------------ kamera
 cd = bpy.data.cameras.new('kamera'); cd.sensor_width = 36; cd.clip_start = .1; cd.clip_end = 80
@@ -400,8 +644,13 @@ def lerp(a, b, t): return a + (b - a) * t
 def ease(t): return lerp(t, t * t * (3 - 2 * t), .6)
 A = dict(az=0.0, r=6.05, z=.95, tx=.3, ty=0.0, tz=.78, lens=42)
 B = dict(az=-49.0, r=7.7, z=4.25, tx=-.05, ty=.1, tz=.42, lens=42)
+LIFT_END = float(arg('lift', '.62'))
+def sstep(a, b, x): x = min(1, max(0, (x - a) / (b - a))); return x * x * (3 - 2 * x)
 def pose(t):
+    zl = LIFT_END * sstep(.12, .9, t)
+    stav(lift=zl)
     s = ease(t); k = {q: lerp(A[q], B[q], s) for q in A}
+    k['tz'] += zl * .75
     k['z'] = lerp(A['z'], B['z'], s ** 1.35)            # najprv okolo auta, potom hore
     az = math.radians(k['az'])
     tgt = Vector((k['tx'], k['ty'], k['tz']))
@@ -431,9 +680,10 @@ S.view_settings.exposure = float(arg('exposure', '-0.25'))
 
 if arg('blend'):
     pose(1.0); bpy.ops.wm.save_as_mainfile(filepath=os.path.abspath(arg('blend')))
+cd.dof.aperture_fstop = 2.8
 
 def spots_json():
-    pose(1.0); bpy.context.view_layer.update()
+    pose(1.0); cd.dof.use_dof = False; bpy.context.view_layer.update()
     dg2 = bpy.context.evaluated_depsgraph_get()
     out = []
     for e in empties:
@@ -446,14 +696,32 @@ def spots_json():
     json.dump({'zaber': N - 1, 'pomer': [RX, RY], 'body': out}, open(JSON_OUT, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 spots_json()
 
-if STILL == 'detail':                                # samostatný záber do sekcie o servise: predné koleso a svetlo zblízka
-    cam.location = (4.9, -3.2, .68); cd.lens = 52
-    cam.rotation_euler = (Vector((1.62, -.5, .6)) - cam.location).to_track_quat('-Z', 'Y').to_euler()
-    S.render.filepath = os.path.join(OUT, 'detail.png'); bpy.ops.render.render(write_still=True)
-else:
-    for i in FRAMES:
-        pose(i / (N - 1))
-        S.render.filepath = os.path.join(OUT, 'f%02d.png' % i)
-        bpy.ops.render.render(write_still=True)
-        print('ZABER', i)
+def look(pos, tgt, lens, dof=None):
+    cam.location = pos; cd.lens = lens
+    cam.rotation_euler = (Vector(tgt) - Vector(pos)).to_track_quat('-Z', 'Y').to_euler()
+    cd.dof.use_dof = dof is not None
+    if dof is not None: cd.dof.focus_distance = (Vector(dof) - Vector(pos)).length
+LB = .38; LV = 1.72
+DET = {
+    'motor':       (dict(kapota=58), ((XF + 1.3, -1.2, 1.78), (EX - .05, .02, ZF + .12), 30, (EX, .05, ZF + HA * .7))),
+    'pneumatiky':  (dict(rekvizity=('pneumatiky',)), ((XF + 1.25, -TRK - 1.75, .7), (XF - .1, -TRK - .2, .38), 40, (XF, -TRK - .1, WR))),
+    'brzdy':       (dict(lift=LB, koleso_dole=True), ((XR + 1.05, -TRK - 1.55, 1.05), (XR, -TRK - .2, WR + LB - .08), 40, (XR, -TRK, WR + LB))),
+    'svetla':      (dict(svetla=True, rekvizity=('svetla',)), ((XF + .75, -2.35, .88), (XF + .8, -.45, .6), 32, (XF + .5, -.62, .66))),
+    'klima':       (dict(kapota=58, rekvizity=('klima',)), ((XF + 2.0, 2.7, 1.9), (XF - .3, .35, .72), 30, (XF - .1, .6, ZT))),
+    'diagnostika': (dict(rekvizity=('diagnostika',)), ((TB[0] + .3, TB[1] - .85, 1.42), (TB[0] - .12, TB[1] + .45, 1.08), 32, (TB[0], TB[1], 1.2))),
+    'vyfuk':       (dict(lift=LV, spodok=True), ((XR - 1.5, -1.95, 1.0), (XR - .2, -.12, LV + .1), 26, (XR - .4, -.3, LV + .2))),
+}
+for i in FRAMES:
+    pose(i / (N - 1))
+    S.render.filepath = os.path.join(OUT, 'f%02d.png' % i)
+    bpy.ops.render.render(write_still=True)
+    print('ZABER', i)
+ids = list(DET) if DETAILY == 'all' else [x for x in DETAILY.split(',') if x]
+for k in ids:
+    st, (pos, tgt, lens, foc) = DET[k]
+    stav(**st)
+    look(pos, tgt, lens, foc)
+    S.render.filepath = os.path.join(OUT, 'det-%s.png' % k)
+    bpy.ops.render.render(write_still=True)
+    print('DETAIL', k)
 print('DONE')
