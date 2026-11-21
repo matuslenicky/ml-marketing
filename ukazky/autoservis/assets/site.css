@@ -203,7 +203,7 @@ h3{font-size:22px;line-height:1.15}
 
 /* telefón a tablet na výšku: scéna je pás 4:3 pripnutý hore, obsah pod ňou */
 @media not ((min-width:1000px) and (min-aspect-ratio:5/4)){
-  .is-scrolly{--strip:min(75vw,52vh);--strip:min(75vw,52svh)}
+  .is-scrolly{--strip:min(88vw,58vh);--strip:min(88vw,58svh)}
   .is-scrolly .scene{position:absolute;left:0;right:0;top:0;height:var(--strip);aspect-ratio:auto;max-height:none}
   .is-scrolly .scene__stage{width:max(100%,calc(var(--strip) * 4 / 3))}
   .is-scrolly .rail{position:absolute;left:0;right:0;top:var(--strip);bottom:0;padding:18px 16px 14px;overflow:hidden}
@@ -216,6 +216,7 @@ h3{font-size:22px;line-height:1.15}
   .is-scrolly .rail__title{font-size:26px}
   .is-scrolly .rail__hint{font-size:14px}
   .is-scrolly .rail__list{grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+  .is-scrolly .rail__list li:last-child:nth-child(odd){grid-column:1/-1}
   .is-scrolly .svc{min-height:48px;padding:4px 8px 4px 6px;gap:8px;font-size:15px;letter-spacing:.01em}
   .is-scrolly .svc__price{display:none}
   .is-scrolly .svc__n{width:28px;height:28px}
