@@ -1,0 +1,51 @@
+{
+ "zaber": 23,
+ "pomer": [
+  1200,
+  900
+ ],
+ "body": [
+  {
+   "id": "pneumatiky",
+   "x": 58.2,
+   "y": 67.46,
+   "viditelny": true
+  },
+  {
+   "id": "brzdy",
+   "x": 27.71,
+   "y": 49.17,
+   "viditelny": true
+  },
+  {
+   "id": "motor",
+   "x": 67.4,
+   "y": 49.44,
+   "viditelny": true
+  },
+  {
+   "id": "svetla",
+   "x": 73.04,
+   "y": 65.16,
+   "viditelny": true
+  },
+  {
+   "id": "klima",
+   "x": 44.57,
+   "y": 42.77,
+   "viditelny": true
+  },
+  {
+   "id": "diagnostika",
+   "x": 57.14,
+   "y": 33.5,
+   "viditelny": true
+  },
+  {
+   "id": "vyfuk",
+   "x": 25.17,
+   "y": 33.12,
+   "viditelny": true
+  }
+ ]
+}

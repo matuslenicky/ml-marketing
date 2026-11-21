@@ -1,0 +1,16 @@
+{
+ "id": "auto",
+ "name": "fastback bez značky (ukážkový model)",
+ "body": "lift",
+ "L": 4860,
+ "W": 1870,
+ "H": 1440,
+ "wb": 2840,
+ "fo": 930,
+ "trackF": 1590,
+ "trackR": 1580,
+ "tyre": "245/40 R19",
+ "color": "#d6431b",
+ "facep": { "grille": "frame", "bars": "h", "chrome": false, "gh_k": 1.7, "gt": 0.74, "bar": true },
+ "p": { "spokes": 5, "twin": true }
+}

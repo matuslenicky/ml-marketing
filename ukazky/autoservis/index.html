@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>RAMPA 7 – autoservis s objednaním termínu online (ukážka webu)</title>
+<meta name="description" content="Ukážkový web autoservisu RAMPA 7: v 3D dielni si kliknete na časť auta, vyberiete službu a objednáte voľný termín. Ukážka práce ML&amp;T Marketing.">
+<meta name="theme-color" content="#101316">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#obsah">Preskočiť na obsah</a>
+
+<div class="demo" id="pas" role="note">
+  <p><strong>Ukážka webu od <a href="../../index.html">ML&amp;T Marketing</a>.</strong> Servis je vymyslený, rezervácie sa ukladajú len vo vašom prehliadači.</p>
+</div>
+
+<header class="top" id="hlavicka">
+  <a class="brand" href="#uvod" aria-label="RAMPA 7 – na začiatok stránky">
+    <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="6" fill="#ff5a1f"/><path d="M10 10h20v4.6L20.4 31h-6.2l9.2-15.6H10z" fill="#101316"/></svg>
+    <span class="brand__name">RAMPA <span>7</span></span>
+  </a>
+  <nav class="nav" aria-label="Hlavná navigácia">
+    <a href="#sluzby">Služby</a>
+    <a href="#postup">Postup</a>
+    <a href="#cennik">Cenník</a>
+    <a href="#kontakt">Kontakt</a>
+  </nav>
+  <a class="top__tel" href="tel:+421000000000">+421 000 000 000</a>
+  <a class="btn btn--accent btn--sm" href="#objednavka">Objednať<span class="top__cta-more"> termín</span></a>
+</header>
+
+<main id="obsah">
+
+<!-- ÚVOD: 3D dielňa, zábery sa menia podľa skrolovania -->
+<section class="intro" id="uvod" aria-label="Úvod a služby">
+  <div class="intro__pin">
+    <div class="scene">
+      <div class="scene__stage" id="scena">
+        <img class="scene__img" id="zaber" src="assets/seq/f00.webp" width="1200" height="900" fetchpriority="high" decoding="async"
+             alt="3D pohľad do dielne: oranžové auto stojí na nájazdovej rampe pred bránou, na stene je číslo státia 7.">
+        <canvas class="scene__canvas" id="platno" width="1200" height="900" aria-hidden="true"></canvas>
+        <div class="spots" id="body" role="group" aria-label="Body služieb na aute"></div>
+      </div>
+      <div class="scene__shade" aria-hidden="true"></div>
+    </div>
+
+    <div class="hero" id="hero">
+      <p class="eyebrow">Autoservis pre všetky značky · Vzorové Mesto</p>
+      <h1 class="hero__title">RAMPA&nbsp;7</h1>
+      <p class="hero__lead">Jedno auto na rampe, jeden mechanik, ktorý sa mu venuje. Termín si vyberiete sami a cenu poznáte skôr, než chytíme kľúč.</p>
+      <p class="hero__rating"><span class="stars" aria-hidden="true">★★★★★</span> <strong>4,9 z 5</strong> · 132 hodnotení zákazníkov</p>
+      <div class="hero__cta">
+        <a class="btn btn--accent" href="#objednavka">Objednať termín</a>
+        <a class="btn btn--ghost" href="#sluzby">Pozrieť služby</a>
+      </div>
+      <p class="hero__cue" aria-hidden="true"><span class="mouse"></span>Skrolujte a obzrite si auto</p>
+    </div>
+
+    <div class="side">
+    <div class="rail" id="sluzby">
+      <p class="eyebrow">Služby</p>
+      <h2 class="rail__title">Čo vášmu autu treba?</h2>
+      <p class="rail__hint">Kliknite na bod na aute alebo vyberte službu zo zoznamu.</p>
+      <ul class="rail__list" id="zoznam-sluzieb"></ul>
+      <noscript><p class="rail__hint">Zoznam služieb s cenami nájdete nižšie v cenníku.</p></noscript>
+    </div>
+
+    <section class="card" id="karta" aria-live="polite" aria-labelledby="karta-nazov" hidden>
+      <button class="card__close" type="button" id="karta-zavriet" aria-label="Zavrieť kartu služby">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <p class="card__num" id="karta-cislo"></p>
+      <h3 class="card__title" id="karta-nazov"></h3>
+      <p class="card__text" id="karta-popis"></p>
+      <ul class="card__list" id="karta-zahrna"></ul>
+      <div class="card__foot">
+        <p class="card__price"><span>orientačne od</span> <strong id="karta-cena"></strong></p>
+        <p class="card__time"><span>trvá približne</span> <strong id="karta-trvanie"></strong></p>
+      </div>
+      <button class="btn btn--accent btn--block" type="button" id="karta-objednat">Objednať túto službu</button>
+    </section>
+    </div>
+  </div>
+</section>
+
+<!-- FAKTY -->
+<section class="facts" aria-label="Prečo RAMPA 7">
+  <ul class="facts__grid">
+    <li><strong>4,9 / 5</strong><span>priemer zo 132 hodnotení</span></li>
+    <li><strong>Všetky značky</strong><span>osobné aj úžitkové do 3,5 t</span></li>
+    <li><strong>Cena vopred</strong><span>bez vášho súhlasu nič nevymeníme</span></li>
+    <li><strong>24 mesiacov</strong><span>záruka na prácu aj diely</span></li>
+  </ul>
+</section>
+
+<!-- POSTUP -->
+<section class="sec" id="postup">
+  <div class="wrap">
+    <header class="sec__head">
+      <p class="eyebrow eyebrow--dark">Ako to prebieha</p>
+      <h2>Od objednávky po kľúče v ruke</h2>
+      <p class="sec__lead">Štyri kroky, pri ktorých vždy viete, čo sa s autom deje a koľko to bude stáť.</p>
+    </header>
+    <ol class="steps">
+      <li class="step"><span class="step__n">01</span><h3>Vyberiete si termín</h3><p>Online za minútu alebo telefonicky. V pracovnom čase ho potvrdíme do hodiny.</p></li>
+      <li class="step"><span class="step__n">02</span><h3>Príjem a diagnostika</h3><p>Auto prejdeme spolu s vami a povieme, čo je nutné hneď a čo ešte počká.</p></li>
+      <li class="step"><span class="step__n">03</span><h3>Cena a oprava</h3><p>Pošleme rozpis práce a dielov. Opravovať začneme až po vašom súhlase.</p></li>
+      <li class="step"><span class="step__n">04</span><h3>Odovzdanie auta</h3><p>Ukážeme vymenené diely, vysvetlíme faktúru a zapíšeme servis do knižky.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- O SERVISE -->
+<section class="sec sec--about" id="o-servise">
+  <div class="wrap about">
+    <div class="about__text">
+      <p class="eyebrow eyebrow--dark">O servise</p>
+      <h2>Termín, ktorý platí. Preto len jedna rampa.</h2>
+      <p>RAMPA 7 je malá dielňa na okraji mesta. Neberieme desať áut naraz, aby potom stáli na dvore. Na auto si vyhradíme čas, ktorý ste si objednali, a odovzdáme ho v dohodnutý deň.</p>
+      <ul class="ticks">
+        <li>Fotky závady a rozpis prác dostanete e-mailom</li>
+        <li>Náhradné auto pri opravách dlhších ako jeden deň</li>
+        <li>Diely od overených dodávateľov, na želanie originál</li>
+        <li>Platba kartou, v hotovosti aj na faktúru</li>
+      </ul>
+      <a class="btn btn--dark" href="#objednavka">Objednať termín</a>
+    </div>
+    <figure class="about__fig">
+      <img src="assets/detail.webp" width="960" height="1200" loading="lazy" decoding="async"
+           alt="Detail predného kolesa a svetlometu oranžového auta na rampe v dielni.">
+      <figcaption>Dielňa RAMPA 7 – 3D vizualizácia</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- CENNÍK -->
+<section class="sec sec--ink" id="cennik">
+  <div class="wrap">
+    <header class="sec__head sec__head--split">
+      <div>
+        <p class="eyebrow">Cenník</p>
+        <h2>Ceny bez prekvapení</h2>
+      </div>
+      <p class="sec__lead">Orientačné ceny práce vrátane DPH, bez materiálu. Presnú sumu vám povieme po diagnostike, ešte pred opravou.</p>
+    </header>
+    <div class="prices" role="table" aria-label="Orientačné ceny služieb" id="cennik-tabulka">
+      <div class="prices__row prices__row--head" role="row">
+        <span role="columnheader">Služba</span><span role="columnheader">Čo zahŕňa</span><span role="columnheader">Trvanie</span><span role="columnheader">Cena od</span><span role="columnheader"><span class="sr">Objednanie</span></span>
+      </div>
+    </div>
+    <noscript><p class="sec__lead">Cenník sa zobrazí po zapnutí JavaScriptu. Zavolajte nám na +421 000 000 000.</p></noscript>
+  </div>
+</section>
+
+<!-- OBJEDNÁVKA + KONTAKT -->
+<section class="sec" id="objednavka">
+  <div class="wrap book">
+    <div class="book__main">
+      <p class="eyebrow eyebrow--dark">Objednávka</p>
+      <h2>Rezervujte si rampu</h2>
+      <p class="sec__lead">Vyberte službu a voľný termín. Obsadené časy sa už neponúkajú.</p>
+
+      <form class="form" id="formular" novalidate>
+        <div class="form__alert" id="form-chyby" role="alert" tabindex="-1" hidden></div>
+
+        <div class="field">
+          <label for="f-sluzba">Služba</label>
+          <select id="f-sluzba" name="sluzba" required aria-describedby="e-sluzba">
+            <option value="">Vyberte službu…</option>
+          </select>
+          <p class="field__err" id="e-sluzba" hidden></p>
+        </div>
+
+        <fieldset class="field field--chips" id="pole-datum" aria-describedby="e-datum">
+          <legend>Deň</legend>
+          <div class="chips chips--days" id="dni"></div>
+          <p class="field__err" id="e-datum" hidden></p>
+        </fieldset>
+
+        <fieldset class="field field--chips" id="pole-cas" aria-describedby="cas-info e-cas">
+          <legend>Čas</legend>
+          <div class="chips" id="casy"></div>
+          <p class="field__hint" id="cas-info">Najprv vyberte deň.</p>
+          <p class="field__err" id="e-cas" hidden></p>
+        </fieldset>
+
+        <div class="form__grid">
+          <div class="field">
+            <label for="f-meno">Meno a priezvisko</label>
+            <input id="f-meno" name="meno" type="text" autocomplete="name" required aria-describedby="e-meno">
+            <p class="field__err" id="e-meno" hidden></p>
+          </div>
+          <div class="field">
+            <label for="f-telefon">Telefón</label>
+            <input id="f-telefon" name="telefon" type="tel" autocomplete="tel" inputmode="tel" placeholder="+421 9xx xxx xxx" required aria-describedby="e-telefon">
+            <p class="field__err" id="e-telefon" hidden></p>
+          </div>
+          <div class="field">
+            <label for="f-email">E-mail</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="e-email">
+            <p class="field__err" id="e-email" hidden></p>
+          </div>
+          <div class="field">
+            <label for="f-auto">Auto <span class="field__opt">značka, model, rok</span></label>
+            <input id="f-auto" name="auto" type="text" required aria-describedby="e-auto">
+            <p class="field__err" id="e-auto" hidden></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-poznamka">Poznámka <span class="field__opt">nepovinné</span></label>
+          <textarea id="f-poznamka" name="poznamka" rows="3" maxlength="600"></textarea>
+        </div>
+
+        <div class="form__end">
+          <button class="btn btn--accent" type="submit">Odoslať objednávku</button>
+          <p class="form__note">Ukážka: údaje nikam neodchádzajú, ostanú len v tomto prehliadači.</p>
+        </div>
+      </form>
+
+      <div class="done" id="potvrdenie" role="status" tabindex="-1" hidden>
+        <svg class="done__icon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="3"/><path d="M14 25l7 7 13-15" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3 id="potvrdenie-nadpis">Rezervácia je prijatá</h3>
+        <p id="potvrdenie-text"></p>
+        <dl class="done__list" id="potvrdenie-udaje"></dl>
+        <div class="done__actions">
+          <button class="btn btn--dark" type="button" id="dalsia">Objednať ďalší termín</button>
+          <a class="btn btn--line" href="admin.html">Pozrieť, ako ju vidí servis</a>
+        </div>
+      </div>
+
+      <section class="mine" id="moje" aria-labelledby="moje-nadpis" hidden>
+        <h3 id="moje-nadpis">Vaše rezervácie v tomto prehliadači</h3>
+        <ul class="mine__list" id="moje-zoznam"></ul>
+      </section>
+    </div>
+
+    <aside class="contact" id="kontakt" aria-labelledby="kontakt-nadpis">
+      <h2 id="kontakt-nadpis">Kontakt</h2>
+      <dl class="contact__list">
+        <div><dt>Adresa</dt><dd>Priemyselná 7<br>000 00 Vzorové Mesto</dd></div>
+        <div><dt>Telefón</dt><dd><a href="tel:+421000000000">+421 000 000 000</a></dd></div>
+        <div><dt>E-mail</dt><dd><a href="mailto:servis@rampa7.example">servis@rampa7.example</a></dd></div>
+      </dl>
+      <h3>Otváracie hodiny</h3>
+      <table class="hours">
+        <tbody>
+          <tr><th scope="row">Pondelok – piatok</th><td>7:30 – 17:30</td></tr>
+          <tr><th scope="row">Sobota</th><td>8:00 – 12:30</td></tr>
+          <tr><th scope="row">Nedeľa</th><td>zatvorené</td></tr>
+        </tbody>
+      </table>
+      <div class="plan" role="img" aria-label="Schéma príjazdu: z Hlavnej cesty odbočíte na Priemyselnú ulicu, servis je siedma brána vpravo.">
+        <svg viewBox="0 0 320 170" aria-hidden="true">
+          <rect width="320" height="170" fill="#1b2026"/>
+          <path d="M0 132h320" stroke="#39424d" stroke-width="22"/>
+          <path d="M0 132h320" stroke="#5b6672" stroke-width="1.5" stroke-dasharray="10 9"/>
+          <path d="M96 132V0" stroke="#39424d" stroke-width="16"/>
+          <path d="M96 132V0" stroke="#5b6672" stroke-width="1.2" stroke-dasharray="8 8"/>
+          <g fill="#2a313a"><rect x="118" y="14" width="46" height="26" rx="2"/><rect x="176" y="14" width="46" height="26" rx="2"/><rect x="234" y="14" width="62" height="26" rx="2"/><rect x="176" y="84" width="120" height="24" rx="2"/><rect x="14" y="20" width="60" height="34" rx="2"/><rect x="14" y="70" width="60" height="34" rx="2"/></g>
+          <rect x="118" y="52" width="46" height="56" rx="2" fill="#ff5a1f"/>
+          <path d="M131 66h20v4.4l-9.4 22h-6l8.8-20.8H131z" fill="#101316"/>
+          <path d="M20 132h66q10 0 10-10V92h22" fill="none" stroke="#ff5a1f" stroke-width="2.5" stroke-dasharray="1 7" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="contact__way">Z Hlavnej cesty odbočíte na Priemyselnú ulicu, servis je siedma brána vpravo.</p>
+      <p class="contact__note">Adresa aj kontakty sú vymyslené – slúžia len na ukážku.</p>
+    </aside>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <div>
+      <p class="foot__brand">RAMPA <span>7</span></p>
+      <p>Ukážkový web autoservisu. Vytvoril <a href="../../index.html">ML&amp;T Marketing</a> – weby pre služby s rezerváciami.</p>
+    </div>
+    <ul class="foot__links">
+      <li><a href="#sluzby">Služby</a></li>
+      <li><a href="#cennik">Cenník</a></li>
+      <li><a href="#objednavka">Objednávka</a></li>
+      <li><a href="admin.html">Prehľad rezervácií pre servis</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="assets/body.js"></script>
+<script src="assets/store.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

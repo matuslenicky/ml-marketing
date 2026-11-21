@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Rezervácie – RAMPA 7 (ukážka administrácie)</title>
+<meta name="description" content="Ukážka administrácie rezervácií autoservisu RAMPA 7: prehľad objednávok, potvrdenie, iný termín, poznámky. Ukážka práce ML&amp;T Marketing.">
+<meta name="theme-color" content="#101316">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/admin.css">
+</head>
+<body class="adm">
+<a class="skip" href="#obsah">Preskočiť na rezervácie</a>
+
+<div class="demo" id="pas" role="note">
+  <p><strong>Ukážka webu od <a href="../../index.html">ML&amp;T Marketing</a>.</strong> Servis je vymyslený, rezervácie sa ukladajú len vo vašom prehliadači. Ostrá administrácia je za prihlásením.</p>
+</div>
+
+<header class="adm-top">
+  <a class="brand" href="index.html" aria-label="RAMPA 7 – späť na web servisu">
+    <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="6" fill="#ff5a1f"/><path d="M10 10h20v4.6L20.4 31h-6.2l9.2-15.6H10z" fill="#101316"/></svg>
+    <span class="brand__name">RAMPA <span>7</span></span>
+  </a>
+  <span class="adm-top__where">Administrácia</span>
+  <a class="adm-link" href="index.html">Web servisu</a>
+  <button class="adm-link" type="button" id="vzorove">Obnoviť vzorové</button>
+</header>
+
+<main class="adm-main" id="obsah">
+  <div class="adm-head">
+    <div>
+      <h1>Rezervácie</h1>
+      <p class="adm-sum" id="suhrn"></p>
+    </div>
+    <div class="adm-sort">
+      <label for="zoradit">Zoradiť</label>
+      <select id="zoradit">
+        <option value="termin">Podľa termínu</option>
+        <option value="prijate">Od najnovšie prijatých</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tabs" id="filtre" role="group" aria-label="Filter podľa stavu"></div>
+
+  <ul class="cards" id="zoznam" aria-label="Zoznam rezervácií"></ul>
+  <p class="empty" id="prazdne" hidden></p>
+</main>
+
+<div class="toast" id="oznam" role="status" aria-live="polite"></div>
+
+<dialog class="dlg" id="dlg-vymazat" aria-labelledby="dv-nadpis" aria-describedby="dv-text">
+  <h2 id="dv-nadpis">Vymazať rezerváciu?</h2>
+  <p id="dv-text"></p>
+  <div class="dlg__acts">
+    <button class="abtn" type="button" data-zavriet>Ponechať</button>
+    <button class="abtn abtn--danger-fill" type="button" id="dv-ano">Vymazať natrvalo</button>
+  </div>
+</dialog>
+
+<dialog class="dlg" id="dlg-termin" aria-labelledby="dt-nadpis">
+  <form method="dialog" id="dt-form">
+    <h2 id="dt-nadpis">Navrhnúť iný termín</h2>
+    <p id="dt-text"></p>
+    <div class="dlg__grid">
+      <div class="dlg__field">
+        <label for="dt-datum">Deň</label>
+        <select id="dt-datum"></select>
+      </div>
+      <div class="dlg__field">
+        <label for="dt-cas">Čas</label>
+        <select id="dt-cas" aria-describedby="dt-info"></select>
+      </div>
+    </div>
+    <p class="dlg__hint" id="dt-info">Ponúkajú sa len voľné časy. Pôvodný termín držíme, kým zákazník neodpovie.</p>
+    <div class="dlg__acts">
+      <button class="abtn" type="button" data-zavriet>Späť</button>
+      <button class="abtn abtn--primary" type="submit" id="dt-ano">Poslať návrh</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="dlg" id="dlg-poznamka" aria-labelledby="dp-nadpis">
+  <form method="dialog" id="dp-form">
+    <h2 id="dp-nadpis">Poznámka servisu</h2>
+    <div class="dlg__field">
+      <label for="dp-text">Interná poznámka k rezervácii <span id="dp-koho"></span></label>
+      <textarea id="dp-text" rows="4" maxlength="500"></textarea>
+    </div>
+    <div class="dlg__acts">
+      <button class="abtn" type="button" data-zavriet>Späť</button>
+      <button class="abtn abtn--primary" type="submit">Uložiť poznámku</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="assets/store.js"></script>
+<script src="assets/admin.js"></script>
+</body>
+</html>

@@ -2,3 +2,4 @@ node_modules/
 test-output/
 *.log
 .impeccable/hook.cache.json
+.blender.lock/

@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bistro Kôrka – rezervácia stola priamo v sále (ukážka)</title>
+<meta name="description" content="Ukážkový web reštaurácie s interaktívnou rezerváciou: hosť vidí sálu v 3D pohľade, vyberie si konkrétny stôl a zarezervuje ho. Ukážka práce ML&amp;T Marketing.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#10261f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2317332b'/%3E%3Cpath d='M14 40c0-12 8-20 18-20s18 8 18 20v4H14z' fill='%23e3ae45'/%3E%3Cpath d='M24 30l3 6M32 27v8M40 30l-3 6' stroke='%2317332b' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+:root{
+  --green-950:#0c1d18;
+  --green-900:#10261f;
+  --green-800:#17332b;
+  --green-700:#21463a;
+  --green-600:#2f5b4b;
+  --cream:#f3e7d0;
+  --cream-2:#e8d8b8;
+  --paper:#f6eedd;
+  --ink:#1c1a15;
+  --ink-soft:#575043;
+  --gold:#e3ae45;
+  --gold-deep:#8a5a12;
+  --rust:#c9583a;
+  --sage:#b7c8bb;
+  --line:rgba(243,231,208,.22);
+  --gutter:clamp(16px,4vw,40px);
+  --display:"Corben",Georgia,"Times New Roman",serif;
+  --body:"Albert Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--green-800);color:var(--cream);font-family:var(--body);font-size:1.0625rem;line-height:1.55;-webkit-font-smoothing:antialiased}
+img{max-width:100%;height:auto;display:block}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.08;margin:0;letter-spacing:-.01em}
+p{margin:0}
+a{color:inherit}
+button,input,textarea{font:inherit;color:inherit}
+[hidden]{display:none!important}
+.wrap{width:100%;max-width:1280px;margin-inline:auto;padding-inline:var(--gutter)}
+.stage .wrap{max-width:1480px}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:6px}
+.on-paper :focus-visible{outline-color:var(--green-700)}
+
+/* pás ukážky */
+.demo{position:sticky;top:0;z-index:50;background:#0b0f0d;color:#f4f1e8;font-size:.8125rem;line-height:1.35;border-bottom:1px solid rgba(255,255,255,.14)}
+.demo .wrap{padding-block:7px}
+.demo p{display:inline}
+.demo a{white-space:nowrap;text-underline-offset:3px;margin-left:6px}
+
+/* hlavička + úvod */
+.hero{position:relative;isolation:isolate;min-height:min(86vh,800px);display:flex;flex-direction:column;background:var(--green-900)}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 50%;z-index:-2}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:
+  linear-gradient(90deg,rgba(12,29,24,.94) 0%,rgba(12,29,24,.78) 34%,rgba(12,29,24,.18) 68%,rgba(12,29,24,0) 100%),
+  linear-gradient(180deg,rgba(12,29,24,.55) 0%,rgba(12,29,24,0) 22%,rgba(12,29,24,0) 78%,rgba(16,38,31,1) 100%)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px}
+.brand{font-family:var(--display);font-weight:700;font-size:1.75rem;text-decoration:none;display:inline-flex;align-items:center;gap:10px;min-height:44px;color:var(--cream)}
+.brand svg{width:34px;height:34px;flex:none}
+.nav{display:flex;align-items:center;gap:clamp(2px,2vw,26px)}
+.nav a{display:inline-flex;align-items:center;min-height:44px;padding-inline:8px;text-decoration:none;font-weight:600;font-size:1rem}
+.nav a:hover{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px;text-decoration-color:var(--gold)}
+.nav .tel{border:1.5px solid var(--line);border-radius:999px;padding-inline:18px;margin-left:8px}
+.hero-body{flex:1;display:flex;align-items:center;padding-block:clamp(40px,8vh,96px) clamp(64px,12vh,120px)}
+.hero-copy{max-width:36rem}
+.hero h1{font-size:clamp(2.7rem,6.4vw,5.25rem);line-height:1;text-wrap:balance}
+.hero p.lead{margin-top:1.4rem;font-size:clamp(1.1rem,1.5vw,1.3rem);max-width:31rem;color:#f0e6d2}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;margin-top:2.1rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 28px;border-radius:999px;border:0;background:var(--gold);color:var(--ink);font-weight:700;font-size:1.0625rem;text-decoration:none;cursor:pointer;transition:background .15s,transform .15s}
+.btn:hover{background:#f0c264}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent;color:var(--cream);border:1.5px solid var(--line)}
+.btn.ghost:hover{background:rgba(243,231,208,.08)}
+.btn.small{min-height:44px;padding:0 20px;font-size:1rem}
+.link{font-weight:600;text-underline-offset:6px;text-decoration-thickness:2px;text-decoration-color:var(--gold);display:inline-flex;align-items:center;min-height:44px}
+.hero-facts{display:flex;flex-wrap:wrap;gap:8px 28px;margin:2.4rem 0 0;padding:0;list-style:none;font-size:.9375rem;color:var(--sage)}
+.hero-facts strong{color:var(--cream);font-weight:600}
+
+/* rezervácia */
+.stage{background:var(--green-900);padding-block:clamp(48px,7vw,88px) clamp(56px,8vw,104px);scroll-margin-top:44px}
+.stage-head{display:grid;gap:14px 48px;align-items:end;grid-template-columns:minmax(0,1fr)}
+.stage h2{font-size:clamp(2rem,4.2vw,3.25rem)}
+.stage-head p{color:var(--sage);max-width:34rem}
+.steps{list-style:none;display:flex;flex-wrap:wrap;gap:8px 26px;margin:0;padding:0;font-size:.9375rem;color:var(--sage);counter-reset:s}
+.steps li{display:flex;align-items:center;gap:9px;counter-increment:s}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:26px;height:26px;border-radius:50%;border:1.5px solid currentColor;font-weight:700;font-size:.8125rem}
+.steps li[aria-current]{color:var(--cream);font-weight:600}
+.steps li[aria-current]::before{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.steps li.done::before{content:"";background:var(--green-600) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23f3e7d0' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat;border-color:var(--green-600)}
+
+.when{margin-top:30px;display:grid;gap:22px 34px;grid-template-columns:minmax(0,1fr);padding:22px;border:1px solid var(--line);border-radius:22px;background:var(--green-800)}
+.when fieldset,.when .f-guests{border:0;margin:0;padding:0;min-width:0}
+.when legend,.when .legend{display:block;padding:0;margin-bottom:10px;font-weight:700;font-size:.9375rem;color:var(--cream)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px;margin:-4px;scrollbar-width:thin;scrollbar-color:var(--green-600) transparent}
+.chip{position:relative;flex:none;display:grid;place-items:center;min-width:58px;min-height:48px;padding:6px 12px;border:1.5px solid var(--line);border-radius:13px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.15;text-align:center;transition:background .12s,border-color .12s}
+.chip input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.chip:hover{border-color:var(--cream)}
+.chip:has(input:checked){background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.chip:has(input:focus-visible){outline:3px solid var(--cream);outline-offset:3px}
+.chip:has(input:disabled){border-style:dashed;color:rgba(243,231,208,.5)}
+.chip:has(input:disabled) input{cursor:not-allowed}
+.chip.day{min-width:72px;min-height:72px;padding:8px 6px;gap:1px;align-content:center}
+.chip .wd{font-size:.8125rem;font-weight:600}
+.chip .dn{font-family:var(--display);font-size:1.375rem;line-height:1}
+.chip .mo{font-size:.75rem;font-weight:500}
+.stepper{display:inline-flex;align-items:center;border:1.5px solid var(--line);border-radius:999px;padding:4px}
+.stepper button{width:44px;height:44px;border-radius:50%;border:0;background:var(--green-600);color:var(--cream);font-size:1.5rem;line-height:1;cursor:pointer;display:grid;place-items:center}
+.stepper button:hover:not(:disabled){background:var(--gold);color:var(--ink)}
+.stepper button:disabled{opacity:.4;cursor:not-allowed}
+.stepper output{min-width:64px;text-align:center;font-family:var(--display);font-size:1.5rem;line-height:1}
+.f-guests .hint{margin-top:10px;font-size:.875rem;color:var(--sage)}
+.status{margin-top:22px;font-size:1.0625rem;color:var(--cream);min-height:1.6em}
+.status strong{color:var(--gold);font-weight:700}
+
+.book{margin-top:18px;display:grid;gap:28px;grid-template-columns:minmax(0,1fr)}
+.map{margin:0;position:relative;min-width:0}
+.map-scroll{overflow-x:auto;overscroll-behavior-x:contain;margin-inline:calc(var(--gutter) * -1);scrollbar-width:thin;scrollbar-color:var(--green-600) transparent;
+  background:radial-gradient(60% 55% at 50% 52%,rgba(227,174,69,.16),rgba(227,174,69,0) 70%)}
+.map-inner{position:relative;width:880px;aspect-ratio:1600/1100;margin-inline:auto}
+.map-inner img{position:absolute;inset:0;width:100%;height:100%;user-select:none;-webkit-user-drag:none}
+.map-inner svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;touch-action:pan-x pan-y;-webkit-tap-highlight-color:transparent}
+.map::before,.map::after{content:"";position:absolute;top:0;bottom:0;width:26px;z-index:2;pointer-events:none;margin-inline:calc(var(--gutter) * -1)}
+.map::before{left:0;background:linear-gradient(90deg,var(--green-900),rgba(16,38,31,0))}
+.map::after{right:0;background:linear-gradient(270deg,var(--green-900),rgba(16,38,31,0))}
+.pan-hint{display:flex;align-items:center;justify-content:center;gap:8px;font-size:.875rem;color:var(--sage);margin-top:6px}
+.pan-hint svg{width:22px;height:22px}
+
+.t{cursor:pointer}
+.t-hit{fill:none;pointer-events:all}
+.t-shape{fill:rgba(227,174,69,.2);stroke:var(--gold);stroke-width:3.5;stroke-linejoin:round;transition:fill .15s,stroke-width .15s}
+.t-dot{fill:var(--gold);stroke:var(--green-900);stroke-width:2.5}
+.t-num{font-family:var(--body);font-weight:700;font-size:25px;fill:var(--ink);text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.t-flag,.t-pill{display:none;pointer-events:none}
+.t-flag circle{stroke:var(--green-900);stroke-width:2}
+.t-flag path{fill:none;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.t-pill rect{fill:var(--green-950);stroke:rgba(243,231,208,.55);stroke-width:1.5}
+.t-pill text{font-family:var(--body);font-weight:600;font-size:21px;fill:var(--cream);text-anchor:middle;dominant-baseline:central}
+.t.is-free:hover .t-shape,.t.is-free.is-hot .t-shape{fill:rgba(227,174,69,.5);stroke-width:5}
+.t.is-taken,.t.is-small,.t.is-big{cursor:help}
+.t.is-taken .t-shape{fill:url(#hatch);stroke:rgba(243,231,208,.8);stroke-width:2.5}
+.t.is-taken .t-dot{fill:var(--green-950);stroke:rgba(243,231,208,.7)}
+.t.is-taken .t-num{fill:var(--cream)}
+.t.is-taken .t-flag{display:block}
+.t.is-taken .t-flag circle{fill:var(--rust)}
+.t.is-taken .t-flag path{stroke:#fff}
+.t.is-taken .t-flag .ok,.t.is-selected .t-flag .no{display:none}
+.t.is-mine .t-flag .no{display:none}
+.t.is-mine .t-flag .ok{display:block}
+.t.is-mine .t-flag circle{fill:var(--gold)}
+.t.is-mine .t-flag path{stroke:var(--ink)}
+.t.is-small .t-shape,.t.is-big .t-shape{fill:rgba(12,29,24,.55);stroke:rgba(243,231,208,.75);stroke-width:3;stroke-dasharray:.1 8;stroke-linecap:round}
+.t.is-small .t-dot,.t.is-big .t-dot{fill:var(--green-950);stroke:rgba(243,231,208,.45)}
+.t.is-small .t-num,.t.is-big .t-num{fill:rgba(243,231,208,.8)}
+.t.is-small .t-pill,.t.is-big .t-pill{display:block}
+.t.is-hot .t-dot{stroke:var(--cream);stroke-width:4}
+.t.is-selected .t-shape{fill:rgba(243,231,208,.55);stroke:var(--cream);stroke-width:6}
+.t.is-selected .t-dot{fill:var(--cream);stroke:var(--green-900)}
+.t.is-selected .t-flag{display:block}
+.t.is-selected .t-flag circle{fill:var(--green-600)}
+.t.is-selected .t-flag path{stroke:var(--cream)}
+
+.tip{position:absolute;z-index:3;transform:translate(-50%,calc(-100% - 22px));background:var(--cream);color:var(--ink);border-radius:12px;padding:9px 13px;font-size:.875rem;line-height:1.3;width:max-content;max-width:230px;box-shadow:0 10px 28px rgba(0,0,0,.4);pointer-events:none}
+.tip strong{display:block;font-size:.9375rem}
+.tip::after{content:"";position:absolute;left:50%;bottom:-6px;width:12px;height:12px;background:inherit;transform:translateX(-50%) rotate(45deg)}
+
+.legend-row{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px 24px;font-size:.9375rem;color:var(--cream)}
+.legend-row li{display:flex;align-items:center;gap:9px}
+.legend-row svg{width:34px;height:26px;flex:none}
+
+.panel{background:var(--green-800);border:1px solid var(--line);border-radius:22px;padding:22px;min-width:0;align-self:start;scroll-margin-top:84px}
+.panel h3{font-size:1.5rem}
+.panel-sub{color:var(--sage);font-size:.9375rem;margin-top:6px}
+.tlist{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tbtn{width:100%;min-height:68px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 12px;align-items:center;text-align:left;padding:10px 12px;border-radius:14px;border:1.5px solid var(--gold);background:rgba(227,174,69,.1);cursor:pointer;transition:background .12s}
+.tbtn .no{grid-row:1/3;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--ink);font-weight:700;font-size:1.0625rem}
+.tbtn .tt{font-weight:700;font-size:.9375rem;line-height:1.2}
+.tbtn .ts{font-size:.8125rem;line-height:1.25;color:var(--sage)}
+.tbtn:hover,.tbtn.is-hot{background:rgba(227,174,69,.26)}
+.tbtn[aria-disabled="true"]{border:1.5px dashed rgba(243,231,208,.4);background:transparent;cursor:not-allowed}
+.tbtn[aria-disabled="true"] .no{background:var(--green-950);color:var(--cream);border:1.5px solid rgba(243,231,208,.4)}
+.tbtn[aria-disabled="true"] .tt{font-weight:600}
+.tbtn[data-state="taken"] .no{background:var(--green-950) repeating-linear-gradient(45deg,transparent 0 4px,rgba(243,231,208,.32) 4px 6px)}
+.list-split{margin:22px 0 0;font-size:.875rem;font-weight:700;color:var(--sage)}
+.empty{margin-top:18px;padding:16px;border:1.5px dashed var(--line);border-radius:14px;color:var(--cream)}
+
+.mine{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.mine h4{margin:0;font-size:1rem;font-weight:700}
+.mine ul{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.mine li{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.9375rem}
+.textbtn{background:none;border:0;padding:0 4px;min-height:44px;font-weight:600;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--gold);cursor:pointer;color:var(--cream)}
+
+.card-view{aspect-ratio:16/9;border-radius:16px;background:var(--green-900) no-repeat;background-size:440% auto;border:1px solid var(--line)}
+.card-head{display:flex;gap:14px;align-items:center;margin-top:16px}
+.card-no{flex:none;display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:var(--gold);color:var(--ink);font-family:var(--display);font-size:1.5rem;font-weight:700}
+.facts{margin:16px 0 0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 16px;font-size:.9375rem}
+.facts dt{color:var(--sage)}
+.facts dd{margin:0;font-weight:600}
+.form{margin-top:20px;display:grid;gap:14px}
+.field label{display:block;font-weight:600;font-size:.9375rem;margin-bottom:6px}
+.field .opt{font-weight:400;color:var(--sage)}
+.field input,.field textarea{width:100%;min-height:50px;padding:12px 14px;border-radius:12px;border:1.5px solid rgba(243,231,208,.45);background:var(--green-900);font-size:1rem;color:var(--cream)}
+.field textarea{min-height:84px;resize:vertical}
+.field input:focus-visible,.field textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-color:var(--gold)}
+.field [aria-invalid="true"]{border-color:#ff9c80}
+.field .note{font-size:.8125rem;color:var(--sage);margin-top:5px}
+.field .err{font-size:.875rem;color:#ffb39c;margin-top:6px;font-weight:600}
+.form-actions{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin-top:4px}
+.done-mark{width:60px;height:60px;border-radius:50%;background:var(--gold);display:grid;place-items:center}
+.done-mark svg{width:32px;height:32px}
+.done h3{margin-top:16px;font-size:1.75rem}
+.done .code{display:inline-block;margin-top:14px;padding:6px 14px;border-radius:999px;border:1.5px dashed var(--gold);font-weight:700;letter-spacing:.04em}
+.done .fineprint{margin-top:14px;font-size:.875rem;color:var(--sage)}
+
+/* jedálny lístok */
+.paper{background:var(--paper);color:var(--ink);padding-block:clamp(56px,8vw,108px);scroll-margin-top:44px}
+.paper h2{font-size:clamp(2rem,4.2vw,3.25rem)}
+.menu-grid{display:grid;gap:36px 64px;grid-template-columns:minmax(0,1fr)}
+.menu-intro h2{font-size:clamp(2rem,3.3vw,2.7rem);text-wrap:balance}
+.menu-intro p{margin-top:18px;color:var(--ink-soft);max-width:30rem}
+.menu-intro .sig{margin-top:22px;font-family:var(--display);font-size:1.25rem;color:var(--green-700)}
+.menu-cols{display:grid;gap:34px 56px;grid-template-columns:minmax(0,1fr)}
+.course h3{font-size:1.25rem;color:var(--green-700);padding-bottom:10px;border-bottom:2px solid var(--green-700)}
+.dishes{list-style:none;margin:0;padding:0}
+.dishes li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;padding:14px 0;border-bottom:1px solid rgba(28,26,21,.16)}
+.dishes .name{font-family:var(--display);font-weight:400;font-size:1.125rem;line-height:1.25}
+.dishes .price{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dishes .desc{grid-column:1/-1;font-size:.9375rem;color:var(--ink-soft)}
+.menu-note{margin-top:26px;font-size:.9375rem;color:var(--ink-soft)}
+
+/* kontakt */
+.find{background:var(--green-800);padding-block:clamp(56px,8vw,104px);scroll-margin-top:44px}
+.find h2{font-size:clamp(2rem,4.2vw,3.25rem)}
+.find-grid{display:grid;gap:36px 64px;grid-template-columns:minmax(0,1fr);margin-top:34px}
+.find address{font-style:normal;font-size:1.1875rem;line-height:1.5}
+.find .big-tel{display:inline-flex;align-items:center;min-height:48px;margin-top:14px;font-family:var(--display);font-size:clamp(1.6rem,3vw,2.1rem);text-decoration:none}
+.find .big-tel:hover{text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:8px}
+.find .how{margin-top:16px;color:var(--sage);max-width:28rem}
+.hours{width:100%;border-collapse:collapse;font-size:1.0625rem}
+.hours caption{text-align:left;font-family:var(--display);font-weight:700;font-size:1.375rem;padding-bottom:12px}
+.hours th,.hours td{padding:12px 0;border-bottom:1px solid var(--line);text-align:left;font-weight:400}
+.hours td{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.hours tr.today th,.hours tr.today td{color:var(--gold);font-weight:700}
+.hours .closed{color:var(--sage);font-weight:400}
+.foot{background:var(--green-950);padding-block:26px;font-size:.875rem;color:var(--sage)}
+.foot .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;align-items:center}
+.foot a{color:var(--cream);text-underline-offset:4px;display:inline-flex;align-items:center;min-height:44px}
+
+@media (max-width:759.98px){
+  .nav .tel{display:none}
+  .nav a{padding-inline:7px;font-size:.9375rem}
+  .nav a[href="#rezervacia"]{display:none}
+  .brand{font-size:1.5rem}
+  .brand svg{width:30px;height:30px}
+  .hero{min-height:0}
+  .hero-img{object-position:68% 50%}
+  .hero::after{background:linear-gradient(180deg,rgba(12,29,24,.86) 0%,rgba(12,29,24,.5) 26%,rgba(12,29,24,.66) 58%,rgba(16,38,31,1) 100%)}
+  .hero-body{padding-block:120px 44px;align-items:flex-end}
+  .when{padding:16px}
+  .panel{padding:16px}
+}
+@media (min-width:760px){
+  .demo{font-size:.875rem}
+  .demo .wrap{display:flex;gap:18px;align-items:center;justify-content:space-between}
+  .stage-head{grid-template-columns:minmax(0,1fr) auto}
+  .when{grid-template-columns:minmax(0,1fr) auto;padding:26px 28px}
+  .when .f-days{grid-column:1/-1}
+  .chips.times{flex-wrap:wrap;overflow:visible}
+  .map-scroll{overflow:visible;margin-inline:0}
+  .map-inner{width:100%;max-width:1040px}
+  .map::before,.map::after,.pan-hint{display:none}
+  .menu-cols{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .find-grid{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)}
+}
+@media (min-width:1080px){
+  .book{grid-template-columns:minmax(0,1fr) 390px;gap:32px}
+  .panel{position:sticky;top:60px;max-height:calc(100vh - 76px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--green-600) transparent}
+  .menu-grid{grid-template-columns:minmax(0,.7fr) minmax(0,1.6fr)}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<div class="demo" role="note">
+  <div class="wrap">
+    <p>Ukážka webu od ML&amp;T Marketing. Reštaurácia je vymyslená, rezervácie sa ukladajú len vo vašom prehliadači.</p>
+    <a href="../../index.html">Späť na ML&amp;T Marketing</a>
+  </div>
+</div>
+
+<header class="hero">
+  <img class="hero-img" src="assets/uvod.webp" srcset="assets/uvod-900.webp 900w, assets/uvod.webp 1600w" sizes="100vw" width="1600" height="1000" alt="" fetchpriority="high">
+  <div class="wrap top">
+    <a class="brand" href="#top" aria-label="Bistro Kôrka, na začiatok stránky">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 44c0-14 10-25 24-25s24 11 24 25v3H8z" fill="#e3ae45"/><path d="M22 32l4 8M32 28v11M42 32l-4 8" stroke="#10261f" stroke-width="3.6" stroke-linecap="round"/></svg>
+      Kôrka
+    </a>
+    <nav class="nav" aria-label="Hlavná navigácia">
+      <a href="#rezervacia">Rezervácia</a>
+      <a href="#listok">Lístok</a>
+      <a href="#kontakt">Kontakt</a>
+      <a class="tel" href="tel:+421000000000">+421 000 000 000</a>
+    </nav>
+  </div>
+  <div class="wrap hero-body" id="top">
+    <div class="hero-copy">
+      <h1>Stôl si vyberiete sami.</h1>
+      <p class="lead">Bistro s vlastnou pecou v centre Piešťan. Pozrite si sálu, ukážte na stôl pri okne, v boxe alebo na terase – a je váš.</p>
+      <div class="cta-row">
+        <a class="btn" href="#rezervacia">Vybrať stôl</a>
+        <a class="link" href="#listok">Čo práve varíme</a>
+      </div>
+      <ul class="hero-facts">
+        <li><strong>16 stolov</strong> v sále a na terase</li>
+        <li>Utorok až nedeľa <strong>od 11:00</strong></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="stage" id="rezervacia" aria-labelledby="rez-h">
+  <div class="wrap">
+    <div class="stage-head">
+      <div>
+        <h2 id="rez-h">Rezervácia stola</h2>
+        <p style="margin-top:14px">Zvoľte deň, čas a počet osôb. Sála ukáže, ktoré stoly sú voľné – na ten svoj stačí ťuknúť.</p>
+      </div>
+      <ol class="steps" id="steps" aria-label="Postup rezervácie">
+        <li aria-current="step">Kedy a koľkí</li>
+        <li>Stôl</li>
+        <li>Kontakt</li>
+      </ol>
+    </div>
+
+    <div class="when">
+      <fieldset class="f-days">
+        <legend>Deň</legend>
+        <div class="chips days" id="days"></div>
+      </fieldset>
+      <fieldset class="f-times">
+        <legend>Čas príchodu</legend>
+        <div class="chips times" id="times"></div>
+      </fieldset>
+      <div class="f-guests" role="group" aria-labelledby="g-l">
+        <span class="legend" id="g-l">Počet osôb</span>
+        <div class="stepper">
+          <button type="button" id="g-minus" aria-label="Ubrať osobu">−</button>
+          <output id="g-out" aria-live="polite" aria-atomic="true">2</output>
+          <button type="button" id="g-plus" aria-label="Pridať osobu">+</button>
+        </div>
+        <p class="hint">Viac ako 8 osôb? Zavolajte nám.</p>
+      </div>
+    </div>
+
+    <p class="status" id="status" role="status"></p>
+
+    <div class="book">
+      <figure class="map" id="map">
+        <div class="map-scroll" id="map-scroll">
+          <div class="map-inner" id="map-inner">
+            <img src="assets/sala.webp" srcset="assets/sala-1000.webp 1000w, assets/sala.webp 1600w" sizes="(max-width: 759px) 880px, (max-width: 1079px) 94vw, 62vw" width="1600" height="1100" alt="Pohľad zhora na sálu bistra Kôrka: tri boxy pri stene, stoly pri oknách, dlhý stôl v strede, bar s vysokými stolmi a terasa. Stoly sú očíslované 1 až 16.">
+            <svg viewBox="0 0 1600 1100" aria-hidden="true" id="overlay">
+              <defs>
+                <pattern id="hatch" width="13" height="13" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                  <rect width="13" height="13" fill="rgba(12,29,24,.72)"/>
+                  <rect width="4.5" height="13" fill="rgba(243,231,208,.9)"/>
+                </pattern>
+              </defs>
+            </svg>
+            <div class="tip" id="tip" hidden></div>
+          </div>
+        </div>
+        <p class="pan-hint">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg>
+          Sálu posuniete prstom do strán
+        </p>
+        <ul class="legend-row" aria-label="Legenda">
+          <li><svg viewBox="0 0 34 26" aria-hidden="true"><rect x="2" y="3" width="30" height="20" rx="4" fill="rgba(227,174,69,.3)" stroke="#e3ae45" stroke-width="2"/><circle cx="17" cy="13" r="6.5" fill="#e3ae45"/></svg>voľný</li>
+          <li><svg viewBox="0 0 34 26" aria-hidden="true"><defs><pattern id="lh" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#0c1d18"/><rect width="2.2" height="6" fill="#f3e7d0"/></pattern></defs><rect x="2" y="3" width="30" height="20" rx="4" fill="url(#lh)" stroke="#f3e7d0" stroke-width="1.5"/><circle cx="26" cy="8" r="6" fill="#c9583a" stroke="#10261f" stroke-width="1.5"/><path d="M23.6 5.6l4.8 4.8M28.4 5.6l-4.8 4.8" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>obsadený</li>
+          <li><svg viewBox="0 0 34 26" aria-hidden="true"><rect x="2" y="3" width="30" height="20" rx="4" fill="#0c1d18" stroke="#f3e7d0" stroke-width="2" stroke-dasharray=".1 4.5" stroke-linecap="round"/></svg>nesedí počtom miest</li>
+          <li><svg viewBox="0 0 34 26" aria-hidden="true"><rect x="2" y="3" width="30" height="20" rx="4" fill="rgba(243,231,208,.6)" stroke="#f3e7d0" stroke-width="2.5"/><circle cx="26" cy="8" r="6" fill="#2f5b4b" stroke="#10261f" stroke-width="1.5"/><path d="M23.4 8.2l1.9 1.9 3.4-3.8" fill="none" stroke="#f3e7d0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>váš výber</li>
+        </ul>
+      </figure>
+
+      <div class="panel" id="panel">
+        <div id="view-list">
+          <h3 id="list-h" tabindex="-1">Zoznam stolov</h3>
+          <p class="panel-sub" id="list-sub"></p>
+          <div id="list-body"></div>
+          <div class="mine" id="mine" hidden>
+            <h4>Vaše rezervácie v tomto prehliadači</h4>
+            <ul id="mine-list"></ul>
+          </div>
+        </div>
+
+        <div id="view-form" hidden>
+          <div class="card-view" id="card-view" role="img" aria-label=""></div>
+          <div class="card-head">
+            <span class="card-no" id="card-no" aria-hidden="true"></span>
+            <div>
+              <h3 id="card-h" tabindex="-1"></h3>
+              <p class="panel-sub" id="card-sub"></p>
+            </div>
+          </div>
+          <dl class="facts" id="card-facts"></dl>
+          <form class="form" id="form" novalidate>
+            <div class="field">
+              <label for="f-name">Meno a priezvisko</label>
+              <input id="f-name" name="meno" type="text" autocomplete="name" required>
+              <p class="err" id="e-name" hidden></p>
+            </div>
+            <div class="field">
+              <label for="f-tel">Telefón</label>
+              <input id="f-tel" name="telefon" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="n-tel">
+              <p class="note" id="n-tel">Zavoláme len vtedy, keby sa niečo zmenilo.</p>
+              <p class="err" id="e-tel" hidden></p>
+            </div>
+            <div class="field">
+              <label for="f-note">Poznámka <span class="opt">(nepovinné)</span></label>
+              <textarea id="f-note" name="poznamka" rows="2" maxlength="240"></textarea>
+            </div>
+            <div class="form-actions">
+              <button class="btn" type="submit">Potvrdiť rezerváciu</button>
+              <button class="textbtn" type="button" id="back">Vybrať iný stôl</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="view-done" class="done" hidden>
+          <div class="done-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#1c1a15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
+          <h3 id="done-h" tabindex="-1"></h3>
+          <p class="panel-sub" id="done-sub"></p>
+          <dl class="facts" id="done-facts"></dl>
+          <p class="code" id="done-code"></p>
+          <p class="fineprint">Toto je ukážka: rezervácia sa nikam neodoslala, uložila sa iba vo vašom prehliadači. Stôl je odteraz v tomto čase obsadený.</p>
+          <div class="form-actions" style="margin-top:18px">
+            <button class="btn small" type="button" id="again">Rezervovať ďalší stôl</button>
+            <button class="textbtn" type="button" id="cancel-last">Zrušiť túto rezerváciu</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="sr" id="live" aria-live="assertive"></p>
+  </div>
+</section>
+
+<section class="paper on-paper" id="listok" aria-labelledby="menu-h">
+  <div class="wrap menu-grid">
+    <div class="menu-intro">
+      <h2 id="menu-h">Z jedálneho lístka</h2>
+      <p>Každé ráno o piatej zakúrime v peci. Najprv sa v nej upečie kváskový chlieb, potom mäso a zelenina od pestovateľov z okolia Piešťan.</p>
+      <p>Lístok je krátky a mení sa podľa toho, čo práve rastie.</p>
+      <p class="sig">Dobrú chuť praje kuchyňa Kôrky.</p>
+    </div>
+    <div>
+      <div class="menu-cols">
+        <div class="course">
+          <h3>Na začiatok</h3>
+          <ul class="dishes">
+            <li><span class="name">Kváskový chlieb z pece</span><span class="price">4,90 €</span><span class="desc">hnedé maslo, pažítková soľ</span></li>
+            <li><span class="name">Pečená cvikla</span><span class="price">8,50 €</span><span class="desc">kozí syr, vlašské orechy, med</span></li>
+            <li><span class="name">Hovädzí vývar</span><span class="price">5,90 €</span><span class="desc">domáce rezance, koreňová zelenina</span></li>
+          </ul>
+        </div>
+        <div class="course">
+          <h3>Hlavné jedlá</h3>
+          <ul class="dishes">
+            <li><span class="name">Kačacie stehno z pece</span><span class="price">17,90 €</span><span class="desc">lokše, dusená červená kapusta</span></li>
+            <li><span class="name">Zubáč na masle</span><span class="price">19,50 €</span><span class="desc">pečený zeler, kôpor, citrón</span></li>
+            <li><span class="name">Bryndzové pirohy</span><span class="price">12,90 €</span><span class="desc">pražená cibuľka, kyslá smotana</span></li>
+          </ul>
+        </div>
+        <div class="course">
+          <h3>Sladká bodka</h3>
+          <ul class="dishes">
+            <li><span class="name">Šúľance s makom</span><span class="price">7,50 €</span><span class="desc">slivkový lekvár, prepustené maslo</span></li>
+            <li><span class="name">Pečené jablko</span><span class="price">6,90 €</span><span class="desc">vanilkový krém, škorica, orechová drobenka</span></li>
+          </ul>
+        </div>
+        <div class="course">
+          <h3>K tomu</h3>
+          <ul class="dishes">
+            <li><span class="name">Víno z Malých Karpát</span><span class="price">od 4,20 €</span><span class="desc">rozlievané, 0,15 l</span></li>
+            <li><span class="name">Domáca limonáda</span><span class="price">3,90 €</span><span class="desc">baza alebo malina, 0,4 l</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="menu-note">O alergénoch vám povie obsluha. Denné menu podávame v pracovné dni od 11:00 do 14:00.</p>
+    </div>
+  </div>
+</section>
+
+<section class="find" id="kontakt" aria-labelledby="find-h">
+  <div class="wrap">
+    <h2 id="find-h">Kde nás nájdete</h2>
+    <div class="find-grid">
+      <div>
+        <address>Bistro Kôrka<br>Sadová 12<br>921 01 Piešťany</address>
+        <a class="big-tel" href="tel:+421000000000">+421 000 000 000</a>
+        <p class="how">Päť minút pešo od Kolonádového mosta. Zaparkujete na Sadovej alebo na parkovisku pri pošte, bicykel oprite o stojan pred vchodom.</p>
+        <p style="margin-top:22px"><a class="btn small" href="#rezervacia">Vybrať stôl</a></p>
+      </div>
+      <table class="hours" id="hours">
+        <caption>Otváracie hodiny</caption>
+        <tbody>
+          <tr data-d="1"><th scope="row">Pondelok</th><td class="closed">zatvorené</td></tr>
+          <tr data-d="2"><th scope="row">Utorok</th><td>11:00 – 22:00</td></tr>
+          <tr data-d="3"><th scope="row">Streda</th><td>11:00 – 22:00</td></tr>
+          <tr data-d="4"><th scope="row">Štvrtok</th><td>11:00 – 22:00</td></tr>
+          <tr data-d="5"><th scope="row">Piatok</th><td>11:00 – 23:00</td></tr>
+          <tr data-d="6"><th scope="row">Sobota</th><td>11:00 – 23:00</td></tr>
+          <tr data-d="0"><th scope="row">Nedeľa</th><td>11:00 – 20:00</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>Bistro Kôrka je vymyslená reštaurácia. Sálu sme vymodelovali v 3D, pri skutočnej reštaurácii ju postavíme podľa fotiek.</span>
+    <a href="../../index.html">Ukážka od ML&amp;T Marketing</a>
+  </div>
+</footer>
+
+<script src="assets/stoly.js"></script>
+<script>
+(function () {
+  'use strict';
+  var DATA = window.KORKA_STOLY;
+  if (!DATA) return;
+  var W = DATA.obrazok.w, H = DATA.obrazok.h;
+  var TABLES = DATA.stoly.map(function (t) {
+    return { id: t.id, seats: t.miest, zone: t.zona, where: t.kde, shape: t.tvar,
+      cx: t.x * W / 100, cy: t.y * H / 100, px: t.x, py: t.y,
+      pts: t.obrys.map(function (p) { return [p[0] * W / 100, p[1] * H / 100]; }) };
+  });
+  var BY_ID = {};
+  TABLES.forEach(function (t) { BY_ID[t.id] = t; });
+
+  // ---- pravidlá prevádzky
+  var HOURS = { 0: [660, 1200], 1: null, 2: [660, 1320], 3: [660, 1320], 4: [660, 1320], 5: [660, 1380], 6: [660, 1380] };
+  var STAY = 120;          // rezervácia drží stôl dve hodiny
+  var LAST_BEFORE = 90;    // posledný príchod 90 minút pred záverečnou
+  var MAX_GUESTS = 8;
+  var MIN_FOR = { 2: 1, 4: 2, 6: 4, 8: 5 };
+  var KEY = 'korka-rezervacie-v1';
+  var WD = ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So'];
+  var WD_LONG = ['nedeľa', 'pondelok', 'utorok', 'streda', 'štvrtok', 'piatok', 'sobota'];
+  var MO = ['jan', 'feb', 'mar', 'apr', 'máj', 'jún', 'júl', 'aug', 'sep', 'okt', 'nov', 'dec'];
+  var MO_GEN = ['januára', 'februára', 'marca', 'apríla', 'mája', 'júna', 'júla', 'augusta', 'septembra', 'októbra', 'novembra', 'decembra'];
+
+  function $(id) { return document.getElementById(id); }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function iso(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function fromIso(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2], 12); }
+  function hm(min) { return pad(Math.floor(min / 60)) + ':' + pad(min % 60); }
+  function toMin(s) { var p = s.split(':'); return +p[0] * 60 + +p[1]; }
+  function longDate(s) { var d = fromIso(s); return WD_LONG[d.getDay()] + ' ' + d.getDate() + '. ' + MO_GEN[d.getMonth()]; }
+  function plural(n, one, few, many) { return n === 1 ? one : (n >= 2 && n <= 4 ? few : many); }
+  function seatsText(n) { return n + ' ' + plural(n, 'miesto', 'miesta', 'miest'); }
+  function guestsText(n) { return n + ' ' + plural(n, 'osoba', 'osoby', 'osôb'); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  // ---- uložené rezervácie (len v prehliadači)
+  var memory = [];
+  function load() {
+    try { var v = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(v) ? v : []; }
+    catch (e) { return memory; }
+  }
+  function save(list) {
+    memory = list;
+    try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) { /* súkromné okno: ostane len v pamäti */ }
+  }
+
+  // ---- vopred obsadené stoly: vždy rovnaké pre ten istý deň a stôl
+  function hash32(str) { var h = 2166136261; for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function rng(seed) {
+    return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  }
+  var seedCache = {};
+  function seeded(date, id) {
+    var k = date + '|' + id;
+    if (seedCache[k]) return seedCache[k];
+    var r = rng(hash32('korka|' + k)), wd = fromIso(date).getDay(), busy = wd === 5 || wd === 6, out = [];
+    function pick(a) { return a[Math.floor(r() * a.length)]; }
+    if (r() < (busy ? 0.5 : 0.36)) out.push(pick([690, 720, 750, 780]));
+    if (r() < (busy ? 0.3 : 0.16)) out.push(pick([870, 900, 930]));
+    if (r() < (busy ? 0.56 : 0.4)) out.push(pick([1050, 1080, 1110, 1140]));
+    if (r() < (busy ? 0.36 : 0.2)) out.push(pick([1200, 1230, 1260]));
+    return (seedCache[k] = out);
+  }
+  function mineAt(date, min, id) {
+    return load().filter(function (b) { return b.datum === date && b.stol === id && Math.abs(toMin(b.cas) - min) < STAY; })[0];
+  }
+  function takenAt(date, min, id) {
+    if (mineAt(date, min, id)) return true;
+    return seeded(date, id).some(function (s) { return Math.abs(s - min) < STAY; });
+  }
+  function stateOf(t) {
+    var min = toMin(state.time);
+    if (mineAt(state.date, min, t.id)) return 'mine';
+    if (takenAt(state.date, min, t.id)) return 'taken';
+    if (state.guests > t.seats) return 'small';
+    if (state.guests < (MIN_FOR[t.seats] || 1)) return 'big';
+    return 'free';
+  }
+  function stateWord(t, st) {
+    if (st === 'free') return 'voľný';
+    if (st === 'mine') return 'rezervovaný vami';
+    if (st === 'taken') return 'obsadený';
+    if (st === 'small') return 'malý pre ' + guestsText(state.guests).replace('osoba', 'osobu');
+    return 'len pre ' + MIN_FOR[t.seats] + ' a viac osôb';
+  }
+  function fullLabel(t, st) { return 'Stôl ' + t.id + ', ' + seatsText(t.seats) + ', ' + t.where + ', ' + stateWord(t, st); }
+
+  // ---- stav
+  var now = new Date();
+  var state = { date: null, time: null, guests: 2, selected: null, view: 'list', last: null };
+
+  function slotsFor(date) {
+    var d = fromIso(date), h = HOURS[d.getDay()], out = [];
+    if (!h) return out;
+    var isToday = date === iso(now), nowMin = now.getHours() * 60 + now.getMinutes();
+    for (var m = h[0]; m <= h[1] - LAST_BEFORE; m += 30) out.push({ min: m, off: isToday && m < nowMin + 30 });
+    return out;
+  }
+  function firstOpen(date) { return slotsFor(date).filter(function (s) { return !s.off; }); }
+
+  // ---- ovládanie: dni
+  var days = [];
+  for (var i = 0; i < 14; i++) { var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, 12); days.push(iso(d)); }
+  function buildDays() {
+    $('days').innerHTML = days.map(function (s, i) {
+      var d = fromIso(s), open = firstOpen(s).length > 0, closed = !HOURS[d.getDay()];
+      var label = (i === 0 ? 'dnes, ' : i === 1 ? 'zajtra, ' : '') + longDate(s) + (closed ? ', zatvorené' : !open ? ', dnes už neprijímame rezervácie' : '');
+      return '<label class="chip day"><input type="radio" name="den" value="' + s + '"' + (open ? '' : ' disabled') + ' aria-label="' + label + '">' +
+        '<span class="wd" aria-hidden="true">' + (i === 0 ? 'Dnes' : WD[d.getDay()]) + '</span><span class="dn" aria-hidden="true">' + d.getDate() + '</span>' +
+        '<span class="mo" aria-hidden="true">' + (closed ? 'zatvorené' : MO[d.getMonth()]) + '</span></label>';
+    }).join('');
+  }
+  function buildTimes() {
+    var slots = slotsFor(state.date);
+    $('times').innerHTML = slots.map(function (s) {
+      return '<label class="chip"><input type="radio" name="cas" value="' + hm(s.min) + '"' + (s.off ? ' disabled' : '') + '><span>' + hm(s.min) + '</span></label>';
+    }).join('');
+    var ok = slots.filter(function (s) { return !s.off; }).map(function (s) { return hm(s.min); });
+    if (ok.indexOf(state.time) < 0) state.time = ok.indexOf('18:30') >= 0 ? '18:30' : ok[0];
+    check('cas', state.time, true);
+  }
+  function check(name, value, reveal) {
+    var inp = document.querySelector('input[name="' + name + '"][value="' + value + '"]');
+    if (!inp) return;
+    inp.checked = true;
+    if (reveal) {
+      var box = inp.closest('.chips'), chip = inp.parentNode;
+      if (box.scrollWidth > box.clientWidth) box.scrollLeft = chip.offsetLeft - box.offsetLeft - (box.clientWidth - chip.offsetWidth) / 2;
+    }
+  }
+
+  // ---- mapa
+  var NS = 'http://www.w3.org/2000/svg';
+  function svg(name, attrs, parent) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  var overlay = $('overlay'), nodes = {}, tip = $('tip');
+  TABLES.slice().sort(function (a, b) { return a.cy - b.cy; }).forEach(function (t) {
+    var g = svg('g', { 'class': 't', 'data-id': t.id }, overlay);
+    svg('polygon', { 'class': 't-shape', points: t.pts.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ') }, g);
+    svg('circle', { 'class': 't-hit', cx: t.cx, cy: t.cy, r: 44 }, g);
+    svg('circle', { 'class': 't-dot', cx: t.cx, cy: t.cy, r: 26 }, g);
+    var n = svg('text', { 'class': 't-num', x: t.cx, y: t.cy + 1 }, g);
+    n.textContent = t.id;
+    var f = svg('g', { 'class': 't-flag', transform: 'translate(' + (t.cx + 23) + ' ' + (t.cy - 23) + ')' }, g);
+    svg('circle', { r: 14 }, f);
+    svg('path', { 'class': 'no', d: 'M-5.5-5.5l11 11M5.5-5.5l-11 11' }, f);
+    svg('path', { 'class': 'ok', d: 'M-6.5 .5l4.5 4.5 8-9' }, f);
+    var p = svg('g', { 'class': 't-pill', transform: 'translate(' + t.cx + ' ' + (t.cy + 46) + ')' }, g);
+    svg('rect', { x: -48, y: -17, width: 96, height: 34, rx: 17 }, p);
+    svg('text', { x: 0, y: 1 }, p);
+    nodes[t.id] = g;
+    g.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') { hot(t.id, true); showTip(t); } });
+    g.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') { hot(t.id, false); hideTip(); } });
+  });
+  function fitHits() {
+    // dotyková plocha stola má na obrazovke vždy aspoň 48 px
+    var scale = $('map-inner').getBoundingClientRect().width / W;
+    if (!scale) return;
+    var r = hitR = Math.max(30, 24 / scale);
+    overlay.querySelectorAll('.t-hit').forEach(function (c) { c.setAttribute('r', r.toFixed(1)); });
+    // posúvateľná sála musí byť dosiahnuteľná aj klávesnicou (šípky), inde zbytočnú zastávku nerobí
+    var sc = $('map-scroll');
+    if (sc.scrollWidth > sc.clientWidth + 1) { sc.tabIndex = 0; sc.setAttribute('role', 'region'); sc.setAttribute('aria-label', 'Pohľad na sálu, dá sa posúvať do strán'); }
+    else { sc.removeAttribute('tabindex'); sc.removeAttribute('role'); sc.removeAttribute('aria-label'); }
+  }
+  var hitR = 44;
+  overlay.addEventListener('click', function (e) {
+    // dotyk môže trafiť tesne vedľa tvaru: rozhoduje najbližší stôl v dosahu dotykovej plochy
+    var g = e.target.closest && e.target.closest('.t');
+    if (g) { onTable(+g.getAttribute('data-id'), true); return; }
+    var box = overlay.getBoundingClientRect(), x = (e.clientX - box.left) / box.width * W, y = (e.clientY - box.top) / box.height * H, best = null, bd = hitR;
+    TABLES.forEach(function (t) { var d = Math.hypot(t.cx - x, t.cy - y); if (d <= bd) { bd = d; best = t; } });
+    if (best) onTable(best.id, true); else hideTip();
+  });
+  if (window.ResizeObserver) new ResizeObserver(fitHits).observe($('map-inner'));
+  window.addEventListener('resize', fitHits);
+
+  function hot(id, on) {
+    if (nodes[id]) nodes[id].classList.toggle('is-hot', on);
+    var b = document.querySelector('.tbtn[data-id="' + id + '"]');
+    if (b) b.classList.toggle('is-hot', on);
+  }
+  var tipTimer;
+  function showTip(t, sticky) {
+    var st = stateOf(t);
+    var reason = st === 'free' ? 'Voľný – ťuknutím ho vyberiete' :
+      st === 'mine' ? 'Tento stôl máte o ' + state.time + ' rezervovaný vy' :
+      st === 'taken' ? 'O ' + state.time + ' je obsadený' :
+      st === 'small' ? 'Malý pre ' + guestsText(state.guests).replace('osoba', 'osobu') :
+      'Držíme ho pre ' + MIN_FOR[t.seats] + ' a viac osôb';
+    tip.innerHTML = '<strong>Stôl ' + t.id + ', ' + seatsText(t.seats) + '</strong>' + esc(t.where) + '<br>' + reason;
+    tip.style.left = t.px + '%';
+    tip.style.top = t.py + '%';
+    tip.hidden = false;
+    clearTimeout(tipTimer);
+    if (sticky) tipTimer = setTimeout(hideTip, 3200);
+  }
+  function hideTip() { tip.hidden = true; }
+
+  function centerOn(t) {
+    var sc = $('map-scroll');
+    if (sc.scrollWidth <= sc.clientWidth + 1) return;
+    var x = t.px / 100 * $('map-inner').offsetWidth + $('map-inner').offsetLeft - sc.clientWidth / 2;
+    var smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    sc.scrollTo({ left: Math.max(0, x), behavior: smooth ? 'smooth' : 'auto' });
+  }
+
+  // ---- vykreslenie stavu
+  function say(msg) { $('live').textContent = ''; setTimeout(function () { $('live').textContent = msg; }, 30); }
+  function render() {
+    var states = {}, free = [];
+    TABLES.forEach(function (t) {
+      var st = states[t.id] = stateOf(t), g = nodes[t.id];
+      g.setAttribute('class', 't ' + (st === 'mine' ? 'is-taken is-mine' : 'is-' + st) + (state.selected === t.id ? ' is-selected' : ''));
+      if (st === 'small') g.querySelector('.t-pill text').textContent = 'max ' + t.seats;
+      if (st === 'big') g.querySelector('.t-pill text').textContent = 'min ' + MIN_FOR[t.seats];
+      if (st === 'free') free.push(t);
+    });
+    if (state.selected && states[state.selected] !== 'free') { state.selected = null; if (state.view === 'form') state.view = 'list'; }
+
+    $('g-out').textContent = state.guests;
+    $('g-minus').disabled = state.guests <= 1;
+    $('g-plus').disabled = state.guests >= MAX_GUESTS;
+    var n = free.length;
+    $('status').innerHTML = n
+      ? esc(cap(longDate(state.date))) + ' o ' + state.time + ', ' + guestsText(state.guests) + ': <strong>' + n + ' ' + plural(n, 'voľný stôl', 'voľné stoly', 'voľných stolov') + '</strong>.'
+      : esc(cap(longDate(state.date))) + ' o ' + state.time + ' pre ' + guestsText(state.guests).replace('osoba', 'osobu') + ' <strong>nemáme voľný stôl</strong>. Skúste iný čas alebo deň.';
+
+    // zoznam
+    var others = TABLES.filter(function (t) { return states[t.id] !== 'free'; });
+    function btn(t) {
+      var st = states[t.id], dis = st !== 'free';
+      return '<li><button type="button" class="tbtn" data-id="' + t.id + '" data-state="' + st + '"' + (dis ? ' aria-disabled="true"' : '') +
+        ' aria-label="' + esc(fullLabel(t, st)) + '"><span class="no" aria-hidden="true">' + t.id + '</span><span class="tt" aria-hidden="true">' +
+        (dis ? cap(stateWord(t, st)) : esc(cap(t.where))) + '</span><span class="ts" aria-hidden="true">' +
+        (dis ? esc(t.where) + ', ' : '') + seatsText(t.seats) + '</span></button></li>';
+    }
+    var focused = document.activeElement && document.activeElement.classList.contains('tbtn') ? document.activeElement.getAttribute('data-id') : null;
+    $('list-sub').textContent = n ? 'Ťuknite na stôl v sále alebo v zozname.' : 'V tomto čase nie je voľný žiadny vhodný stôl.';
+    $('list-body').innerHTML =
+      (n ? '<p class="list-split" id="l-free">Voľné (' + n + ')</p><ul class="tlist" aria-labelledby="l-free">' + free.map(btn).join('') + '</ul>'
+         : '<p class="empty">Skúste posunúť čas o polhodinu alebo zmeniť počet osôb.</p>') +
+      (others.length ? '<p class="list-split" id="l-off">Nedostupné v tomto čase (' + others.length + ')</p><ul class="tlist" aria-labelledby="l-off">' + others.map(btn).join('') + '</ul>' : '');
+    if (focused) { var fb = document.querySelector('.tbtn[data-id="' + focused + '"]'); if (fb) fb.focus(); }
+
+    // moje rezervácie
+    var mine = load().filter(function (b) { return b.datum >= iso(now); }).sort(function (a, b) { return (a.datum + a.cas).localeCompare(b.datum + b.cas); });
+    $('mine').hidden = !mine.length;
+    $('mine-list').innerHTML = mine.map(function (b) {
+      var d = fromIso(b.datum);
+      return '<li><span>' + WD[d.getDay()] + ' ' + d.getDate() + '. ' + (d.getMonth() + 1) + '. o ' + b.cas + ', stôl ' + b.stol + ', ' + guestsText(b.osoby) + '</span>' +
+        '<button type="button" class="textbtn" data-cancel="' + b.kod + '" aria-label="Zrušiť rezerváciu: ' + longDate(b.datum) + ' o ' + b.cas + ', stôl ' + b.stol + '">Zrušiť</button></li>';
+    }).join('');
+
+    // pohľady panela a kroky
+    $('view-list').hidden = state.view !== 'list';
+    $('view-form').hidden = state.view !== 'form';
+    $('view-done').hidden = state.view !== 'done';
+    var step = state.view === 'list' ? (state.touched ? 1 : 0) : state.view === 'form' ? 2 : 3;
+    Array.prototype.forEach.call($('steps').children, function (li, i) {
+      li.classList.toggle('done', i < step);
+      if (i === step) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
+    });
+  }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  function fillCard(t) {
+    $('card-no').textContent = t.id;
+    $('card-h').textContent = 'Stôl ' + t.id;
+    $('card-sub').textContent = cap(t.where) + ', ' + seatsText(t.seats);
+    $('card-view').setAttribute('aria-label', 'Výrez sály so stolom ' + t.id);
+    $('card-facts').innerHTML = '<dt>Deň</dt><dd>' + cap(longDate(state.date)) + '</dd><dt>Príchod</dt><dd>' + state.time + ', stôl držíme dve hodiny</dd><dt>Hostia</dt><dd>' + guestsText(state.guests) + '</dd>';
+    requestAnimationFrame(function () {
+      var v = $('card-view'), w = v.clientWidth, h = v.clientHeight, bw = w * 4.4, bh = bw * H / W;
+      var x = Math.min(1, Math.max(0, (t.px / 100 * bw - w / 2) / (bw - w))), y = Math.min(1, Math.max(0, (t.py / 100 * bh - h / 2) / (bh - h)));
+      v.style.backgroundImage = 'url(assets/sala.webp)';
+      v.style.backgroundPosition = (x * 100).toFixed(2) + '% ' + (y * 100).toFixed(2) + '%';
+    });
+  }
+
+  function onTable(id, fromMap) {
+    var t = BY_ID[id], st = stateOf(t);
+    if (state.view === 'done') state.view = 'list';
+    if (st !== 'free') {
+      showTip(t, true);
+      if (!fromMap) centerOn(t);
+      say('Stôl ' + t.id + ' sa nedá vybrať: ' + stateWord(t, st) + '.');
+      return;
+    }
+    hideTip();
+    state.selected = id;
+    state.view = 'form';
+    state.touched = true;
+    render();
+    fillCard(t);
+    centerOn(t);
+    say('Vybrali ste stôl ' + t.id + ', ' + t.where + ', ' + seatsText(t.seats) + '. Doplňte meno a telefón.');
+    var narrow = window.matchMedia('(max-width: 1079.98px)').matches;
+    $('card-h').focus({ preventScroll: true });
+    if (narrow) setTimeout(function () { $('panel').scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }, fromMap ? 450 : 0);
+  }
+
+  // ---- udalosti
+  $('days').addEventListener('change', function (e) {
+    state.date = e.target.value; state.touched = true; state.selected = null; if (state.view !== 'list') state.view = 'list';
+    buildTimes(); hideTip(); render();
+  });
+  $('times').addEventListener('change', function (e) {
+    state.time = e.target.value; state.touched = true; if (state.view === 'done') state.view = 'list';
+    hideTip(); render(); if (state.view === 'form' && state.selected) fillCard(BY_ID[state.selected]);
+  });
+  function setGuests(n) {
+    state.guests = Math.min(MAX_GUESTS, Math.max(1, n)); state.touched = true; if (state.view === 'done') state.view = 'list';
+    hideTip(); render(); if (state.view === 'form' && state.selected) fillCard(BY_ID[state.selected]);
+  }
+  $('g-minus').addEventListener('click', function () { setGuests(state.guests - 1); });
+  $('g-plus').addEventListener('click', function () { setGuests(state.guests + 1); });
+
+  $('list-body').addEventListener('click', function (e) {
+    var b = e.target.closest('.tbtn'); if (b) onTable(+b.getAttribute('data-id'), false);
+  });
+  $('list-body').addEventListener('pointerover', function (e) { var b = e.target.closest('.tbtn'); if (b && e.pointerType === 'mouse') hot(+b.getAttribute('data-id'), true); });
+  $('list-body').addEventListener('pointerout', function (e) { var b = e.target.closest('.tbtn'); if (b) hot(+b.getAttribute('data-id'), false); });
+  $('list-body').addEventListener('focusin', function (e) { var b = e.target.closest('.tbtn'); if (b) { hot(+b.getAttribute('data-id'), true); centerOn(BY_ID[+b.getAttribute('data-id')]); } });
+  $('list-body').addEventListener('focusout', function (e) { var b = e.target.closest('.tbtn'); if (b) hot(+b.getAttribute('data-id'), false); });
+
+  $('back').addEventListener('click', function () { state.selected = null; state.view = 'list'; render(); $('list-h').focus(); });
+
+  function fieldError(input, errEl, msg) {
+    errEl.hidden = !msg; errEl.textContent = msg || '';
+    if (msg) { input.setAttribute('aria-invalid', 'true'); input.setAttribute('aria-describedby', (input.id === 'f-tel' ? 'n-tel ' : '') + errEl.id); }
+    else { input.removeAttribute('aria-invalid'); if (input.id === 'f-tel') input.setAttribute('aria-describedby', 'n-tel'); else input.removeAttribute('aria-describedby'); }
+    return !msg;
+  }
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = $('f-name'), tel = $('f-tel'), t = BY_ID[state.selected];
+    if (!t) return;
+    var okName = fieldError(name, $('e-name'), name.value.trim().length < 3 ? 'Napíšte meno, na ktoré máme stôl držať.' : '');
+    var digits = tel.value.replace(/\D/g, '');
+    var okTel = fieldError(tel, $('e-tel'), digits.length < 9 || digits.length > 13 || !/^[+\d][\d\s/-]*$/.test(tel.value.trim()) ? 'Zadajte telefónne číslo, napríklad +421 900 000 000.' : '');
+    if (!okName) { name.focus(); return; }
+    if (!okTel) { tel.focus(); return; }
+    if (stateOf(t) !== 'free') { state.selected = null; state.view = 'list'; render(); say('Stôl ' + t.id + ' medzitým niekto obsadil. Vyberte iný.'); $('list-h').focus(); return; }
+    var booking = { kod: 'K' + String(hash32(state.date + state.time + t.id + name.value + Date.now()) % 9000 + 1000), datum: state.date, cas: state.time, stol: t.id, osoby: state.guests,
+      meno: name.value.trim(), telefon: tel.value.trim(), poznamka: $('f-note').value.trim(), vytvorene: new Date().toISOString() };
+    var list = load(); list.push(booking); save(list);
+    state.last = booking; state.selected = null; state.view = 'done';
+    $('done-h').textContent = 'Stôl ' + t.id + ' je váš.';
+    $('done-sub').textContent = 'Tešíme sa na vás, ' + booking.meno.split(/\s+/)[0] + '.';
+    $('done-facts').innerHTML = '<dt>Deň</dt><dd>' + cap(longDate(booking.datum)) + '</dd><dt>Príchod</dt><dd>' + booking.cas + '</dd><dt>Hostia</dt><dd>' + guestsText(booking.osoby) +
+      '</dd><dt>Stôl</dt><dd>č. ' + t.id + ', ' + esc(t.where) + '</dd><dt>Meno</dt><dd>' + esc(booking.meno) + '</dd><dt>Telefón</dt><dd>' + esc(booking.telefon) + '</dd>' +
+      (booking.poznamka ? '<dt>Poznámka</dt><dd>' + esc(booking.poznamka) + '</dd>' : '');
+    $('done-code').textContent = 'Kód rezervácie ' + booking.kod;
+    $('form').reset();
+    render();
+    say('Rezervácia potvrdená. Stôl ' + t.id + ', ' + longDate(booking.datum) + ' o ' + booking.cas + ', ' + guestsText(booking.osoby) + '.');
+    $('done-h').focus({ preventScroll: true });
+    if (window.matchMedia('(max-width: 1079.98px)').matches) $('panel').scrollIntoView({ block: 'start' });
+  });
+  ['f-name', 'f-tel'].forEach(function (id) {
+    $(id).addEventListener('input', function () { if (this.getAttribute('aria-invalid')) fieldError(this, $(id === 'f-name' ? 'e-name' : 'e-tel'), ''); });
+  });
+  function cancel(kod) {
+    save(load().filter(function (b) { return b.kod !== kod; }));
+    if (state.last && state.last.kod === kod) { state.last = null; state.view = 'list'; }
+    render(); say('Rezervácia je zrušená, stôl je znova voľný.');
+    $('list-h').focus();
+  }
+  $('again').addEventListener('click', function () { state.view = 'list'; render(); $('list-h').focus(); });
+  $('cancel-last').addEventListener('click', function () { if (state.last) cancel(state.last.kod); });
+  $('mine-list').addEventListener('click', function (e) { var b = e.target.closest('[data-cancel]'); if (b) cancel(b.getAttribute('data-cancel')); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hideTip(); });
+
+  // ---- štart
+  buildDays();
+  state.date = days.filter(function (s) { return firstOpen(s).length > 0; })[0];
+  check('den', state.date, true);
+  buildTimes();
+  render();
+  fitHits();
+  var sc = $('map-scroll');
+  if (sc.scrollWidth > sc.clientWidth) sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) * 0.42;
+  var row = document.querySelector('#hours tr[data-d="' + now.getDay() + '"]');
+  if (row) { row.classList.add('today'); row.querySelector('th').insertAdjacentHTML('beforeend', ' <span class="sr">(dnes)</span>'); }
+})();
+</script>
+</body>
+</html>
