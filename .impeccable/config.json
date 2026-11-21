@@ -17,6 +17,33 @@
         "value": "geist mono",
         "createdAt": "2026-11-20T22:43:07.349Z",
         "reason": "assistant decided: misdetected as primary font; Geist Mono is used only for prices and small labels, headings are Sora and body text is Funnel Sans"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "ukazky/autoservis/index.html"
+        ],
+        "createdAt": "2026-11-21T00:22:29.285Z",
+        "reason": "assistant decided: static scan compares hero text against body #f2f0eb, but that text sits on the dark 3D render and overlay; axe-core in real Chrome (web-audit, desktop + 390 px) reports no contrast violations"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "ukazky/autoservis/assets/site.css"
+        ],
+        "createdAt": "2026-11-21T00:22:29.538Z",
+        "reason": "assistant decided: border on hotspot labels is the connector between the dot on the car and its label; line 330 is the error-state marker of a form field"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "ukazky/autoservis/index.html"
+        ],
+        "createdAt": "2026-11-21T00:22:29.806Z",
+        "reason": "assistant decided: light sections of an industrial graphite/orange demo use a neutral paper tone #f2f0eb on purpose; the hero and price sections are dark"
       }
     ]
   }
