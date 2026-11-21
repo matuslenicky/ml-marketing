@@ -23,6 +23,6 @@ Blender skripty berú zámok `.blender.lock` v koreni repozitára, aby naraz neb
 
 - `index.html` je celá hlavná stránka, bez buildu. Farby v pomere približne 50 % biela, 40 % kobaltová modrá, 10 % limetkový akcent, len svetlý režim.
 - `data-pack` na tlačidlách cenníka sa musí zhodovať s `<option>` vo formulári.
-- `assets/fonts`: Wix Madefor Display a Text (SIL OFL), `node tools/fonts.mjs`.
+- Písmo hlavnej stránky je systémové (SF Pro na Apple zariadeniach, Segoe UI Variable na Windows 11, Roboto na Androide), vzhľad v duchu Apple: veľké nadpisy s tesným trackingom, mäkké viacvrstvové tiene, zaoblenie 22–36 px. `assets/fonts` (Wix Madefor, SIL OFL, `node tools/fonts.mjs`) hlavná stránka už nenačítava.
 - `assets/img`: zábery prác. `node tools/shots.mjs <dir>` a `node tools/shots-extra.mjs <dir>` (živé weby), `node tools/shots-demos.mjs <dir>` (ukážky v `ukazky/`), prevod na WebP cez `python tools/prep.py`, `prep-extra.py`, `prep-demos.py`.
 - `node tools/view.mjs <out.png> <selector> [šírka]` urobí záber časti stránky na kontrolu.
