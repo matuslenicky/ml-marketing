@@ -6,7 +6,7 @@ Firemný web: weby pre služby, ktoré žijú z rezervácií a objednávok (výb
 
 ## Stav
 
-Pracovná verzia. Stránka má `noindex`, kontakty sú zástupné (`data-contact`) a formulár nič neodosiela na server, len otvorí e-mail návštevníka s vyplnenou správou.
+Pracovná verzia. Stránka má `noindex`, telefón je skutočný, e-mail ešte nie je (po jeho zriadení pridať odkaz s `data-contact="email"` a upraviť text pod formulárom). Formulár nič neodosiela na server: kým e-mail chýba, na mobile otvorí SMS s vyplnenou správou a na počítači ukáže telefón.
 
 ## Ukážky v `ukazky/`
 

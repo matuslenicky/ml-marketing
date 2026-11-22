@@ -3,37 +3,36 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ML&amp;T Marketing – weby s rezerváciou a 3D scénou pre služby</title>
-<meta name="description" content="Weby pre služby s rezerváciou, objednávkou opravy a výberom miesta. Priestor vymodelujeme v 3D podľa fotiek: stôl v reštaurácii, parcela v kempe, oprava v servise.">
+<title>ML&amp;T Marketing – prehľadné dopyty a rezervácie pre firmy</title>
+<meta name="description" content="Web a vlastný prehľad, vďaka ktorým máte dopyty, termíny a zákazníkov na jednom mieste. Úplné zadanie od zákazníka bez zbytočných telefonátov a e-mailov.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#ffffff">
 <meta name="color-scheme" content="light">
-<meta property="og:title" content="ML&amp;T Marketing – weby s rezerváciou a 3D scénou pre služby">
-<meta property="og:description" content="Zákazník si na webe vyberie miesto, termín aj službu. Reštaurácie, autoservisy, kempy a ďalšie služby s rezerváciami.">
+<meta property="og:title" content="ML&amp;T Marketing – prehľadné dopyty a rezervácie pre firmy">
+<meta property="og:description" content="Každý dopyt kompletný, prehľadný a na jednom mieste. Web a vlastný prehľad pre firmy, ktoré denne vybavujú zákazníkov a termíny.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://matuslenicky.github.io/ml-marketing/">
 <link rel="canonical" href="https://matuslenicky.github.io/ml-marketing/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231b35c4'/%3E%3Cpath d='M12 44V20h6.4l6.6 13 6.600-13H38v24h-6V31l-4.800 9.500h-4.400L18 31v13zM43 44V20h6v18.500h8.500V44z' fill='%23fff'/%3E%3Crect x='43' y='48' width='14.500' height='4' rx='2' fill='%23d7f24b'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232d4654'/%3E%3Cpath d='M12 44V20h6.4l6.6 13 6.600-13H38v24h-6V31l-4.800 9.500h-4.400L18 31v13zM43 44V20h6v18.500h8.500V44z' fill='%23fff'/%3E%3Crect x='43' y='48' width='14.500' height='4' rx='2' fill='%23c6cfd3'/%3E%3C/svg%3E">
 <style>
-/* Paleta 50 / 40 / 10: biela, kobaltová modrá, limetkový akcent.
+/* Pokojná paleta: biela, jemná teplá sivá a tlmená bridlicová. Farbu nesú len tlačidlá a drobné detaily.
    Vzhľad v duchu Apple: systémové písmo (SF Pro na Apple zariadeniach, Segoe UI Variable na Windows,
-   Roboto na Androide), veľké nadpisy s tesným trackingom, veľa vzduchu a mäkké viacvrstvové tiene namiesto čiar. */
+   Roboto na Androide), nadpisy s tesným trackingom, veľa vzduchu a mäkké viacvrstvové tiene namiesto čiar. */
 :root {
   --white: #ffffff;
-  --tint: #f2f4fc;
-  --blue: #1b35c4;
-  --blue-2: #142aa3;
-  --blue-soft: #cbd3f8;
-  --ink: #0b1437;
-  --muted: #4a5375;
-  --line: #dce1f2;
-  --field-line: #8089ad;
-  --accent: #d7f24b;
+  --tint: #f4f5f3;
+  --brand: #2d4654;
+  --brand-2: #233843;
+  --brand-soft: #c6cfd3;
+  --ink: #1c262d;
+  --muted: #56636b;
+  --line: #dfe3e1;
+  --field-line: #87939a;
   --display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI Variable Display', 'Segoe UI', system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif;
   --text: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI Variable Text', 'Segoe UI', system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif;
   --wrap: 1180px;
   --gutter: clamp(24px, 5vw, 64px);
-  --sec-y: clamp(88px, 11vw, 160px);
+  --sec-y: clamp(72px, 9vw, 128px);
   --r-xl: 36px;
   --r-lg: 28px;
   --r-md: 22px;
@@ -42,7 +41,6 @@
   --sh-card: 0 1px 2px rgba(0, 0, 0, 0.034), 0 6px 16px -4px rgba(0, 0, 0, 0.051), 0 24px 48px -20px rgba(0, 0, 0, 0.136);
   --sh-lift: 0 2px 4px rgba(0, 0, 0, 0.043), 0 16px 32px -10px rgba(0, 0, 0, 0.119), 0 44px 80px -30px rgba(0, 0, 0, 0.255);
   --sh-device: 0 0 0 1px rgba(0, 0, 0, 0.051), 0 2px 6px rgba(0, 0, 0, 0.051), 0 18px 36px -14px rgba(0, 0, 0, 0.204), 0 48px 96px -40px rgba(0, 0, 0, 0.272);
-  --sh-on-blue: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 2px 6px rgba(0, 0, 0, 0.09), 0 24px 48px -20px rgba(0, 0, 0, 0.338);
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 14'%3E%3Cpath d='M1.4 1.4 6.6 7l-5.2 5.6' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   color-scheme: light;
@@ -59,28 +57,24 @@ ul, ol { padding: 0; list-style: none; }
 fieldset { border: 0; padding: 0; min-width: 0; }
 button { font: inherit; color: inherit; letter-spacing: inherit; }
 /* Tracking podľa veľkosti: veľké písmo tesnejšie, text pri nule; riadkovanie naopak. */
-h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; letter-spacing: -0.025em; text-wrap: balance; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; letter-spacing: -0.025em; text-wrap: balance; }
 :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 6px; }
-.on-blue :focus-visible { outline-color: var(--accent); }
+.on-blue :focus-visible { outline-color: var(--white); }
 .wrap { width: min(100% - 2 * var(--gutter), var(--wrap)); margin-inline: auto; }
 .nw { white-space: nowrap; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.skip { position: absolute; left: -9999px; top: 8px; background: var(--accent); color: var(--ink); padding: 12px 16px; border-radius: 12px; z-index: 60; font-weight: 600; }
+.skip { position: absolute; left: -9999px; top: 8px; background: var(--ink); color: var(--white); padding: 12px 16px; border-radius: 12px; z-index: 60; font-weight: 600; }
 .skip:focus { left: 8px; }
 
 /* Tlačidlá: pilulky, plné a obrysové */
-.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 0 28px; border-radius: 999px; border: 1.5px solid var(--blue); background: var(--blue); color: var(--white); font: 500 1.0625rem/1.1 var(--text); letter-spacing: -0.012em; text-decoration: none; cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.1s ease-out; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 0 28px; border-radius: 999px; border: 1.5px solid var(--brand); background: var(--brand); color: var(--white); font: 500 1.0625rem/1.1 var(--text); letter-spacing: -0.012em; text-decoration: none; cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.1s ease-out; }
 /* odozva hneď pri stlačení, nie až po pustení */
 .btn:active, .show-tab:active, .menu-btn:active, .faq-list summary:active { transform: scale(0.97); }
-.btn-line { background: transparent; color: var(--blue); border-color: var(--blue); }
-.btn-accent { background: var(--accent); border-color: var(--accent); color: var(--ink); }
-.btn-white { background: var(--white); border-color: var(--white); color: var(--blue); }
+.btn-line { background: transparent; color: var(--brand); border-color: var(--brand); }
 .btn-small { min-height: 44px; padding: 0 20px; font-size: 0.9375rem; }
 @media (hover: hover) {
-  .btn:hover { background: var(--blue-2); border-color: var(--blue-2); }
-  .btn-line:hover { background: var(--blue); border-color: var(--blue); color: var(--white); }
-  .btn-accent:hover { background: var(--white); border-color: var(--white); color: var(--ink); }
-  .btn-white:hover { background: var(--accent); border-color: var(--accent); color: var(--ink); }
+  .btn:hover { background: var(--brand-2); border-color: var(--brand-2); }
+  .btn-line:hover { background: var(--brand); border-color: var(--brand); color: var(--white); }
 }
 
 /* Hlavička: sklo nad obsahom, čiara sa objaví až keď pod ňou ide obsah */
@@ -90,10 +84,10 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
 @media (prefers-contrast: more) { .top { background: var(--white); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: 0 1px 0 var(--ink); } }
 .top-in { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; }
 .brand { display: inline-flex; align-items: baseline; gap: 6px; min-height: 44px; padding-block: 10px; text-decoration: none; font: 600 1.125rem/1 var(--display); letter-spacing: -0.022em; color: var(--ink); }
-.brand b { font-weight: 800; color: var(--blue); letter-spacing: -0.035em; font-size: 1.25rem; }
+.brand b { font-weight: 800; color: var(--brand); letter-spacing: -0.035em; font-size: 1.25rem; }
 .nav { display: none; align-items: center; gap: 0; }
-.nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; font: 400 0.875rem/1 var(--text); letter-spacing: -0.006em; color: rgba(11, 20, 55, 0.82); transition: color 0.2s; }
-@media (hover: hover) { .nav a:hover { color: var(--blue); } }
+.nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; text-decoration: none; font: 400 0.875rem/1 var(--text); letter-spacing: -0.006em; color: rgba(28, 38, 45, 0.82); transition: color 0.2s; }
+@media (hover: hover) { .nav a:hover { color: var(--brand); } }
 .top-cta { display: none; }
 .top .btn-small { min-height: 44px; padding: 0 18px; font-size: 0.875rem; }
 .menu-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-right: -10px; padding: 0 10px; border-radius: 999px; border: 0; background: transparent; font-weight: 500; font-size: 0.9375rem; cursor: pointer; }
@@ -116,62 +110,42 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
   .menu-btn, .menu, .menu.is-open { display: none; }
 }
 
-/* Úvod: nadpis v strede, pod ním ukážka ako produkt na modrom pódiu */
-.hero { padding: clamp(48px, 7vw, 104px) 0 clamp(64px, 8vw, 120px); }
-.hero-in { display: grid; gap: clamp(44px, 5.5vw, 80px); }
+/* Úvod: nadpis v strede, pod ním ukážka na pokojnom sivom pódiu */
+.hero { padding: clamp(40px, 6vw, 88px) 0 clamp(56px, 7vw, 104px); }
+.hero-in { display: grid; gap: clamp(40px, 5vw, 68px); }
 .hero-copy { display: grid; justify-items: center; text-align: center; }
-.hero h1 { font-size: clamp(2.5rem, 1.15rem + 5.6vw, 5.25rem); line-height: 1.03; letter-spacing: -0.03em; max-width: 13.2em; }
-.hero-lead { margin-top: clamp(20px, 2.2vw, 30px); max-width: 33em; font-size: clamp(1.1875rem, 0.95rem + 0.75vw, 1.5rem); line-height: 1.42; letter-spacing: -0.018em; color: var(--muted); }
-.checks { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 30px; margin-top: clamp(24px, 2.6vw, 34px); text-align: left; }
-.checks li { position: relative; padding-left: 32px; font-size: 1rem; font-weight: 500; line-height: 1.45; letter-spacing: -0.01em; }
-.checks li::before { content: ""; position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); }
-.checks li::after { content: ""; position: absolute; left: 6.5px; top: 7px; width: 9px; height: 5px; border-left: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: rotate(-45deg); }
-.hero-cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: clamp(30px, 3vw, 40px); }
-@media (max-width: 639px) {
-  .checks { flex-direction: column; align-items: flex-start; width: fit-content; max-width: 100%; margin-inline: auto; }
-  .hero-cta { gap: 12px; }
-  .hero-cta .btn { padding: 0 22px; }
-}
-@media (max-width: 374px) { .hero-cta { flex-direction: column; align-items: stretch; width: 100%; } }
+.hero h1 { font-size: clamp(2.25rem, 1.2rem + 4.2vw, 4.25rem); line-height: 1.05; letter-spacing: -0.028em; max-width: 14em; }
+.hero-lead { margin-top: clamp(18px, 2vw, 26px); max-width: 35em; font-size: clamp(1.125rem, 1rem + 0.45vw, 1.3125rem); line-height: 1.5; letter-spacing: -0.014em; color: var(--muted); }
+.hero-cta { display: flex; justify-content: center; margin-top: clamp(26px, 2.6vw, 34px); }
 
 /* Ukážky v úvode: segmented control + okno prehliadača s mäkkým tieňom */
-.show { background: radial-gradient(110% 70% at 50% 0%, #2a45d6 0%, #1b35c4 62%); color: var(--white); border-radius: var(--r-xl); padding: clamp(14px, 3vw, 44px) clamp(14px, 4vw, 56px) clamp(20px, 3vw, 44px); }
-.show-tabs { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; width: min(100%, 440px); margin-inline: auto; padding: 4px; background: rgba(255, 255, 255, 0.13); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08); border-radius: 999px; }
-.show-thumb { position: absolute; left: 0; top: 4px; bottom: 4px; border-radius: 999px; background: var(--white); box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18), 0 1px 1px rgba(0, 0, 0, 0.105); pointer-events: none; }
-.show-tab { position: relative; z-index: 1; min-height: 44px; padding: 0 6px; border: 0; border-radius: 999px; background: transparent; color: var(--white); font-weight: 500; font-size: 0.9375rem; letter-spacing: -0.008em; cursor: pointer; transition: color 0.2s, transform 0.1s ease-out; }
-.show-tab[aria-selected="true"] { background: var(--white); color: var(--blue); font-weight: 600; }
+.show { background: var(--tint); color: var(--ink); border-radius: var(--r-xl); padding: clamp(14px, 3vw, 44px) clamp(14px, 4vw, 56px) clamp(20px, 3vw, 44px); overflow-x: clip; }
+.show-tabs { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; width: min(100%, 440px); margin-inline: auto; padding: 4px; background: rgba(28, 38, 45, 0.07); border-radius: 999px; }
+.show-thumb { position: absolute; left: 0; top: 4px; bottom: 4px; border-radius: 999px; background: var(--white); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.06); pointer-events: none; }
+.show-tab { position: relative; z-index: 1; min-height: 44px; padding: 0 6px; border: 0; border-radius: 999px; background: transparent; color: var(--ink); font-weight: 500; font-size: 0.9375rem; letter-spacing: -0.008em; cursor: pointer; transition: color 0.2s, transform 0.1s ease-out; }
+.show-tab[aria-selected="true"] { background: var(--white); color: var(--ink); font-weight: 600; }
 .has-thumb .show-tab[aria-selected="true"] { background: transparent; }
 .show .frame { touch-action: pan-y; }
 .show-panel { margin-top: clamp(16px, 2.6vw, 32px); }
 .show-panel[hidden] { display: none; }
-.show .frame { max-width: 1000px; margin-inline: auto; border-radius: 16px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 6px rgba(0, 0, 0, 0.15), 0 30px 60px -24px rgba(0, 0, 0, 0.45); }
+.show .frame { max-width: 1000px; margin-inline: auto; border-radius: 16px; box-shadow: 0 0 0 1px rgba(28, 38, 45, 0.06), 0 2px 6px rgba(0, 0, 0, 0.05), 0 24px 48px -28px rgba(0, 0, 0, 0.25); }
 .show .frame img { aspect-ratio: 16 / 10; object-fit: cover; object-position: top left; }
 .show-foot { display: grid; gap: 16px; max-width: 1000px; margin: clamp(18px, 2.2vw, 26px) auto 0; padding-inline: 4px; }
 @media (min-width: 560px) { .show-foot { grid-template-columns: minmax(0, 1fr) auto; align-items: center; } }
-.show-cap { font-size: 1.0625rem; line-height: 1.45; color: var(--blue-soft); min-height: 4.6em; }
-.show-cap b { display: block; margin-bottom: 4px; color: var(--white); font: 600 1.3125rem/1.25 var(--display); letter-spacing: -0.02em; }
+.show-cap { font-size: 1.0625rem; line-height: 1.45; color: var(--muted); min-height: 4.6em; }
+.show-cap b { display: block; margin-bottom: 4px; color: var(--ink); font: 600 1.25rem/1.25 var(--display); letter-spacing: -0.02em; }
 
-/* Pás faktov */
-.facts { background: var(--blue); color: var(--white); }
-.facts ul { display: grid; grid-template-columns: repeat(2, 1fr); gap: 36px 24px; padding: clamp(36px, 5vw, 56px) 0; }
-@media (min-width: 860px) { .facts ul { grid-template-columns: repeat(4, 1fr); gap: 32px; } }
-.facts b { display: block; font: 700 clamp(2.75rem, 1.8rem + 3.2vw, 4.5rem)/1 var(--display); letter-spacing: -0.045em; color: var(--accent); }
-.facts span { display: block; margin-top: 12px; max-width: 15em; color: var(--blue-soft); font-size: 1rem; line-height: 1.45; }
-
-/* Sekcie: veľký rytmus, hlavička v strede */
+/* Sekcie: pokojný rytmus bielej a sivej, hlavička v strede */
 .sec { padding: var(--sec-y) 0; }
-.sec-blue { background: var(--blue); color: var(--white); }
 .sec-tint { background: var(--tint); }
-.sec-head { display: grid; justify-items: center; gap: clamp(16px, 1.8vw, 24px); max-width: 54rem; margin-inline: auto; text-align: center; }
-.sec-head h2 { font-size: clamp(2.25rem, 1.3rem + 3.6vw, 4rem); line-height: 1.05; letter-spacing: -0.028em; max-width: 15em; }
-.sec-head p { color: var(--muted); font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.45; letter-spacing: -0.016em; max-width: 36em; }
-.sec-blue .sec-head p { color: var(--blue-soft); }
-.kicker { display: block; margin-bottom: 14px; font: 600 0.9688rem/1.3 var(--text); color: var(--blue); }
-.sec-blue .kicker { color: var(--accent); }
+.sec-head { display: grid; justify-items: center; gap: clamp(14px, 1.6vw, 20px); max-width: 54rem; margin-inline: auto; text-align: center; }
+.sec-head h2 { font-size: clamp(1.875rem, 1.25rem + 2.4vw, 3rem); line-height: 1.1; letter-spacing: -0.026em; max-width: 18em; }
+.sec-head p { color: var(--muted); font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); line-height: 1.5; letter-spacing: -0.014em; max-width: 36em; }
+.kicker { display: block; margin-bottom: 14px; font: 600 0.9688rem/1.3 var(--text); color: var(--brand); }
 
-/* Ukážky prác: biele karty na jemnom podklade, zariadenia s mäkkým tieňom */
-.works { display: grid; gap: clamp(16px, 2vw, 24px); margin-top: clamp(44px, 5vw, 72px); }
-@media (min-width: 720px) { .works { grid-template-columns: repeat(6, 1fr); } }
+/* Ďalšie návrhy: tri rovnaké karty */
+.works { display: grid; gap: clamp(16px, 2vw, 24px); margin-top: clamp(36px, 4vw, 56px); }
+@media (min-width: 760px) { .works { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .work { display: flex; flex-direction: column; background: var(--white); border-radius: var(--r-lg); box-shadow: var(--sh-card); overflow: hidden; text-decoration: none; color: var(--ink); transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease); }
 .work[href]:active { transform: scale(0.985); transition-duration: 0.1s; }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
@@ -179,40 +153,25 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
   .work[href]:hover:active { transform: translateY(-4px) scale(0.985); }
 }
 .work-media { position: relative; padding: clamp(20px, 2.6vw, 36px); }
-.work-body { display: grid; gap: 8px; padding: 0 clamp(22px, 2.6vw, 36px) clamp(26px, 2.8vw, 36px); }
+.work-body { flex: 1; display: grid; grid-template-rows: auto 1fr auto; gap: 8px; padding: 0 clamp(22px, 2.6vw, 36px) clamp(26px, 2.8vw, 36px); }
 .work-body h3 { font-size: clamp(1.25rem, 1.1rem + 0.45vw, 1.5rem); font-weight: 600; line-height: 1.2; letter-spacing: -0.022em; }
 .work-body p { color: var(--muted); font-size: 1rem; line-height: 1.5; }
-.work-link { display: inline-flex; align-items: center; gap: 6px; width: fit-content; margin-top: 4px; font-weight: 500; color: var(--blue); text-decoration: none; text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
+.work-link { display: inline-flex; align-items: center; gap: 6px; width: fit-content; margin-top: 4px; font-weight: 500; color: var(--brand); text-decoration: none; text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
 .work-link::after { content: ""; flex: none; width: 7px; height: 12px; background: currentColor; -webkit-mask: var(--chev) center / contain no-repeat; mask: var(--chev) center / contain no-repeat; transition: transform 0.3s var(--ease); }
 @media (hover: hover) {
   .work[href]:hover .work-link { text-decoration-line: underline; }
   .work[href]:hover .work-link::after { transform: translateX(3px); }
 }
 .frame { position: relative; border-radius: 14px; overflow: hidden; background: var(--white); box-shadow: var(--sh-device); }
-.frame::before { content: ""; display: block; height: 30px; background: radial-gradient(circle at 16px 15px, #d3d8ea 4.5px, transparent 5px), radial-gradient(circle at 32px 15px, #d3d8ea 4.5px, transparent 5px), radial-gradient(circle at 48px 15px, #d3d8ea 4.5px, transparent 5px), #f7f8fd; }
-.frame::after { content: ""; position: absolute; top: 8px; left: 50%; width: min(36%, 260px); height: 14px; transform: translateX(-50%); border-radius: 7px; background: #e6e9f5; }
+.frame::before { content: ""; display: block; height: 30px; background: radial-gradient(circle at 16px 15px, #d8dcda 4.5px, transparent 5px), radial-gradient(circle at 32px 15px, #d8dcda 4.5px, transparent 5px), radial-gradient(circle at 48px 15px, #d8dcda 4.5px, transparent 5px), #f7f8f7; }
+.frame::after { content: ""; position: absolute; top: 8px; left: 50%; width: min(36%, 260px); height: 14px; transform: translateX(-50%); border-radius: 7px; background: #e8ebe9; }
 .frame img { width: 100%; }
-.phone { position: absolute; right: clamp(30px, 4vw, 60px); bottom: clamp(8px, 1.2vw, 16px); width: clamp(80px, 18%, 150px); border-radius: clamp(16px, 2vw, 26px); border: 4px solid var(--ink); overflow: hidden; background: var(--ink); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.102), 0 18px 36px -12px rgba(0, 0, 0, 0.383); }
-.phone img { width: 100%; aspect-ratio: 390 / 780; object-fit: cover; object-position: top; border-radius: clamp(12px, 1.6vw, 22px); }
-.work-fill { background: var(--blue); color: var(--white); }
-.work-fill .work-media { padding: 0; flex: 1; min-height: 220px; margin-bottom: clamp(20px, 2.4vw, 28px); }
-.work-fill .work-media img { width: 100%; height: 100%; object-fit: cover; }
-.work-fill .work-body p { color: var(--blue-soft); }
-.work-fill .work-link { color: var(--accent); }
-@media (min-width: 720px) {
-  .work-a { grid-column: span 4; }
-  .work-b { grid-column: span 2; }
-  .work-c { grid-column: span 2; }
-  .work-d { grid-column: span 4; }
-  .work-h { grid-column: span 3; }
-}
 
 /* Balíky */
 .packs { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px clamp(14px, 1.6vw, 20px); margin-top: clamp(44px, 5vw, 72px); align-items: stretch; }
 @media (min-width: 640px) { .packs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 980px) { .packs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .pack { position: relative; display: flex; flex-direction: column; padding: clamp(28px, 2.8vw, 40px); border-radius: var(--r-lg); background: var(--tint); color: var(--ink); }
-.sec-blue .pack { background: var(--blue-2); color: var(--white); box-shadow: var(--sh-on-blue); }
 .pack h3 { font-size: 1.5rem; font-weight: 600; line-height: 1.1; letter-spacing: -0.022em; }
 .pack-for { margin-top: 10px; color: var(--muted); font-size: 1rem; line-height: 1.45; }
 /* rovnaká výška popisu len keď sú karty vedľa seba; v jednom stĺpci by ostala prázdna medzera */
@@ -225,32 +184,15 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
   .pack-price { align-content: flex-start; min-height: calc(clamp(2.5rem, 2rem + 1.4vw, 3.25rem) + 4px + 2 * 1.35 * 0.9375rem + 26px); }
   .pack-price span { flex-basis: 100%; }
 }
-.pack-price strong { font: 700 clamp(2.5rem, 2rem + 1.4vw, 3.25rem)/1 var(--display); letter-spacing: -0.045em; white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--blue); }
+.pack-price strong { font: 600 clamp(2.5rem, 2rem + 1.4vw, 3.25rem)/1 var(--display); letter-spacing: -0.04em; white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--ink); }
 .pack-price span { font-size: 0.9375rem; color: var(--muted); line-height: 1.35; letter-spacing: -0.006em; }
 .pack ul { display: grid; gap: 12px; margin: 24px 0 32px; }
 .pack li { position: relative; padding-left: 28px; font-size: 1rem; line-height: 1.45; }
-.pack li::before { content: ""; position: absolute; left: 3px; top: 0.42em; width: 11px; height: 6px; border-left: 1.75px solid var(--blue); border-bottom: 1.75px solid var(--blue); transform: rotate(-45deg); }
+.pack li::before { content: ""; position: absolute; left: 3px; top: 0.42em; width: 11px; height: 6px; border-left: 1.75px solid var(--brand); border-bottom: 1.75px solid var(--brand); transform: rotate(-45deg); }
 .pack .btn { margin-top: auto; align-self: stretch; }
 /* štítok sedí na hornej hrane karty, s názvom sa nikdy nezrazí */
-.pack-tag { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; padding: 7px 14px; border-radius: 999px; background: var(--accent); color: var(--ink); font: 600 0.8125rem/1 var(--text); letter-spacing: 0; }
-.pack.best { background: var(--blue); color: var(--white); }
-.pack.best .pack-for, .pack.best .pack-price span { color: var(--blue-soft); }
-.pack.best .pack-price { border-bottom-color: rgba(255, 255, 255, 0.2); }
-.pack.best .pack-price strong { color: var(--accent); }
-.pack.best li::before { border-color: var(--accent); }
-.sec-blue .pack .pack-for, .sec-blue .pack .pack-price span { color: var(--blue-soft); }
-.sec-blue .pack .pack-price { border-bottom-color: rgba(255, 255, 255, 0.16); }
-.sec-blue .pack .pack-price strong { color: var(--white); }
-.sec-blue .pack li::before { border-color: var(--accent); }
-.sec-blue .pack .btn-line { color: var(--white); border-color: rgba(255, 255, 255, 0.6); }
-@media (hover: hover) { .sec-blue .pack .btn-line:hover { background: var(--white); border-color: var(--white); color: var(--blue); } }
-.sec-blue .pack.best { background: var(--accent); color: var(--ink); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.105), 0 32px 64px -24px rgba(0, 0, 0, 0.413); }
-.sec-blue .pack.best .pack-for, .sec-blue .pack.best .pack-price span { color: #2c3560; }
-.sec-blue .pack.best .pack-price { border-bottom-color: rgba(11, 20, 55, 0.18); }
-.sec-blue .pack.best .pack-price strong { color: var(--ink); }
-.sec-blue .pack.best li::before { border-color: var(--ink); }
-.sec-blue .pack.best .pack-tag { background: var(--ink); color: var(--white); box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.375); }
-.sec-blue .pack.best :focus-visible { outline-color: var(--ink); }
+.pack-tag { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; padding: 7px 14px; border-radius: 999px; background: var(--brand); color: var(--white); font: 600 0.8125rem/1 var(--text); letter-spacing: 0; }
+.pack.best { background: var(--white); box-shadow: inset 0 0 0 1.5px var(--brand), var(--sh-card); }
 /* Dva stĺpce (tablet): tretí balík nenechávame osamote v polovici riadka. */
 @media (min-width: 640px) and (max-width: 979px) {
   .packs > .pack:nth-child(3):last-child { grid-column: 1 / -1; }
@@ -259,24 +201,20 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
 }
 .sec-note { max-width: 44em; margin: clamp(28px, 3vw, 40px) auto 0; text-align: center; color: var(--muted); font-size: 1rem; }
 .sec-note b { color: var(--ink); }
-.sec-blue .sec-note { color: var(--blue-soft); }
-.sec-blue .sec-note b { color: var(--white); }
 
-/* Čo vieme postaviť */
-.caps { display: grid; gap: clamp(14px, 1.6vw, 20px); margin-top: clamp(44px, 5vw, 72px); }
+/* Čo získate */
+.caps { display: grid; gap: clamp(14px, 1.6vw, 20px); margin-top: clamp(36px, 4vw, 56px); }
 @media (min-width: 620px) { .caps { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 980px) { .caps { grid-template-columns: repeat(3, 1fr); } }
-.cap { padding: clamp(26px, 2.6vw, 36px); border-radius: var(--r-lg); background: var(--blue-2); box-shadow: var(--sh-on-blue); }
-.cap h3 { font-size: clamp(1.25rem, 1.1rem + 0.45vw, 1.4375rem); font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
-.cap p { margin-top: 12px; color: var(--blue-soft); font-size: 1rem; line-height: 1.55; }
-.sec .facts { margin-top: clamp(64px, 8vw, 112px); }
-.sec .facts ul { padding: 0; }
+.cap { padding: clamp(24px, 2.4vw, 32px); border-radius: var(--r-lg); background: var(--white); box-shadow: var(--sh-card); }
+.cap h3 { font-size: clamp(1.1875rem, 1.1rem + 0.3vw, 1.3125rem); font-weight: 600; line-height: 1.25; letter-spacing: -0.018em; }
+.cap p { margin-top: 10px; color: var(--muted); font-size: 1rem; line-height: 1.55; }
 
 /* Pre koho: dlaždice namiesto čiar */
 .who { display: grid; gap: clamp(12px, 1.4vw, 18px); margin: clamp(44px, 5vw, 72px) 0 0; }
 @media (min-width: 640px) { .who { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 980px) { .who { grid-template-columns: repeat(3, 1fr); } }
-.who div { display: grid; align-content: start; gap: 8px; padding: clamp(24px, 2.4vw, 32px); border-radius: var(--r-lg); background: var(--tint); }
+.who div { display: grid; align-content: start; gap: 8px; padding: clamp(24px, 2.4vw, 32px); border-radius: var(--r-lg); background: var(--white); box-shadow: var(--sh-card); }
 .who dt { font: 600 clamp(1.1875rem, 1.05rem + 0.4vw, 1.375rem)/1.2 var(--display); letter-spacing: -0.02em; }
 .who dd { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.5; }
 
@@ -286,66 +224,62 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
 .steps { display: grid; gap: 0; counter-reset: s; }
 .steps li { counter-increment: s; position: relative; padding: 0 0 36px 72px; }
 .steps li:last-child { padding-bottom: 0; }
-.steps li::before { content: counter(s); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--blue); color: var(--white); font: 600 1.125rem/1 var(--display); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.102), 0 10px 20px -8px rgba(0, 0, 0, 0.383); }
-.steps li::after { content: ""; position: absolute; left: 23px; top: 60px; bottom: 10px; width: 2px; border-radius: 1px; background: var(--line); }
+.steps li::before { content: counter(s); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--brand); color: var(--white); font: 600 1.125rem/1 var(--display); }
+.steps li::after { content: ""; position: absolute; left: 23px; top: 60px; bottom: 10px; width: 2px; border-radius: 1px; background: rgba(28, 38, 45, 0.16); }
 .steps li:last-child::after { display: none; }
 .steps h3 { font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); font-weight: 600; line-height: 1.2; letter-spacing: -0.022em; padding-top: 10px; }
-.steps h3 span { display: inline-block; margin-left: 8px; padding: 5px 11px; border-radius: 999px; background: var(--tint); color: var(--blue); font: 600 0.8125rem/1.2 var(--text); letter-spacing: 0; vertical-align: 0.2em; }
+.steps h3 span { display: inline-block; margin-left: 8px; padding: 5px 11px; border-radius: 999px; background: var(--white); color: var(--brand); font: 600 0.8125rem/1.2 var(--text); letter-spacing: 0; vertical-align: 0.2em; }
 .steps p { margin-top: 8px; color: var(--muted); max-width: 34em; }
-.sec-accent { background: var(--accent); }
-.sec-accent .sec-head p, .sec-accent .steps p { color: #2c3560; }
-.sec-accent .steps li::after { background: rgba(11, 20, 55, 0.2); }
-.sec-accent .steps h3 span { background: var(--white); }
-.fee { background: var(--blue); color: var(--white); border-radius: var(--r-lg); padding: clamp(28px, 3.2vw, 44px); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.085), 0 32px 64px -28px rgba(0, 0, 0, 0.425); }
-.fee h3 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.022em; }
+.fee { background: var(--white); color: var(--ink); border-radius: var(--r-lg); padding: clamp(28px, 3.2vw, 44px); box-shadow: var(--sh-card); }
+.fee h3 { font-size: 1.375rem; font-weight: 600; letter-spacing: -0.02em; }
 .fee dl { margin: 20px 0 0; display: grid; gap: 0; }
-.fee dl div { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid rgba(255, 255, 255, 0.18); }
+.fee dl div { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid var(--line); }
 .fee dt { font-weight: 500; }
-.fee dd { margin: 0; font: 700 2.25rem/1 var(--display); letter-spacing: -0.045em; white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--accent); }
-.fee p { margin-top: 16px; font-size: 1rem; line-height: 1.5; color: var(--blue-soft); }
-.fee p b { color: var(--white); }
-.fee p + p { padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.18); }
+.fee dd { margin: 0; font: 600 1.875rem/1 var(--display); letter-spacing: -0.04em; white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--ink); }
+.fee p { margin-top: 16px; font-size: 1rem; line-height: 1.5; color: var(--muted); }
+.fee p b { color: var(--ink); }
+.fee p + p { padding-top: 16px; border-top: 1px solid var(--line); }
 
 /* Otázky: jeden stĺpec v strede, otvorená otázka sa zdvihne */
 .faq-in { display: grid; justify-items: center; gap: clamp(36px, 4.4vw, 60px); }
-.faq-in h2 { font-size: clamp(2.25rem, 1.3rem + 3.6vw, 4rem); line-height: 1.05; letter-spacing: -0.028em; text-align: center; }
+.faq-in h2 { font-size: clamp(1.875rem, 1.25rem + 2.4vw, 3rem); line-height: 1.1; letter-spacing: -0.026em; text-align: center; }
 .faq-list { display: grid; gap: 12px; width: 100%; max-width: 860px; }
 .faq-list details { background: var(--tint); border-radius: var(--r-md); padding: 0 clamp(20px, 2.4vw, 30px); transition: background-color 0.3s, box-shadow 0.3s; }
 .faq-list details[open] { background: var(--white); box-shadow: var(--sh-card); }
 .faq-list summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 72px; padding: 18px 0; cursor: pointer; list-style: none; font: 600 clamp(1.0625rem, 1rem + 0.3vw, 1.25rem)/1.3 var(--display); letter-spacing: -0.018em; }
 .faq-list summary::-webkit-details-marker { display: none; }
-.faq-list summary::after { content: ""; flex: none; width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(var(--blue), var(--blue)) center / 12px 2px no-repeat, linear-gradient(var(--blue), var(--blue)) center / 2px 12px no-repeat, var(--white); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.068), 0 3px 10px -3px rgba(0, 0, 0, 0.136); transition: transform 0.35s var(--ease), background-color 0.3s; }
+.faq-list summary::after { content: ""; flex: none; width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(var(--brand), var(--brand)) center / 12px 2px no-repeat, linear-gradient(var(--brand), var(--brand)) center / 2px 12px no-repeat, var(--white); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.068), 0 3px 10px -3px rgba(0, 0, 0, 0.136); transition: transform 0.35s var(--ease), background-color 0.3s; }
 .faq-list details[open] summary::after { transform: rotate(45deg); background-color: var(--tint); }
 .faq-list details p { padding: 0 0 26px; max-width: 42em; color: var(--muted); }
 
 /* Kontakt */
 .contact-in { display: grid; gap: 40px 80px; }
 @media (min-width: 940px) { .contact-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: start; } }
-.contact-in h2 { font-size: clamp(2.25rem, 1.3rem + 3vw, 3.5rem); line-height: 1.05; letter-spacing: -0.028em; }
-.contact-lead { margin-top: 20px; color: var(--blue-soft); max-width: 30em; font-size: clamp(1.125rem, 1rem + 0.5vw, 1.3125rem); line-height: 1.45; letter-spacing: -0.016em; }
+.contact-in h2 { font-size: clamp(1.875rem, 1.25rem + 2.2vw, 2.75rem); line-height: 1.1; letter-spacing: -0.026em; }
+.contact-lead { margin-top: 18px; color: var(--muted); max-width: 30em; font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem); line-height: 1.5; letter-spacing: -0.014em; }
 .contact-ways { display: grid; gap: 4px; margin-top: 30px; }
-.contact-ways a { display: inline-flex; align-items: center; min-height: 46px; width: fit-content; font: 600 1.375rem/1.2 var(--display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; text-decoration-color: var(--accent); text-underline-offset: 6px; text-decoration-thickness: 2px; }
-.form { display: grid; gap: 18px; padding: clamp(24px, 3.4vw, 44px); background: var(--white); color: var(--ink); border-radius: var(--r-lg); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.105), 0 40px 80px -32px rgba(0, 0, 0, 0.45); }
+.contact-ways a { display: inline-flex; align-items: center; min-height: 46px; width: fit-content; font: 600 1.375rem/1.2 var(--display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; text-decoration-color: var(--brand-soft); text-underline-offset: 6px; text-decoration-thickness: 2px; }
+.form { display: grid; gap: 18px; padding: clamp(24px, 3.4vw, 44px); background: var(--white); color: var(--ink); border-radius: var(--r-lg); box-shadow: var(--sh-card); }
 .field { display: grid; gap: 8px; }
 .field label { font-weight: 600; font-size: 0.9375rem; letter-spacing: -0.006em; }
 .field input, .field select, .field textarea { width: 100%; min-height: 54px; padding: 14px 16px; border-radius: var(--r-sm); border: 1px solid var(--field-line); background: var(--white); color: var(--ink); font: 400 1.0625rem/1.4 var(--text); letter-spacing: -0.012em; transition: border-color 0.2s, box-shadow 0.2s; }
-.field select { -webkit-appearance: none; appearance: none; padding-right: 46px; background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M1.4 1.4 7 6.6l5.6-5.2' fill='none' stroke='%230b1437' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 18px center / 13px 8px; }
-.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(27, 53, 196, 0.16); }
+.field select { -webkit-appearance: none; appearance: none; padding-right: 46px; background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M1.4 1.4 7 6.6l5.6-5.2' fill='none' stroke='%231c262d' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 18px center / 13px 8px; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--brand); box-shadow: 0 0 0 4px rgba(45, 70, 84, 0.16); }
 .field textarea { min-height: 128px; resize: vertical; }
 @media (max-width: 359px) {
   .form { padding-left: 16px; padding-right: 16px; }
   .field select { padding-left: 12px; padding-right: 36px; background-position: right 12px center; }
 }
-.form :focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.form :focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
 .field [aria-invalid="true"] { border-color: var(--ink); border-width: 2px; }
 .form-note { font-size: 0.9375rem; color: var(--muted); letter-spacing: -0.006em; }
-.form-note.is-error { font-weight: 600; padding: 12px 14px; border-radius: 12px; background: var(--accent); color: var(--ink); }
+.form-note.is-error { font-weight: 600; padding: 12px 14px; border-radius: 12px; background: #f6ebe6; color: #7a2e16; }
 
 /* Pätička */
-.foot { background: var(--ink); color: var(--blue-soft); padding: 40px 0 48px; font-size: 0.9375rem; letter-spacing: -0.006em; }
+.foot { background: var(--ink); color: var(--brand-soft); padding: 40px 0 48px; font-size: 0.9375rem; letter-spacing: -0.006em; }
 .foot-in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; }
 .foot .brand { color: var(--white); }
-.foot .brand b { color: var(--accent); }
+.foot .brand b { color: var(--white); }
 .foot-nav { display: flex; flex-wrap: wrap; gap: 0 2px; margin-inline: -10px; }
 .foot-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; text-underline-offset: 4px; }
 .foot-legal { flex-basis: 100%; margin-top: 8px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.12); font-size: 0.875rem; }
@@ -359,7 +293,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
     <a class="brand" href="#" aria-label="ML&amp;T Marketing, na začiatok stránky"><b>ML&amp;T</b> Marketing</a>
     <nav class="nav" aria-label="Hlavná navigácia">
       <a href="#ukazky">Ukážky</a>
-      <a href="#moznosti">Čo vieme</a>
+      <a href="#moznosti">Čo získate</a>
       <a href="#pre-koho">Pre koho</a>
       <a href="#cennik">Cenník</a>
       <a href="#navrh">Ako pracujeme</a>
@@ -370,7 +304,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
   <nav class="menu" id="menu" aria-label="Navigácia na mobile">
     <div class="wrap">
       <a href="#ukazky">Ukážky</a>
-      <a href="#moznosti">Čo vieme postaviť</a>
+      <a href="#moznosti">Čo získate</a>
       <a href="#pre-koho">Pre koho</a>
       <a href="#cennik">Cenník</a>
       <a href="#navrh">Ako pracujeme</a>
@@ -384,20 +318,14 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
   <section class="hero">
     <div class="wrap hero-in">
       <div class="hero-copy">
-        <h1>Weby, na ktorých si zákazník vyberie miesto, termín aj službu.</h1>
-        <p class="hero-lead">Staviame weby pre služby, ktoré žijú z&nbsp;rezervácií a&nbsp;objednávok. Priestor vymodelujeme v&nbsp;3D podľa vašich fotiek, takže zákazník vidí, čo si rezervuje: stôl v&nbsp;reštaurácii, parcelu v&nbsp;kempe alebo opravu v&nbsp;servise.</p>
-        <ul class="checks">
-          <li>Rezervácia, objednávka opravy alebo výber miesta priamo na webe</li>
-          <li>3D scéna z&nbsp;Blendera podľa fotiek vášho priestoru</li>
-          <li>Prehľad rezervácií pre vás, bez provízií z&nbsp;objednávok</li>
-        </ul>
+        <h1>Každý dopyt kompletný, prehľadný a&nbsp;na jednom mieste.</h1>
+        <p class="hero-lead">Postavíme vám web a&nbsp;vlastný prehľad objednávok, ktoré zjednodušia cestu od prvého záujmu po vybavenú zákazku. Zákazník presne ukáže, čo potrebuje, a&nbsp;vy máte všetky údaje bez zbytočných telefonátov a&nbsp;dopisovania.</p>
         <div class="hero-cta">
-          <a class="btn" href="#ukazky">Pozrieť ukážky</a>
-          <a class="btn btn-line" href="#kontakt">Napísať nám</a>
+          <a class="btn" href="#kontakt">Napísať nám</a>
         </div>
       </div>
 
-      <div class="show on-blue">
+      <div class="show" id="ukazky">
         <div class="show-tabs" role="tablist" aria-label="Ukážka">
           <button class="show-tab" type="button" role="tab" id="st-restauracia" aria-controls="sp-restauracia" aria-selected="true">Reštaurácia</button>
           <button class="show-tab" type="button" role="tab" id="st-autoservis" aria-controls="sp-autoservis" aria-selected="false" tabindex="-1">Autoservis</button>
@@ -406,76 +334,52 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
         <div class="show-panel" role="tabpanel" id="sp-restauracia" aria-labelledby="st-restauracia">
           <div class="frame"><img src="assets/img/demo-restauracia-1120.webp" srcset="assets/img/demo-restauracia-640.webp 640w, assets/img/demo-restauracia-1120.webp 1120w" sizes="(min-width: 1180px) 1000px, 88vw" width="1120" height="700" alt="Web reštaurácie: pohľad do sály zhora, hosť si na ňom vyberá stôl"></div>
           <div class="show-foot">
-            <p class="show-cap"><b>Hosť si vyberie stôl priamo v&nbsp;sále</b>Zvolí dátum, čas a&nbsp;počet ľudí a&nbsp;vidí, čo je voľné.</p>
-            <a class="btn btn-accent btn-small" href="ukazky/restauracia/">Otvoriť ukážku</a>
+            <p class="show-cap"><b>Hosť si vyberie stôl priamo v&nbsp;sále</b>Vy dostanete rezerváciu s&nbsp;časom, počtom ľudí a&nbsp;konkrétnym stolom.</p>
+            <a class="btn btn-small" href="ukazky/restauracia/">Otvoriť ukážku</a>
           </div>
         </div>
         <div class="show-panel" role="tabpanel" id="sp-autoservis" aria-labelledby="st-autoservis" hidden>
           <div class="frame"><img src="assets/img/demo-autoservis-1120.webp" srcset="assets/img/demo-autoservis-640.webp 640w, assets/img/demo-autoservis-1120.webp 1120w" sizes="(min-width: 1180px) 1000px, 88vw" width="1120" height="700" loading="lazy" alt="Web autoservisu: auto v dielni s klikateľnými bodmi pri kolese, motore a brzdách"></div>
           <div class="show-foot">
-            <p class="show-cap"><b>Klik na časť auta ukáže službu</b>Zákazník vidí orientačnú cenu a&nbsp;objedná si termín.</p>
-            <a class="btn btn-accent btn-small" href="ukazky/autoservis/">Otvoriť ukážku</a>
+            <p class="show-cap"><b>Zákazník ukáže, čo treba opraviť</b>Do servisu príde dopyt s&nbsp;autom, problémom a&nbsp;želaným termínom.</p>
+            <a class="btn btn-small" href="ukazky/autoservis/">Otvoriť ukážku</a>
           </div>
         </div>
         <div class="show-panel" role="tabpanel" id="sp-kemp" aria-labelledby="st-kemp" hidden>
           <div class="frame"><img src="assets/img/pullmann-3d-1100.webp" srcset="assets/img/pullmann-3d-640.webp 640w, assets/img/pullmann-3d-1100.webp 1100w" sizes="(min-width: 1180px) 1000px, 88vw" width="1100" height="639" loading="lazy" alt="3D model kempu v Piešťanoch s parcelami, cestami a budovami"></div>
           <div class="show-foot">
-            <p class="show-cap"><b>Hosť si prejde kemp v&nbsp;3D</b>Vyberie parcelu, na ktorú sa zmestí, a&nbsp;mapa spočíta cenu pobytu.</p>
-            <a class="btn btn-accent btn-small" href="https://matuslenicky.github.io/parcela/kempy/pullmann/" target="_blank" rel="noopener">Otvoriť ukážku</a>
+            <p class="show-cap"><b>Hosť si vyberie parcelu v&nbsp;3D</b>Recepcia dostane pobyt s&nbsp;termínom, vozidlom a&nbsp;konkrétnym miestom.</p>
+            <a class="btn btn-small" href="https://matuslenicky.github.io/parcela/kempy/pullmann/" target="_blank" rel="noopener">Otvoriť ukážku</a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="sec sec-tint" id="ukazky" aria-labelledby="h-ukazky">
+  <section class="sec sec-tint" id="moznosti" aria-labelledby="h-moznosti">
     <div class="wrap">
       <div class="sec-head">
-        <h2 id="h-ukazky">Ukážky, ktoré si môžete preklikať</h2>
-        <p>Nič z&nbsp;toho nie je obrázok z&nbsp;prezentácie. Rezerváciu stola, objednávku v&nbsp;servise aj mapu kempu si vyskúšate naživo, na telefóne aj na počítači.</p>
+        <h2 id="h-moznosti">Menej administratívy okolo zákaziek, viac času na prácu</h2>
+        <p>Upraceme celú cestu od prvého záujmu zákazníka až po potvrdenú objednávku.</p>
+      </div>
+      <ul class="caps">
+        <li class="cap"><h3>Úplné zadanie od prvej správy</h3><p>Web zákazníka prevedie všetkým, čo potrebujete vedieť. K&nbsp;vám príde služba, rozsah, termín aj kontakt, bez ďalšieho dopisovania.</p></li>
+        <li class="cap"><h3>Poriadok v&nbsp;<span class="nw">e-mailoch</span></h3><p>Dopyty sa nestrácajú medzi faktúrami a&nbsp;reklamou. Každý má svoj stav, takže je jasné, čo je vybavené a&nbsp;čo čaká na odpoveď.</p></li>
+        <li class="cap"><h3>Vlastný prehľad objednávok</h3><p>Dopyty, termíny a&nbsp;zákazníci na jednej obrazovke, v&nbsp;počítači aj v&nbsp;mobile. Potvrdiť, presunúť alebo doplniť poznámku zvládnete na pár klikov.</p></li>
+        <li class="cap"><h3>Menej opakovaných otázok</h3><p>Služby, postup a&nbsp;dostupné termíny si zákazník nájde sám. Telefonujete až vtedy, keď to naozaj posunie zákazku.</p></li>
+        <li class="cap"><h3>Termíny bez kolízií</h3><p>Web ponúka len to, čo je naozaj voľné. Obsadený termín alebo miesto sa ďalšiemu zákazníkovi už neukáže.</p></li>
+        <li class="cap"><h3>Jasno ešte pred objednávkou</h3><p>Stôl, parcelu, časť auta alebo produkt si zákazník pozrie na pláne či v&nbsp;3D. Menej nedorozumení pri príchode aj pri odovzdaní.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec" id="prace" aria-labelledby="h-prace">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="h-prace">Ďalšie naše návrhy</h2>
       </div>
       <div class="works">
-        <a class="work work-h" href="ukazky/restauracia/">
-          <div class="work-media">
-            <div class="frame"><img src="assets/img/demo-restauracia-1120.webp" srcset="assets/img/demo-restauracia-640.webp 640w, assets/img/demo-restauracia-1120.webp 1120w" sizes="(min-width: 720px) 46vw, 92vw" width="1120" height="700" loading="lazy" alt="Web reštaurácie s pohľadom do sály a výberom stola"></div>
-            <div class="phone"><img src="assets/img/m-restauracia-390.webp" width="390" height="780" loading="lazy" alt="Výber stola na telefóne"></div>
-          </div>
-          <div class="work-body">
-            <h3>Reštaurácia s&nbsp;výberom stola</h3>
-            <p>Sála vymodelovaná v&nbsp;3D. Hosť zvolí čas a&nbsp;počet ľudí a&nbsp;rezervuje si konkrétny stôl.</p>
-            <span class="work-link">Vyskúšať rezerváciu</span>
-          </div>
-        </a>
-        <a class="work work-h" href="ukazky/autoservis/">
-          <div class="work-media">
-            <div class="frame"><img src="assets/img/demo-autoservis-1120.webp" srcset="assets/img/demo-autoservis-640.webp 640w, assets/img/demo-autoservis-1120.webp 1120w" sizes="(min-width: 720px) 46vw, 92vw" width="1120" height="700" loading="lazy" alt="Web autoservisu s autom v dielni a bodmi služieb"></div>
-            <div class="phone"><img src="assets/img/m-autoservis-390.webp" width="390" height="780" loading="lazy" alt="Web autoservisu na telefóne"></div>
-          </div>
-          <div class="work-body">
-            <h3>Autoservis s&nbsp;3D dielňou</h3>
-            <p>Klik na časť auta ukáže službu a&nbsp;cenu. Objednaný termín príde servisu do prehľadu rezervácií.</p>
-            <span class="work-link">Vyskúšať objednávku</span>
-          </div>
-        </a>
-        <a class="work work-a" href="https://matuslenicky.github.io/parcela/kempy/pullmann/" target="_blank" rel="noopener">
-          <div class="work-media">
-            <div class="frame"><img src="assets/img/pullmann-3d-1100.webp" srcset="assets/img/pullmann-3d-640.webp 640w, assets/img/pullmann-3d-1100.webp 1100w" sizes="(min-width: 720px) 62vw, 92vw" width="1100" height="639" loading="lazy" alt="3D model kempu v Piešťanoch: parcely na ostrovčeku medzi štrkovými cestami, rady parciel pri plote, budovy, potok a ihrisko"></div>
-            <div class="phone"><img src="assets/img/m-pullmann-390.webp" width="390" height="780" loading="lazy" alt="Mapa parciel toho istého kempu na telefóne"></div>
-          </div>
-          <div class="work-body">
-            <h3>Kemp s&nbsp;mapou parciel v&nbsp;3D</h3>
-            <p>Návrh pre kemp v&nbsp;Piešťanoch: hosť si prejde celý areál v&nbsp;3D, vyberie parcelu, na ktorú sa zmestí, a&nbsp;mapa spočíta cenu pobytu.</p>
-            <span class="work-link">Prejsť kemp v&nbsp;3D</span>
-          </div>
-        </a>
-        <div class="work work-b work-fill">
-          <div class="work-media"><img src="assets/img/kemp-3d-640.webp" width="640" height="400" loading="lazy" alt="3D model ukážkového kempu: parcely v radoch pri jazere, cesty, budovy a obytné autá"></div>
-          <div class="work-body">
-            <h3>Celý areál v&nbsp;3D</h3>
-            <p>Kemp vymodelovaný v&nbsp;Blenderi, s&nbsp;prechádzkou priamo v&nbsp;prehliadači.</p>
-          </div>
-        </div>
-        <a class="work work-c" href="https://matuslenicky.github.io/ok-castkovce/" target="_blank" rel="noopener">
+        <a class="work" href="https://matuslenicky.github.io/ok-castkovce/" target="_blank" rel="noopener">
           <div class="work-media"><div class="frame"><img src="assets/img/klub-castkovce-640.webp" width="640" height="400" loading="lazy" alt="Návrh webu OK Častkovce: spoločná fotka klubu na štadióne a najbližší zápas A-mužstva"></div></div>
           <div class="work-body">
             <h3>OK Častkovce</h3>
@@ -483,7 +387,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
             <span class="work-link">Otvoriť web</span>
           </div>
         </a>
-        <a class="work work-c" href="https://matuslenicky.github.io/ofk-kovarce/" target="_blank" rel="noopener">
+        <a class="work" href="https://matuslenicky.github.io/ofk-kovarce/" target="_blank" rel="noopener">
           <div class="work-media"><div class="frame"><img src="assets/img/klub-kovarce-640.webp" width="640" height="400" loading="lazy" alt="Návrh klubového webu so zápasmi v mesačnom kalendári"></div></div>
           <div class="work-body">
             <h3>Klub s&nbsp;kalendárom zápasov</h3>
@@ -491,7 +395,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
             <span class="work-link">Otvoriť návrh</span>
           </div>
         </a>
-        <a class="work work-c" href="https://matuslenicky.github.io/hlbina/" target="_blank" rel="noopener">
+        <a class="work" href="https://matuslenicky.github.io/hlbina/" target="_blank" rel="noopener">
           <div class="work-media"><div class="frame"><img src="assets/img/hlbina-640.webp" width="640" height="400" loading="lazy" alt="Úvod webu HLBINA: sklenená fľaša vody na kameni v krajine"></div></div>
           <div class="work-body">
             <h3>Značka vody HLBINA</h3>
@@ -503,49 +407,24 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
     </div>
   </section>
 
-  <section class="sec sec-blue on-blue" id="moznosti" aria-labelledby="h-moznosti">
+  <section class="sec sec-tint" id="pre-koho" aria-labelledby="h-koho">
     <div class="wrap">
       <div class="sec-head">
-        <h2 id="h-moznosti">Čo na takom webe vieme postaviť</h2>
-        <p>Väčšina služieb potrebuje to isté: aby si zákazník vybral, objednal sa a&nbsp;vy ste o&nbsp;tom hneď vedeli.</p>
-      </div>
-      <ul class="caps">
-        <li class="cap"><h3>Výber miesta</h3><p>Stôl, parcela, sedadlo alebo kurt. Zákazník ho vidí na pláne alebo v&nbsp;3D scéne a&nbsp;vyberie si presne to svoje.</p></li>
-        <li class="cap"><h3>Rezervácia termínu</h3><p>Web ponúka len voľné časy. Čo si niekto rezervuje, ďalšiemu sa už neukáže.</p></li>
-        <li class="cap"><h3>Objednávka opravy alebo služby</h3><p>Zákazník vyberie službu, vidí orientačnú cenu a&nbsp;pošle termín aj údaje o&nbsp;aute či zariadení.</p></li>
-        <li class="cap"><h3>Prehľad pre prevádzku</h3><p>Všetky rezervácie na jednom mieste: potvrdiť, presunúť, zamietnuť, pripísať poznámku.</p></li>
-        <li class="cap"><h3>3D scéna z&nbsp;Blendera</h3><p>Sálu, dielňu alebo celý areál vymodelujeme podľa fotiek a&nbsp;plánu. Svetlo aj uhol sa dajú kedykoľvek zmeniť.</p></li>
-        <li class="cap"><h3>Údaje, ktoré sa dopĺňajú samy</h3><p>Obsadenosť, cenník podľa sezóny alebo športové výsledky. Nikto ich neprepisuje ručne.</p></li>
-      </ul>
-      <div class="facts">
-        <ul>
-          <li><b>20+</b><span>klubových webov, každý s&nbsp;vlastným vzhľadom</span></li>
-          <li><b>5</b><span>areálov kempov vymodelovaných v&nbsp;3D</span></li>
-          <li><b>0&nbsp;%</b><span>provízia z&nbsp;rezervácií vašich zákazníkov</span></li>
-          <li><b>390&nbsp;px</b><span>šírka telefónu, na ktorej každý web meriame ako na prvej</span></li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec" id="pre-koho" aria-labelledby="h-koho">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2 id="h-koho">Pre každú službu, kde si zákazník niečo rezervuje</h2>
-        <p>Reštaurácia a&nbsp;autoservis sú len dva príklady. Rovnaký základ funguje všade, kde sa vyberá miesto, termín alebo oprava.</p>
+        <h2 id="h-koho">Pre firmy, ktoré denne vybavujú dopyty a&nbsp;termíny</h2>
+        <p>Rovnaký základ prispôsobíme vášmu odboru, aby ste od zákazníka dostali presne tie údaje, s&nbsp;ktorými viete hneď pracovať.</p>
       </div>
       <dl class="who">
-        <div><dt>Reštaurácie a&nbsp;kaviarne</dt><dd>Hosť si vyberá stôl, čas a&nbsp;počet ľudí.</dd></div>
-        <div><dt>Autoservisy a&nbsp;pneuservisy</dt><dd>Zákazník si vyberá službu, termín a&nbsp;zadá auto.</dd></div>
-        <div><dt>Kempy, chaty a&nbsp;penzióny</dt><dd>Hosť si vyberá parcelu, chatku alebo izbu.</dd></div>
-        <div><dt>Kaderníctva, salóny a&nbsp;ordinácie</dt><dd>Klient si vyberá termín a&nbsp;človeka, ku ktorému ide.</dd></div>
-        <div><dt>Športoviská a&nbsp;kluby</dt><dd>Hráč si vyberá kurt alebo ihrisko, fanúšik zápas.</dd></div>
-        <div><dt>Požičovne a&nbsp;remeslá</dt><dd>Zákazník si vyberá vec, deň alebo výjazd k&nbsp;sebe.</dd></div>
+        <div><dt>Výroba, montáž a&nbsp;remeslá</dt><dd>Rozmery, požiadavky a&nbsp;fotky pripravené na cenovú ponuku.</dd></div>
+        <div><dt>Kempy, chaty a&nbsp;penzióny</dt><dd>Pobyt, počet hostí a&nbsp;konkrétne miesto v&nbsp;jednej žiadosti.</dd></div>
+        <div><dt>Reštaurácie a&nbsp;kaviarne</dt><dd>Čas, počet hostí a&nbsp;stôl bez telefonovania.</dd></div>
+        <div><dt>Autoservisy a&nbsp;pneuservisy</dt><dd>Auto, problém a&nbsp;želaný termín ešte pred príchodom.</dd></div>
+        <div><dt>Kaderníctva, salóny a&nbsp;štúdiá</dt><dd>Služba, pracovník a&nbsp;voľný termín v&nbsp;jednom kalendári.</dd></div>
+        <div><dt>Športoviská, kluby a&nbsp;požičovne</dt><dd>Kurt, vybavenie alebo termín bez ručného zapisovania.</dd></div>
       </dl>
     </div>
   </section>
 
-  <section class="sec sec-blue on-blue" id="cennik" aria-labelledby="h-cennik">
+  <section class="sec" id="cennik" aria-labelledby="h-cennik">
     <div class="wrap">
       <div class="sec-head">
         <h2 id="h-cennik">Tri úrovne podľa toho, čo má web vedieť</h2>
@@ -565,14 +444,14 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
           <a class="btn btn-line btn-small" href="#kontakt" data-pack="Web">Mám záujem</a>
         </article>
         <article class="pack best">
-          <span class="pack-tag">Najčastejšie</span>
+          <span class="pack-tag">Odporúčame</span>
           <h3>Web s&nbsp;rezerváciou</h3>
           <p class="pack-for">Zákazník si vyberie termín alebo miesto a&nbsp;vy to vidíte v&nbsp;prehľade.</p>
           <p class="pack-price"><strong>od 990&nbsp;€</strong><span>jednorazovo<br>+ od 29&nbsp;€ mesačne</span></p>
           <ul>
             <li>Všetko z&nbsp;úrovne Web</li>
             <li>Výber termínu, stola alebo parcely</li>
-            <li>Prehľad rezervácií pre prevádzku</li>
+            <li>Vlastný prehľad dopytov a&nbsp;rezervácií</li>
             <li>Potvrdenie zákazníkovi <span class="nw">e-mailom</span></li>
             <li>Cenník a&nbsp;výpočet ceny</li>
           </ul>
@@ -580,7 +459,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
         </article>
         <article class="pack">
           <h3>Web s&nbsp;3D scénou</h3>
-          <p class="pack-for">Váš priestor vymodelovaný v&nbsp;Blenderi, zákazník si vyberá priamo v&nbsp;ňom.</p>
+          <p class="pack-for">Zákazník si vyberá priamo vo vašom priestore zobrazenom v&nbsp;3D.</p>
           <p class="pack-price"><strong>od 2&nbsp;400&nbsp;€</strong><span>jednorazovo<br>+ od 79&nbsp;€ mesačne</span></p>
           <ul>
             <li>Všetko z&nbsp;úrovne Web s&nbsp;rezerváciou</li>
@@ -595,7 +474,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
     </div>
   </section>
 
-  <section class="sec sec-accent" id="navrh" aria-labelledby="h-navrh">
+  <section class="sec sec-tint" id="navrh" aria-labelledby="h-navrh">
     <div class="wrap">
       <div class="sec-head">
         <h2 id="h-navrh">Návrh robíme na vašich podkladoch, preto je platený</h2>
@@ -616,7 +495,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
             <p>Poplatok za návrh celý odpočítame z&nbsp;ceny. Po spustení sa o&nbsp;prevádzku staráme ďalej.</p>
           </li>
         </ol>
-        <aside class="fee on-blue" aria-labelledby="h-fee">
+        <aside class="fee" aria-labelledby="h-fee">
           <h3 id="h-fee">Poplatok za návrh</h3>
           <dl>
             <div><dt>Web bez 3D scény</dt><dd>49&nbsp;€</dd></div>
@@ -634,20 +513,8 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
       <h2 id="h-faq">Časté otázky</h2>
       <div class="faq-list">
         <details>
-          <summary>Dá sa 3D scéna spraviť len z&nbsp;fotiek?</summary>
-          <p>Áno. Stačia fotky priestoru z&nbsp;viacerých strán a&nbsp;približné rozmery alebo plán. Scénu vymodelujeme v&nbsp;Blenderi a&nbsp;pred spustením vám ju ukážeme.</p>
-        </details>
-        <details>
-          <summary>Prečo je návrh platený?</summary>
-          <p>Lebo je to hotová práca na mieru, nie šablóna. Poplatok je nízky a&nbsp;pri objednávke ho celý odpočítame z&nbsp;ceny, takže ak pokračujete, návrh vás nestojí nič navyše.</p>
-        </details>
-        <details>
           <summary>Je cena z&nbsp;ponuky konečná?</summary>
           <p>Áno, pre rozsah, ktorý je v&nbsp;ponuke vypísaný. Ak potrebujete niečo navyše, cenu vám napíšeme skôr, než na tom začneme pracovať.</p>
-        </details>
-        <details>
-          <summary>Robíte aj reklamné kampane a&nbsp;správu sociálnych sietí?</summary>
-          <p>Nie. Robíme weby, rezervácie a&nbsp;3D scény. Reklamu a&nbsp;sociálne siete nechávame ľuďom, ktorí sa im venujú naplno.</p>
         </details>
         <details>
           <summary>Máme už web. Dá sa rezervácia doplniť doň?</summary>
@@ -669,14 +536,13 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
     </div>
   </section>
 
-  <section class="sec sec-blue on-blue" id="kontakt" aria-labelledby="h-kontakt">
+  <section class="sec sec-tint" id="kontakt" aria-labelledby="h-kontakt">
     <div class="wrap contact-in">
       <div>
         <h2 id="h-kontakt">Napíšte nám, ozveme sa do jedného pracovného dňa</h2>
-        <p class="contact-lead">Stačí napísať, akú službu prevádzkujete a&nbsp;čo si u&nbsp;vás zákazník rezervuje. Úvodný hovor a&nbsp;cenová ponuka sú zadarmo a&nbsp;k&nbsp;ničomu vás nezaväzujú.</p>
+        <p class="contact-lead">Stačí napísať, čím sa zaoberáte a&nbsp;kde dnes pri vybavovaní zákazníkov strácate najviac času. Úvodný hovor a&nbsp;cenová ponuka sú zadarmo a&nbsp;k&nbsp;ničomu vás nezaväzujú.</p>
         <div class="contact-ways">
-          <a href="tel:+421000000000" data-contact="phone">+421 000 000 000</a>
-          <a href="mailto:kontakt@example.com" data-contact="email">kontakt@example.com</a>
+          <a href="tel:+421907324441" data-contact="phone">+421 907 324 441</a>
         </div>
       </div>
       <form class="form" id="form" novalidate>
@@ -703,7 +569,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
           <label for="f-msg">Aká je to služba a&nbsp;čo potrebujete</label>
           <textarea id="f-msg" name="msg" rows="4"></textarea>
         </div>
-        <p class="form-note" id="form-note" role="status">Otvorí sa váš <span class="nw">e-mail</span> s&nbsp;vyplnenou správou, stačí ju odoslať.</p>
+        <p class="form-note" id="form-note" role="status">Na mobile sa otvorí SMS s&nbsp;vyplnenou správou, z&nbsp;počítača nám zavolajte.</p>
         <button class="btn" type="submit">Poslať správu</button>
       </form>
     </div>
@@ -720,7 +586,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
       <a href="#otazky">Časté otázky</a>
       <a href="#kontakt">Kontakt</a>
     </nav>
-    <p class="foot-legal">Weby s&nbsp;rezerváciou a&nbsp;3D scénou pre služby. © 2026 ML&amp;T Marketing</p>
+    <p class="foot-legal">Weby, dopyty a&nbsp;rezervácie pre firmy a&nbsp;služby. © 2026 ML&amp;T Marketing</p>
   </div>
 </footer>
 
@@ -855,7 +721,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
     });
   });
 
-  /* Formulár skladá e-mail, nič neodosiela na server */
+  /* Formulár skladá e-mail alebo SMS, nič neodosiela na server */
   var form = document.getElementById('form');
   var note = document.getElementById('form-note');
   form.addEventListener('submit', function (e) {
@@ -870,11 +736,20 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.08; l
       (name ? form.elements.reach : form.elements.name).focus();
       return;
     }
-    var to = document.querySelector('[data-contact="email"]').textContent.trim();
+    var mail = document.querySelector('[data-contact="email"]');
+    var phone = document.querySelector('[data-contact="phone"]').textContent.trim();
     var pack = select.value || 'Ešte nevieme, poraďte nám';
     var body = 'Meno: ' + name + '\nKontakt: ' + reach + '\nZáujem: ' + pack + '\n\n' + form.elements.msg.value.trim();
-    location.href = 'mailto:' + to + '?subject=' + encodeURIComponent('Dopyt: ' + pack) + '&body=' + encodeURIComponent(body);
-    note.textContent = 'Otvoril sa váš e-⁠mail s' + NB + 'vyplnenou správou. Ak nie, napíšte priamo na ' + to + '.';
+    if (mail) {
+      var to = mail.textContent.trim();
+      location.href = 'mailto:' + to + '?subject=' + encodeURIComponent('Dopyt: ' + pack) + '&body=' + encodeURIComponent(body);
+      note.textContent = 'Otvoril sa váš e-⁠mail s' + NB + 'vyplnenou správou. Ak nie, napíšte priamo na ' + to + '.';
+    } else if (window.matchMedia('(pointer: coarse)').matches) {
+      location.href = 'sms:' + phone.replace(/\s/g, '') + '?&body=' + encodeURIComponent(body);
+      note.textContent = 'Otvorila sa SMS s' + NB + 'vyplnenou správou. Ak nie, zavolajte na ' + phone.replace(/ /g, NB) + '.';
+    } else {
+      note.textContent = 'Z' + NB + 'počítača nám, prosím, zavolajte alebo pošlite SMS na ' + phone.replace(/ /g, NB) + '.';
+    }
   });
 })();
 </script>

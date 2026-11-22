@@ -10,7 +10,7 @@
           "index.html"
         ],
         "createdAt": "2026-11-20T22:14:11.186Z",
-        "reason": "assistant decided: false positive, sections and lists are inset with clamp() padding (56-112 px) that the static scan does not resolve; verified on desktop and 390 px phone screenshots"
+        "reason": "Claude measured in Chrome at 320, 390, 768 and 1280 px: flagged .sec, .cap, .who div and FAQ details keep at least 17 px text inset; detector does not resolve clamp() padding"
       },
       {
         "rule": "overused-font",
