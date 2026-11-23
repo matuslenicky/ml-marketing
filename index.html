@@ -210,33 +210,19 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
 .cap h3 { font-size: clamp(1.1875rem, 1.1rem + 0.3vw, 1.3125rem); font-weight: 600; line-height: 1.25; letter-spacing: -0.018em; }
 .cap p { margin-top: 10px; color: var(--muted); font-size: 1rem; line-height: 1.55; }
 
-/* Pre koho: vyhľadávanie a rozbaľovacie oblasti (obsah generuje tools/odbory.mjs) */
-.finder { display: grid; gap: 8px; max-width: 560px; margin-top: clamp(32px, 4vw, 48px); }
-.finder label { font-weight: 600; }
-.finder input { width: 100%; min-height: 52px; padding: 0 22px; border: 1.5px solid var(--muted); border-radius: 999px; background: var(--white); color: var(--ink); font: 400 1.0625rem/1.2 var(--text); letter-spacing: -0.012em; }
-.finder input::placeholder { color: var(--muted); opacity: 1; }
-.finder input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; width: 32px; height: 32px; margin-right: -8px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1.5 1.5l9 9m0-9l-9 9' fill='none' stroke='%2356636b' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 12px 12px no-repeat; cursor: pointer; }
-.finder input:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 999px; }
-.finder p { padding-left: 22px; color: var(--muted); font-size: 0.9375rem; }
-@media (min-width: 780px) { .finder { margin-inline: auto; width: 100%; text-align: center; } .finder p { padding-left: 0; } }
-.fields { display: grid; gap: clamp(10px, 1.2vw, 16px); margin-top: clamp(24px, 3vw, 36px); align-items: start; }
-@media (min-width: 780px) { .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.obl { border-radius: var(--r-md); background: var(--white); box-shadow: var(--sh-card); }
-.obl[hidden] { display: none; }
-.obl summary { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 16px; align-items: center; padding: 18px 22px; border-radius: var(--r-md); list-style: none; cursor: pointer; transition: transform 0.1s ease-out; }
-.obl summary::-webkit-details-marker { display: none; }
-.obl summary:active { transform: scale(0.985); }
-.obl h3 { font-size: clamp(1.125rem, 1.05rem + 0.25vw, 1.25rem); font-weight: 600; line-height: 1.25; letter-spacing: -0.018em; }
-.obl-note { grid-column: 1; color: var(--muted); font-size: 0.9375rem; line-height: 1.4; }
-.obl-n { grid-column: 2; grid-row: 1 / span 2; display: inline-flex; align-items: center; gap: 12px; color: var(--muted); font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
-.obl-n i { width: 8px; height: 14px; background: currentColor; -webkit-mask: var(--chev) center / contain no-repeat; mask: var(--chev) center / contain no-repeat; transform: rotate(90deg); transition: transform 0.25s var(--ease); }
-.obl[open] .obl-n i { transform: rotate(-90deg); }
-.trades { display: flex; flex-wrap: wrap; gap: 6px; padding: 2px 22px 22px; }
-.trades li { padding: 6px 12px; border-radius: 999px; background: var(--tint); font-size: 0.9375rem; line-height: 1.3; }
-.trades li[hidden] { display: none; }
-.fields-more { margin-top: clamp(20px, 2.4vw, 28px); color: var(--muted); }
-.fields-more a { color: var(--brand); font-weight: 600; }
-@media (prefers-reduced-motion: reduce) { .obl summary, .obl-n i { transition: none; } }
+/* Pre koho: dlaždice; na mobile prvých 6 a tlačidlo na zvyšok */
+.who { display: grid; gap: clamp(12px, 1.4vw, 18px); margin: clamp(44px, 5vw, 72px) 0 0; }
+@media (min-width: 640px) { .who { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 980px) { .who { grid-template-columns: repeat(3, 1fr); } }
+.who div { display: grid; align-content: start; gap: 8px; padding: clamp(22px, 2.4vw, 32px); border-radius: var(--r-lg); background: var(--white); box-shadow: var(--sh-card); }
+.who dt { font: 600 clamp(1.1875rem, 1.05rem + 0.4vw, 1.375rem)/1.2 var(--display); letter-spacing: -0.02em; }
+.who dd { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.5; }
+.who-toggle { display: flex; justify-content: center; margin-top: 18px; }
+.who-toggle[hidden] { display: none; }
+@media (max-width: 639.98px) { .who.is-short > div:nth-child(n+7) { display: none; } }
+@media (min-width: 640px) { .who-toggle { display: none; } }
+.who-more { margin-top: clamp(22px, 2.6vw, 32px); color: var(--muted); text-align: center; }
+.who-more a { color: var(--brand); font-weight: 600; }
 
 /* Návrh a poplatok */
 .flow { display: grid; gap: clamp(36px, 4.4vw, 64px); margin-top: clamp(44px, 5vw, 72px); align-items: start; }
@@ -433,152 +419,28 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
         <h2 id="h-koho">Pre firmy, ktoré denne vybavujú dopyty a&nbsp;termíny</h2>
         <p>Rovnaký základ prispôsobíme vášmu odboru, aby ste od zákazníka dostali presne tie údaje, s&nbsp;ktorými viete hneď pracovať. Na Slovensku aj v&nbsp;zahraničí, v&nbsp;jazyku vašich zákazníkov.</p>
       </div>
-      <!-- odbory:start -->
-      <div class="finder">
-        <label for="odbor">Nájdite svoj odbor</label>
-        <input id="odbor" type="search" placeholder="napríklad kominár, padel, jachty" autocomplete="off" enterkeyhint="search">
-        <p id="odbor-stav" role="status">Vyše 390 odborov v&nbsp;17 oblastiach</p>
-      </div>
-      <div class="fields">
-        <details class="obl">
-          <summary>
-            <h3>Remeslá a&nbsp;opravy v&nbsp;domácnosti</h3>
-            <span class="obl-note">Problém, adresa, fotky a&nbsp;naliehavosť ešte pred výjazdom.</span>
-            <span class="obl-n"><span class="obl-c">31</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Inštalatéri</li><li>Elektrikári</li><li>Kúrenári</li><li>Plynári</li><li>Klimatizácie</li><li>Tepelné čerpadlá</li><li>Fotovoltika</li><li>Nabíjačky pre elektromobily</li><li>Maliari</li><li>Murári</li><li>Obkladači</li><li>Podlahári</li><li>Sadrokartonári</li><li>Stolári</li><li>Tesári</li><li>Pokrývači</li><li>Klampiari</li><li>Kominári</li><li>Zámočníci</li><li>Havarijné otváranie dverí</li><li>Hodinoví manželia</li><li>Opravy spotrebičov</li><li>Úprava vody</li><li>Studne a&nbsp;čerpadlá</li><li>Výťahy</li><li>Alarmy a&nbsp;kamery</li><li>Inteligentné domácnosti</li><li>Garážové brány</li><li>Odkvapy a&nbsp;žľaby</li><li>Izolácie</li><li>Sklenári</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Výroba a&nbsp;montáž na mieru</h3>
-            <span class="obl-note">Rozmery, materiál a&nbsp;fotky pripravené na cenovú ponuku.</span>
-            <span class="obl-n"><span class="obl-c">30</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Kuchyne na mieru</li><li>Nábytok na mieru</li><li>Vstavané skrine</li><li>Okná</li><li>Dvere</li><li>Žalúzie a&nbsp;rolety</li><li>Markízy</li><li>Pergoly</li><li>Ploty a&nbsp;brány</li><li>Zimné záhrady</li><li>Zasklenie balkónov</li><li>Schodiská</li><li>Krby a&nbsp;pece</li><li>Bazény</li><li>Sauny na mieru</li><li>Vírivky</li><li>Kamenárstvo</li><li>Kováči</li><li>CNC obrábanie</li><li>Laserové rezanie</li><li>3D tlač</li><li>Reklamné polepy</li><li>Svetelné reklamy</li><li>Tlačiarne</li><li>Potlač textilu</li><li>Výšivky</li><li>Krajčírstvo na mieru</li><li>Čalúnnici</li><li>Rámovanie obrazov</li><li>Gravírovanie</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Stavba, projekt a&nbsp;exteriér</h3>
-            <span class="obl-note">Rozsah, pozemok a&nbsp;termín bez kola telefonátov.</span>
-            <span class="obl-n"><span class="obl-c">26</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Stavebné firmy</li><li>Rekonštrukcie</li><li>Drevostavby</li><li>Zateplenie</li><li>Zemné práce</li><li>Demolácie</li><li>Betón a&nbsp;dlažby</li><li>Asfaltovanie</li><li>Geodeti</li><li>Architekti</li><li>Interiéroví dizajnéri</li><li>Projektanti</li><li>Statici</li><li>Energetické certifikáty</li><li>Záhradní architekti</li><li>Záhradníci</li><li>Kosenie</li><li>Orez stromov</li><li>Zavlažovanie</li><li>Zimná údržba a&nbsp;odhŕňanie snehu</li><li>Servis bazénov</li><li>Septiky a&nbsp;žumpy</li><li>Vianočné osvetlenie domov</li><li>Poľnohospodárske služby</li><li>Vinohradnícke služby</li><li>Lesnícke práce</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Upratovanie a&nbsp;údržba</h3>
-            <span class="obl-note">Plocha, typ práce a&nbsp;pravidelnosť v&nbsp;jednom dopyte.</span>
-            <span class="obl-n"><span class="obl-c">22</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Upratovanie domácností</li><li>Upratovanie firiem</li><li>Upratovanie po stavbe</li><li>Upratovanie apartmánov</li><li>Tepovanie</li><li>Čistenie okien</li><li>Čistenie fasád</li><li>Čistenie striech</li><li>Tlakové umývanie</li><li>Čistenie solárnych panelov</li><li>Čistenie potrubí</li><li>Čistenie vzduchotechniky</li><li>Deratizácia a&nbsp;dezinsekcia</li><li>Vypratávanie bytov</li><li>Odvoz odpadu</li><li>Správa a&nbsp;údržba budov</li><li>Práčovne</li><li>Chemické čistiarne</li><li>Mangľovne</li><li>Sanácia po požiari a&nbsp;vode</li><li>Odstraňovanie plesní</li><li>Odstraňovanie graffiti</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Auto, moto a&nbsp;doprava</h3>
-            <span class="obl-note">Vozidlo, problém a&nbsp;želaný termín ešte pred príchodom.</span>
-            <span class="obl-n"><span class="obl-c">27</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Autoservisy</li><li>Pneuservisy</li><li>Karosárne</li><li>Lakovne</li><li>Autoklimatizácie</li><li>Autosklá</li><li>Autoumyvárne</li><li>Mobilné umývanie áut</li><li>Detailing</li><li>Fólie na autá</li><li>Autoelektrikári</li><li>Diagnostika vozidiel</li><li>STK a&nbsp;emisné kontroly</li><li>Odťahové služby</li><li>Autoškoly</li><li>Motoservisy</li><li>Servis karavanov</li><li>Servis nákladných áut</li><li>Servis poľnohospodárskych strojov</li><li>Sťahovanie</li><li>Kuriéri</li><li>Taxi</li><li>Letiskové transfery</li><li>Autobusová doprava</li><li>Limuzíny</li><li>Parkoviská na rezerváciu</li><li>Servis lodí</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Ubytovanie a&nbsp;pobyty</h3>
-            <span class="obl-note">Pobyt, počet hostí a&nbsp;konkrétne miesto v&nbsp;jednej žiadosti.</span>
-            <span class="obl-n"><span class="obl-c">19</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Kempy</li><li>Karavanové parky</li><li>Glamping</li><li>Chaty</li><li>Penzióny</li><li>Hotely</li><li>Butikové hotely</li><li>Wellness hotely</li><li>Apartmány</li><li>Hostely</li><li>Horské chaty</li><li>Agroturistika</li><li>Vinárske pobyty</li><li>Kúpele</li><li>Hausbóty</li><li>Domy na stromoch</li><li>Rybárske pobyty</li><li>Poľovnícke pobyty</li><li>Maríny a&nbsp;kotviská</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Gastro</h3>
-            <span class="obl-note">Čas, počet hostí a&nbsp;stôl bez telefonovania.</span>
-            <span class="obl-n"><span class="obl-c">18</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Reštaurácie</li><li>Fine dining</li><li>Bistrá</li><li>Kaviarne</li><li>Čajovne</li><li>Vinárne</li><li>Pivovary</li><li>Puby</li><li>Bary</li><li>Kokteilové bary</li><li>Cukrárne a&nbsp;torty na objednávku</li><li>Pekárne</li><li>Catering</li><li>Rozvoz obedov</li><li>Firemné obedy</li><li>Súkromní kuchári</li><li>Degustácie</li><li>Food trucky</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Krása a&nbsp;osobná starostlivosť</h3>
-            <span class="obl-note">Služba, pracovník a&nbsp;voľný termín v&nbsp;jednom kalendári.</span>
-            <span class="obl-n"><span class="obl-c">20</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Kaderníctva</li><li>Barbershopy</li><li>Kozmetické salóny</li><li>Manikúra</li><li>Pedikúra</li><li>Mihalnice a&nbsp;obočie</li><li>Permanentný make-up</li><li>Depilácia</li><li>Soláriá</li><li>Vizáž</li><li>Masáže</li><li>Wellness a&nbsp;spa</li><li>Verejné sauny</li><li>Kryoterapia</li><li>Floating</li><li>Tetovanie</li><li>Piercing</li><li>Odstraňovanie tetovania</li><li>Osobní stylisti</li><li>Svadobné účesy</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Zdravie a&nbsp;terapia</h3>
-            <span class="obl-note">Typ návštevy a&nbsp;termín, podrobnosti až na mieste.</span>
-            <span class="obl-n"><span class="obl-c">21</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Súkromné ambulancie</li><li>Zubári</li><li>Dentálna hygiena</li><li>Ortodontisti</li><li>Očné ambulancie</li><li>Optiky</li><li>Fyzioterapia</li><li>Rehabilitácie</li><li>Chiropraktici</li><li>Psychológovia</li><li>Psychoterapeuti</li><li>Logopédi</li><li>Výživoví poradcovia</li><li>Estetické kliniky</li><li>Podológovia</li><li>Načúvacie pomôcky</li><li>Odberové laboratóriá</li><li>Domáca ošetrovateľská starostlivosť</li><li>Opatrovateľské služby</li><li>Pôrodné asistentky</li><li>Akupunktúra</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Zvieratá</h3>
-            <span class="obl-note">Zviera, služba a&nbsp;termín bez dopisovania.</span>
-            <span class="obl-n"><span class="obl-c">12</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Veterinári</li><li>Mobilní veterinári</li><li>Psie salóny</li><li>Výcvik psov</li><li>Psie škôlky</li><li>Venčenie psov</li><li>Hotely pre zvieratá</li><li>Stráženie zvierat</li><li>Ohradené výbehy pre psov</li><li>Ustajnenie koní</li><li>Podkúvači</li><li>Fyzioterapia zvierat</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Šport a&nbsp;fitness</h3>
-            <span class="obl-note">Kurt, lekcia alebo tréner bez ručného zapisovania.</span>
-            <span class="obl-n"><span class="obl-c">28</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Fitness centrá</li><li>Osobní tréneri</li><li>Joga</li><li>Pilates</li><li>Crossfit</li><li>Tanečné štúdiá</li><li>Bojové umenia</li><li>Box</li><li>Tenisové kurty</li><li>Padel</li><li>Squash</li><li>Bedminton</li><li>Futbalové ihriská</li><li>Športové haly</li><li>Športové kluby</li><li>Plavárne</li><li>Klziská</li><li>Lezecké steny</li><li>Golf</li><li>Jazdiarne</li><li>Lyžiarske školy</li><li>Surfové školy</li><li>Potápačské centrá</li><li>Kitesurfing</li><li>Plachtenie</li><li>Bowling</li><li>Biliard</li><li>Strelnice</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Zážitky, atrakcie a&nbsp;výlety</h3>
-            <span class="obl-note">Dátum, počet ľudí a&nbsp;vstupenka na jednom mieste.</span>
-            <span class="obl-n"><span class="obl-c">32</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Únikové hry</li><li>Paintball</li><li>Laser game</li><li>Motokáry</li><li>VR herne</li><li>Detské herne</li><li>Trampolínové parky</li><li>Lanové parky</li><li>Zipline</li><li>Bobové dráhy</li><li>Aquaparky</li><li>Zoo a&nbsp;farmy</li><li>Múzeá a&nbsp;galérie</li><li>Hrady a&nbsp;prehliadky</li><li>Jaskyne</li><li>Sprievodcovia</li><li>Mestské prehliadky</li><li>Vínne túry</li><li>Gastro túry</li><li>Horskí vodcovia</li><li>Splavy a&nbsp;rafting</li><li>Vyhliadkové plavby</li><li>Rybárske výlety</li><li>Jachty</li><li>Balónové lety</li><li>Vyhliadkové lety</li><li>Paragliding</li><li>Parašutizmus</li><li>Safari</li><li>Karaoke</li><li>Divadlá</li><li>Komorné kiná</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Kurzy a&nbsp;vzdelávanie</h3>
-            <span class="obl-note">Kurz, úroveň a&nbsp;voľné miesto bez e-mailovania.</span>
-            <span class="obl-n"><span class="obl-c">20</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Jazykové školy</li><li>Doučovanie</li><li>Hudobné lekcie</li><li>Výtvarné kurzy</li><li>Keramika</li><li>Kurzy varenia</li><li>Kurzy šitia</li><li>Prvá pomoc</li><li>Rekvalifikácie</li><li>Firemné školenia</li><li>Workshopy</li><li>Plavecké kurzy</li><li>Letné tábory</li><li>Detské krúžky</li><li>Príprava na skúšky</li><li>Kurzy fotografovania</li><li>Programovanie pre deti</li><li>Barmanské kurzy</li><li>Letecké školy</li><li>Lodné preukazy</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Podujatia, foto a&nbsp;kreatíva</h3>
-            <span class="obl-note">Dátum, miesto a&nbsp;rozsah podujatia v&nbsp;jednej žiadosti.</span>
-            <span class="obl-n"><span class="obl-c">20</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Fotografi</li><li>Kameramani</li><li>Fotoateliéry</li><li>Nahrávacie štúdiá</li><li>Svadobné salóny</li><li>Svadobní koordinátori</li><li>Organizátori podujatí</li><li>DJ</li><li>Kapely</li><li>Moderátori</li><li>Kvetinárstva</li><li>Výzdoba</li><li>Sály a&nbsp;svadobné priestory</li><li>Stany a&nbsp;mobiliár</li><li>Skákacie hrady</li><li>Ozvučenie a&nbsp;svetlá</li><li>Fotobúdky</li><li>Detské oslavy</li><li>Konferenčné priestory</li><li>Animátori</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Požičovne a&nbsp;prenájom</h3>
-            <span class="obl-note">Vec, termín a&nbsp;dostupnosť bez dvojitého prenájmu.</span>
-            <span class="obl-n"><span class="obl-c">26</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Náradie</li><li>Stavebné stroje</li><li>Plošiny</li><li>Lešenie</li><li>Prívesy</li><li>Požičovne áut</li><li>Karavany</li><li>Dodávky</li><li>Motorky</li><li>Bicykle</li><li>Elektrobicykle</li><li>Kolobežky</li><li>Lyže a&nbsp;snowboardy</li><li>Lode a&nbsp;kajaky</li><li>Paddleboardy</li><li>Spoločenské šaty</li><li>Kostýmy</li><li>Detské pomôcky</li><li>Foto a&nbsp;video technika</li><li>Zdravotné pomôcky</li><li>Coworking</li><li>Zasadačky</li><li>Skladové boxy</li><li>Garáže</li><li>Ateliéry na prenájom</li><li>Kuchyne na prenájom</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Kancelárie a&nbsp;poradenstvo</h3>
-            <span class="obl-note">Téma, podklady a&nbsp;termín stretnutia vopred.</span>
-            <span class="obl-n"><span class="obl-c">19</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Účtovníci</li><li>Daňoví poradcovia</li><li>Mzdové služby</li><li>Advokáti</li><li>Notári</li><li>Finanční poradcovia</li><li>Poisťovací agenti</li><li>Prekladatelia</li><li>Tlmočníci</li><li>Personálne agentúry</li><li>Kouči</li><li>Mediátori</li><li>BOZP a&nbsp;požiarna ochrana</li><li>Revízni technici</li><li>Súdni znalci</li><li>Patentoví zástupcovia</li><li>Konzultanti</li><li>Imigračné poradenstvo</li><li>Pohrebné služby</li></ul>
-        </details>
-        <details class="obl">
-          <summary>
-            <h3>Servis a&nbsp;opravy vecí</h3>
-            <span class="obl-note">Vec, porucha a&nbsp;stav opravy prehľadne pre zákazníka.</span>
-            <span class="obl-n"><span class="obl-c">20</span><i aria-hidden="true"></i><span class="sr"> odborov</span></span>
-          </summary>
-          <ul class="trades"><li>Opravy mobilov</li><li>Opravy počítačov</li><li>Servis elektroniky</li><li>Hodinári</li><li>Zlatníci</li><li>Opravy obuvi</li><li>Opravy odevov</li><li>Servis bicyklov</li><li>Servis kočíkov</li><li>Opravy hudobných nástrojov</li><li>Brúsenie nožov</li><li>Servis lyží</li><li>Servis kávovarov</li><li>Servis šijacích strojov</li><li>Opravy nábytku</li><li>Reštaurátori</li><li>Servis záhradnej techniky</li><li>Výroba kľúčov</li><li>IT podpora pre firmy</li><li>Digitalizácia fotiek</li></ul>
-        </details>
-      </div>
-      <p class="fields-more">Váš odbor tu nie je? <a href="#kontakt">Napíšte nám</a>, čo robíte. Ak riešite dopyty alebo termíny, základ bude rovnaký.</p>
-      <!-- odbory:end -->
+      <dl class="who" id="who-list">
+        <div><dt>Výroba, montáž a&nbsp;remeslá</dt><dd>Rozmery, požiadavky a&nbsp;fotky pripravené na cenovú ponuku.</dd></div>
+        <div><dt>Kempy, chaty a&nbsp;penzióny</dt><dd>Pobyt, počet hostí a&nbsp;konkrétne miesto v&nbsp;jednej žiadosti.</dd></div>
+        <div><dt>Reštaurácie a&nbsp;kaviarne</dt><dd>Čas, počet hostí a&nbsp;stôl bez telefonovania.</dd></div>
+        <div><dt>Autoservisy a&nbsp;pneuservisy</dt><dd>Auto, problém a&nbsp;želaný termín ešte pred príchodom.</dd></div>
+        <div><dt>Kaderníctva, salóny a&nbsp;štúdiá</dt><dd>Služba, pracovník a&nbsp;voľný termín v&nbsp;jednom kalendári.</dd></div>
+        <div><dt>Športoviská, kluby a&nbsp;požičovne</dt><dd>Kurt, vybavenie alebo termín bez ručného zapisovania.</dd></div>
+        <div><dt>Markízy, pergoly, ploty a&nbsp;brány</dt><dd>Rozmery a&nbsp;vyhotovenie zostavené priamo na webe.</dd></div>
+        <div><dt>Kuchyne a&nbsp;nábytok na mieru</dt><dd>Pôdorys, rozmery a&nbsp;predstava ešte pred stretnutím.</dd></div>
+        <div><dt>Kúrenie, klimatizácie a&nbsp;fotovoltika</dt><dd>Typ domu, požiadavky a&nbsp;fotky pripravené na obhliadku.</dd></div>
+        <div><dt>Karosárne, lakovne a&nbsp;detailing</dt><dd>Fotky poškodenia a&nbsp;údaje o&nbsp;aute ešte pred obhliadkou.</dd></div>
+        <div><dt>Upratovanie domov a&nbsp;firiem</dt><dd>Plocha, typ upratovania a&nbsp;pravidelnosť v&nbsp;jednom dopyte.</dd></div>
+        <div><dt>Sťahovanie a&nbsp;vypratávanie</dt><dd>Adresy, poschodia a&nbsp;objem pripravené na cenu.</dd></div>
+        <div><dt>Záhrady a&nbsp;údržba exteriéru</dt><dd>Plocha, fotky a&nbsp;termín sezónnych prác.</dd></div>
+        <div><dt>Veterinári a&nbsp;psie salóny</dt><dd>Zviera, dôvod návštevy a&nbsp;voľný termín.</dd></div>
+        <div><dt>Autoškoly a&nbsp;kurzy</dt><dd>Voľné jazdy, lekcie a&nbsp;miesta v&nbsp;skupine.</dd></div>
+        <div><dt>Sály, svadby a&nbsp;podujatia</dt><dd>Dátum, počet hostí a&nbsp;priestor v&nbsp;jednej žiadosti.</dd></div>
+        <div><dt>Zážitky a&nbsp;atrakcie</dt><dd>Únikové hry, motokáry a&nbsp;výlety s&nbsp;časom a&nbsp;počtom ľudí.</dd></div>
+        <div><dt>Privátne wellness a&nbsp;sauny</dt><dd>Voľná hodina a&nbsp;počet osôb bez telefonovania.</dd></div>
+      </dl>
+      <div class="who-toggle" id="who-toggle" hidden><button class="btn btn-line btn-small" id="who-btn" type="button" aria-expanded="false" aria-controls="who-list">Ukázať ďalších 12 odborov</button></div>
+      <p class="who-more">Váš odbor tu nie je? <a href="#kontakt">Napíšte nám</a>, čo robíte. Ak riešite dopyty alebo termíny, základ bude rovnaký.</p>
     </div>
   </section>
 
@@ -868,60 +730,17 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
     });
   });
 
-  /* Vyhľadávanie odboru: bez diakritiky, s tolerovanou koncovkou (kaderník nájde Kaderníctva) */
-  var oInput = document.getElementById('odbor');
-  var oStav = document.getElementById('odbor-stav');
-  var oBase = oStav.textContent, oOpen = null;
-  function oNorm(s) { return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
-  var oData = Array.prototype.map.call(document.querySelectorAll('.obl'), function (f) {
-    return {
-      el: f,
-      title: oNorm(f.querySelector('h3').textContent),
-      count: f.querySelector('.obl-c'),
-      unit: f.querySelector('.obl-n .sr'),
-      items: Array.prototype.map.call(f.querySelectorAll('.trades li'), function (li) { return { el: li, text: oNorm(li.textContent) }; })
-    };
-  });
-  function oWord(n) { return n === 1 ? 'odbor' : n < 5 ? 'odbory' : 'odborov'; }
-  function oCount(n) { return n + NB + oWord(n); }
-  /* Stav sa mení až po dopísaní, aby čítačka neohlasovala každé písmeno */
-  var oTimer;
-  function oSay(text) { clearTimeout(oTimer); oTimer = setTimeout(function () { oStav.textContent = text; }, 350); }
-  function oFilter() {
-    var words = oNorm(oInput.value).split(/\s+/).filter(Boolean).map(function (w) { return w.length >= 4 ? w.slice(0, -1) : w; });
-    if (!words.length) {
-      oData.forEach(function (g) {
-        g.el.hidden = false;
-        g.items.forEach(function (i) { i.el.hidden = false; });
-        g.count.textContent = g.items.length;
-        g.unit.textContent = ' ' + oWord(g.items.length);
-        if (oOpen) g.el.open = oOpen.indexOf(g.el) !== -1;
-      });
-      oOpen = null;
-      oSay(oBase);
-      return;
-    }
-    if (!oOpen) oOpen = oData.filter(function (g) { return g.el.open; }).map(function (g) { return g.el; });
-    var total = 0;
-    oData.forEach(function (g) {
-      var n = 0;
-      g.items.forEach(function (i) {
-        var hit = words.every(function (w) { return i.text.indexOf(w) !== -1 || g.title.indexOf(w) !== -1; });
-        i.el.hidden = !hit;
-        if (hit) n++;
-      });
-      g.count.textContent = n;
-      g.unit.textContent = ' ' + oWord(n);
-      g.el.hidden = !n;
-      g.el.open = n > 0;
-      total += n;
-    });
-    oSay(total ? 'Našli sme ' + oCount(total) : 'Tento odbor v' + NB + 'zozname nemáme, napíšte nám, čo robíte.');
-  }
-  oInput.addEventListener('input', oFilter);
-  /* Kláves Hľadať na telefóne zavrie klávesnicu, aby boli výsledky vidno */
-  oInput.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && window.matchMedia('(pointer: coarse)').matches) oInput.blur();
+  /* Pre koho: na mobile najprv 6 odborov, zvyšok na tlačidlo (bez JS je vidno všetky) */
+  var whoList = document.getElementById('who-list');
+  var whoBtn = document.getElementById('who-btn');
+  var whoLabel = whoBtn.textContent;
+  whoList.classList.add('is-short');
+  document.getElementById('who-toggle').hidden = false;
+  whoBtn.addEventListener('click', function () {
+    var short = whoList.classList.toggle('is-short');
+    whoBtn.setAttribute('aria-expanded', short ? 'false' : 'true');
+    whoBtn.textContent = short ? whoLabel : 'Ukázať menej';
+    if (short) whoBtn.scrollIntoView({ block: 'center' });
   });
 
   /* Tlačidlá úrovní predvyplnia formulár. Text data-pack sa musí zhodovať s <option>. */
