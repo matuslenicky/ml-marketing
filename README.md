@@ -1,6 +1,6 @@
 # ML&T Marketing
 
-Firemný web: weby pre služby, ktoré žijú z rezervácií a objednávok (výber miesta, termínu alebo opravy), s 3D scénou z Blendera podľa fotiek priestoru.
+Firemný web: poriadok v dopytoch firiem (telefón, e-mail, web, sociálne siete v jednom prehľade, stavy, pripomienky, výsledok v eurách), aby sa viac dopytov zmenilo na zákazky. Ukážky: weby s rezerváciou, výberom miesta alebo opravy, s 3D scénou z Blendera.
 
 Živá verzia: https://matuslenicky.github.io/ml-marketing/
 

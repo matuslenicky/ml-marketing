@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ML&amp;T Marketing – prehľadné dopyty a rezervácie pre firmy</title>
-<meta name="description" content="Web a vlastný prehľad, vďaka ktorým máte dopyty, termíny a zákazníkov na jednom mieste. Úplné zadanie od zákazníka bez zbytočných telefonátov a e-mailov.">
+<title>ML&amp;T Marketing – poriadok v dopytoch, viac zákaziek</title>
+<meta name="description" content="Upraceme vám dopyty z telefónu, e-mailu, webu aj sociálnych sietí do jedného prehľadu, aby sa žiadny nestratil a viac z nich sa zmenilo na zaplatené zákazky.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#ffffff">
 <meta name="color-scheme" content="light">
-<meta property="og:title" content="ML&amp;T Marketing – prehľadné dopyty a rezervácie pre firmy">
-<meta property="og:description" content="Každý dopyt kompletný, prehľadný a na jednom mieste. Web a vlastný prehľad pre firmy, ktoré denne vybavujú zákazníkov a termíny.">
+<meta property="og:title" content="ML&amp;T Marketing – poriadok v dopytoch, viac zákaziek">
+<meta property="og:description" content="Upraceme vám dopyty. Viac z nich sa zmení na peniaze. Prehľad dopytov a web pre firmy, ktoré denne vybavujú zákazníkov a termíny.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://matuslenicky.github.io/ml-marketing/">
 <link rel="canonical" href="https://matuslenicky.github.io/ml-marketing/">
@@ -116,7 +116,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
 .hero-copy { display: grid; justify-items: center; text-align: center; }
 .hero h1 { font-size: clamp(2.25rem, 1.2rem + 4.2vw, 4.25rem); line-height: 1.05; letter-spacing: -0.028em; max-width: 14em; }
 .hero-lead { margin-top: clamp(18px, 2vw, 26px); max-width: 35em; font-size: clamp(1.125rem, 1rem + 0.45vw, 1.3125rem); line-height: 1.5; letter-spacing: -0.014em; color: var(--muted); }
-.hero-cta { display: flex; justify-content: center; margin-top: clamp(26px, 2.6vw, 34px); }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: clamp(26px, 2.6vw, 34px); }
 
 /* Ukážky v úvode: segmented control + okno prehliadača s mäkkým tieňom */
 .show { background: var(--tint); color: var(--ink); border-radius: var(--r-xl); padding: clamp(14px, 3vw, 44px) clamp(14px, 4vw, 56px) clamp(20px, 3vw, 44px); overflow-x: clip; }
@@ -210,6 +210,22 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
 .cap h3 { font-size: clamp(1.1875rem, 1.1rem + 0.3vw, 1.3125rem); font-weight: 600; line-height: 1.25; letter-spacing: -0.018em; }
 .cap p { margin-top: 10px; color: var(--muted); font-size: 1rem; line-height: 1.55; }
 
+/* Kalkulačka: koľko dopytov a eur dnes uniká */
+.calc { display: grid; gap: clamp(24px, 3vw, 40px); margin-top: clamp(20px, 2.4vw, 32px); padding: clamp(24px, 3.2vw, 44px); border-radius: var(--r-xl); background: var(--white); box-shadow: var(--sh-card); }
+@media (min-width: 900px) { .calc { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: center; } }
+.calc h3 { font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); letter-spacing: -0.024em; }
+.calc-sub { margin-top: 8px; color: var(--muted); font-size: 1rem; }
+.calc-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 16px; margin-top: 22px; }
+.calc-row label { font-weight: 500; }
+.calc-row output { font: 600 1.125rem/1.3 var(--display); font-variant-numeric: tabular-nums; color: var(--brand); }
+.calc-row input { grid-column: 1 / -1; width: 100%; height: 44px; margin: 0; accent-color: var(--brand); cursor: pointer; }
+.calc-out { padding: clamp(22px, 2.6vw, 34px); border-radius: var(--r-lg); background: var(--brand); color: var(--white); }
+.calc-k { font-size: 0.9375rem; color: var(--brand-soft); }
+.calc-v { margin: 4px 0 18px; font: 600 1.375rem/1.25 var(--display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.calc-big { margin-top: 4px; font: 600 clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem)/1.05 var(--display); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.calc-y { margin-top: 6px; font-weight: 500; }
+.calc-fine { margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.22); font-size: 0.875rem; line-height: 1.45; color: var(--brand-soft); }
+
 /* Pre koho: dlaždice; na mobile prvých 6 a tlačidlo na zvyšok */
 .who { display: grid; gap: clamp(12px, 1.4vw, 18px); margin: clamp(44px, 5vw, 72px) 0 0; }
 @media (min-width: 640px) { .who { grid-template-columns: repeat(2, 1fr); } }
@@ -299,7 +315,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
     <a class="brand" href="#" aria-label="ML&amp;T Marketing, na začiatok stránky"><b>ML&amp;T</b> Marketing</a>
     <nav class="nav" aria-label="Hlavná navigácia">
       <a href="#ukazky">Ukážky</a>
-      <a href="#moznosti">Čo získate</a>
+      <a href="#moznosti">Ako to funguje</a>
       <a href="#pre-koho">Pre koho</a>
       <a href="#cennik">Cenník</a>
       <a href="#navrh">Ako pracujeme</a>
@@ -310,7 +326,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
   <nav class="menu" id="menu" aria-label="Navigácia na mobile">
     <div class="wrap">
       <a href="#ukazky">Ukážky</a>
-      <a href="#moznosti">Čo získate</a>
+      <a href="#moznosti">Ako to funguje</a>
       <a href="#pre-koho">Pre koho</a>
       <a href="#cennik">Cenník</a>
       <a href="#navrh">Ako pracujeme</a>
@@ -324,10 +340,11 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
   <section class="hero">
     <div class="wrap hero-in">
       <div class="hero-copy">
-        <h1>Každý dopyt kompletný, prehľadný a&nbsp;na jednom mieste.</h1>
-        <p class="hero-lead">Postavíme vám web a&nbsp;vlastný prehľad objednávok, ktoré zjednodušia cestu od prvého záujmu po vybavenú zákazku. Zákazník presne ukáže, čo potrebuje, a&nbsp;vy máte všetky údaje bez zbytočných telefonátov a&nbsp;dopisovania.</p>
+        <h1>Upraceme vám dopyty. Viac z&nbsp;nich sa zmení na peniaze.</h1>
+        <p class="hero-lead">Dopyty chodia telefonicky, <span class="nw">e-mailom</span>, cez Messenger aj formulár a&nbsp;časť z&nbsp;nich sa stratí: bez odpovede, bez ponuky, bez pripomenutia. Zozbierame ich na jedno miesto, dáme im poriadok a&nbsp;web nastavíme tak, aby zákazník poslal všetko hneď. Viac vybavených dopytov znamená viac zákaziek bez eura navyše do reklamy.</p>
         <div class="hero-cta">
           <a class="btn" href="#kontakt">Napísať nám</a>
+          <a class="btn btn-line" href="#prinos">Koľko vám uniká</a>
         </div>
       </div>
 
@@ -365,17 +382,34 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
   <section class="sec sec-tint" id="moznosti" aria-labelledby="h-moznosti">
     <div class="wrap">
       <div class="sec-head">
-        <h2 id="h-moznosti">Menej administratívy okolo zákaziek, viac času na prácu</h2>
-        <p>Upraceme celú cestu od prvého záujmu zákazníka až po potvrdenú objednávku.</p>
+        <h2 id="h-moznosti">Od prvej správy po zaplatenú zákazku</h2>
+        <p>Zozbierame, upraceme a&nbsp;dotiahneme. Každý krok vráti časť dopytov, ktoré by inak prepadli.</p>
       </div>
       <ul class="caps">
-        <li class="cap"><h3>Úplné zadanie od prvej správy</h3><p>Web zákazníka prevedie všetkým, čo potrebujete vedieť. K&nbsp;vám príde služba, rozsah, termín aj kontakt, bez ďalšieho dopisovania.</p></li>
-        <li class="cap"><h3>Poriadok v&nbsp;<span class="nw">e-mailoch</span></h3><p>Dopyty sa nestrácajú medzi faktúrami a&nbsp;reklamou. Každý má svoj stav, takže je jasné, čo je vybavené a&nbsp;čo čaká na odpoveď.</p></li>
-        <li class="cap"><h3>Vlastný prehľad objednávok</h3><p>Dopyty, termíny a&nbsp;zákazníci na jednej obrazovke, v&nbsp;počítači aj v&nbsp;mobile. Potvrdiť, presunúť alebo doplniť poznámku zvládnete na pár klikov.</p></li>
-        <li class="cap"><h3>Menej opakovaných otázok</h3><p>Služby, postup a&nbsp;dostupné termíny si zákazník nájde sám. Telefonujete až vtedy, keď to naozaj posunie zákazku.</p></li>
-        <li class="cap"><h3>Termíny bez kolízií</h3><p>Web ponúka len to, čo je naozaj voľné. Obsadený termín alebo miesto sa ďalšiemu zákazníkovi už neukáže.</p></li>
-        <li class="cap"><h3>Jasno ešte pred objednávkou</h3><p>Stôl, parcelu, časť auta alebo produkt si zákazník pozrie na pláne či v&nbsp;3D. Menej nedorozumení pri príchode aj pri odovzdaní.</p></li>
+        <li class="cap"><h3>Všetky dopyty na jednom mieste</h3><p>Telefón, <span class="nw">e-mail</span>, web, Messenger aj Instagram v&nbsp;jednom prehľade. Nič neostane v&nbsp;niekoho mobile ani pod reklamou v&nbsp;schránke.</p></li>
+        <li class="cap"><h3>Úplné zadanie hneď</h3><p>Web sa zákazníka opýta na všetko potrebné: službu, rozsah, termín aj fotky. Na ponuku nemusíte nič dopisovať.</p></li>
+        <li class="cap"><h3>Poriadok a&nbsp;priorita</h3><p>Každý dopyt má stav a&nbsp;hodnotu. Hneď vidíte, ktoré zákazky sú najväčšie a&nbsp;čo čaká na odpoveď najdlhšie.</p></li>
+        <li class="cap"><h3>Rýchla odpoveď</h3><p>Zákazník dostane potvrdenie hneď, vy upozornenie do mobilu. Kto sa ozve prvý, zákazku obvykle aj získa.</p></li>
+        <li class="cap"><h3>Ponuky, ktoré neprepadnú</h3><p>Keď zákazník na ponuku neodpovie, prehľad vám pripomenie ozvať sa. Rozbehnuté zákazky sa nestratia v&nbsp;zabudnutí.</p></li>
+        <li class="cap"><h3>Výsledok v&nbsp;eurách</h3><p>Každý mesiac vidíte, koľko dopytov prišlo, koľko sa zmenilo na zákazku a&nbsp;akú majú hodnotu. Jasne vidno, čo zaberá.</p></li>
       </ul>
+      <div class="calc" id="prinos" role="group" aria-labelledby="h-calc">
+        <div class="calc-in">
+          <h3 id="h-calc">Koľko vám dnes uniká</h3>
+          <p class="calc-sub">Posuňte čísla podľa vašej firmy. Výpočet beží len vo vašom prehliadači.</p>
+          <div class="calc-row"><label for="c-n">Dopyty za mesiac</label><output for="c-n" id="o-n"></output><input id="c-n" type="range" min="5" max="300" step="5" value="40"></div>
+          <div class="calc-row"><label for="c-v">Priemerná zákazka</label><output for="c-v" id="o-v"></output><input id="c-v" type="range" min="50" max="5000" step="50" value="400"></div>
+          <div class="calc-row"><label for="c-p">Dopyty bez odpovede alebo bez ponuky</label><output for="c-p" id="o-p"></output><input id="c-p" type="range" min="5" max="50" step="1" value="15"></div>
+        </div>
+        <div class="calc-out" aria-live="polite">
+          <p class="calc-k">Nevybavené dopyty za mesiac</p>
+          <p class="calc-v" id="r-lost"></p>
+          <p class="calc-k">Keď z&nbsp;nich premeníte čo i&nbsp;len štvrtinu</p>
+          <p class="calc-big" id="r-gain"></p>
+          <p class="calc-y" id="r-year"></p>
+          <p class="calc-fine">Odhad z&nbsp;vašich čísel, nie sľub. Skutočný stav zmeriame v&nbsp;prvom mesiaci v&nbsp;prehľade dopytov.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -447,7 +481,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
   <section class="sec" id="cennik" aria-labelledby="h-cennik">
     <div class="wrap">
       <div class="sec-head">
-        <h2 id="h-cennik">Tri úrovne podľa toho, čo má web vedieť</h2>
+        <h2 id="h-cennik">Tri úrovne podľa toho, koľko dopytov vybavujete</h2>
         <p>Cena závisí od rozsahu, nie od odvetvia. Presnú sumu dostanete písomne po krátkom hovore, ešte pred začatím práce.</p>
       </div>
       <div class="packs">
@@ -457,7 +491,9 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
           <p class="pack-price"><strong>od 390&nbsp;€</strong><span>jednorazovo</span></p>
           <ul>
             <li>Služby, cenník, fotky a&nbsp;kontakt</li>
-            <li>Objednávka formulárom, cez Messenger alebo Instagram</li>
+            <li>Formulár, ktorý sa opýta na všetko potrebné</li>
+            <li>Každý dopyt do <span class="nw">e-mailu</span> s&nbsp;prehľadným zadaním</li>
+            <li>Objednávka aj cez Messenger alebo Instagram</li>
             <li>Mapa a&nbsp;otváracie hodiny</li>
             <li>Texty upravíme z&nbsp;vašich podkladov</li>
           </ul>
@@ -466,14 +502,15 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
         <article class="pack best">
           <span class="pack-tag">Odporúčame</span>
           <h3>Web s&nbsp;rezerváciou</h3>
-          <p class="pack-for">Zákazník si vyberie termín alebo miesto a&nbsp;vy to vidíte v&nbsp;prehľade.</p>
+          <p class="pack-for">Termíny, miesta a&nbsp;všetky dopyty v&nbsp;jednom prehľade.</p>
           <p class="pack-price"><strong>od 990&nbsp;€</strong><span>jednorazovo<br>+ od 29&nbsp;€ mesačne</span></p>
           <ul>
             <li>Všetko z&nbsp;úrovne Web</li>
             <li>Výber termínu, stola alebo parcely</li>
-            <li>Vlastný prehľad dopytov a&nbsp;rezervácií</li>
-            <li>Potvrdenie zákazníkovi <span class="nw">e-mailom</span></li>
-            <li>Cenník a&nbsp;výpočet ceny</li>
+            <li>Prehľad dopytov so stavmi a&nbsp;pripomienkami</li>
+            <li>Dopyty z&nbsp;telefónu, <span class="nw">e-mailu</span> a&nbsp;sociálnych sietí na jednom mieste</li>
+            <li>Okamžité potvrdenie zákazníkovi</li>
+            <li>Mesačný prehľad: dopyty, zákazky, eurá</li>
           </ul>
           <a class="btn btn-small" href="#kontakt" data-pack="Web s rezerváciou">Mám záujem</a>
         </article>
@@ -490,7 +527,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
           <a class="btn btn-line btn-small" href="#kontakt" data-pack="Web s 3D scénou">Mám záujem</a>
         </article>
       </div>
-      <p class="sec-note"><b>Ďalšie služby.</b> Klubové weby s&nbsp;výsledkami zo Sportnetu od 49&nbsp;€ mesačne. 3D zábery produktov bez fotenia od 290&nbsp;€. Prevádzka a&nbsp;úpravy hotového webu od 15&nbsp;€ mesačne.</p>
+      <p class="sec-note"><b>Poriadok v&nbsp;dopytoch k&nbsp;súčasnému webu.</b> Prehľad, stavy a&nbsp;pripomienky aj bez nového webu, cenu povieme po hovore. <b>Ďalšie služby.</b> Klubové weby s&nbsp;výsledkami zo Sportnetu od 49&nbsp;€ mesačne. 3D zábery produktov bez fotenia od 290&nbsp;€. Prevádzka a&nbsp;úpravy hotového webu od 15&nbsp;€ mesačne.</p>
     </div>
   </section>
 
@@ -504,7 +541,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
         <ol class="steps">
           <li>
             <h3>Hovor a&nbsp;cenová ponuka <span>zadarmo</span></h3>
-            <p>Za štvrť hodiny si povieme, čo potrebujete. Dostanete písomne úroveň, cenu a&nbsp;termín.</p>
+            <p>Za štvrť hodiny prejdeme, odkiaľ vám chodia dopyty a&nbsp;kde sa strácajú. Dostanete písomne úroveň, cenu a&nbsp;termín.</p>
           </li>
           <li>
             <h3>Návrh na vašich podkladoch <span>poplatok</span></h3>
@@ -533,6 +570,14 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
       <h2 id="h-faq">Časté otázky</h2>
       <div class="faq-list">
         <details>
+          <summary>Ako zistíte, či to prinieslo viac peňazí?</summary>
+          <p>Prehľad počíta dopyty, čas do prvej odpovede, koľko z&nbsp;nich sa zmenilo na zákazku a&nbsp;akú hodnotu majú. Po prvom mesiaci vám ukážeme čísla oproti stavu na začiatku.</p>
+        </details>
+        <details>
+          <summary>Musíme kvôli tomu meniť web?</summary>
+          <p>Nie nutne. Prehľad dopytov vieme pripojiť k&nbsp;súčasnému formuláru a&nbsp;<span class="nw">e-mailu</span>. Web meníme len tam, kde z&nbsp;neho dopyty unikajú.</p>
+        </details>
+        <details>
           <summary>Je cena z&nbsp;ponuky konečná?</summary>
           <p>Áno, pre rozsah, ktorý je v&nbsp;ponuke vypísaný. Ak potrebujete niečo navyše, cenu vám napíšeme skôr, než na tom začneme pracovať.</p>
         </details>
@@ -560,7 +605,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
     <div class="wrap contact-in">
       <div>
         <h2 id="h-kontakt">Napíšte nám, ozveme sa do jedného pracovného dňa</h2>
-        <p class="contact-lead">Stačí napísať, čím sa zaoberáte a&nbsp;kde dnes pri vybavovaní zákazníkov strácate najviac času. Úvodný hovor a&nbsp;cenová ponuka sú zadarmo a&nbsp;k&nbsp;ničomu vás nezaväzujú.</p>
+        <p class="contact-lead">Stačí napísať, čím sa zaoberáte, koľko dopytov vám mesačne chodí a&nbsp;odkiaľ. Úvodný hovor a&nbsp;cenová ponuka sú zadarmo a&nbsp;k&nbsp;ničomu vás nezaväzujú.</p>
         <div class="contact-ways">
           <a href="tel:+421907324441" data-contact="phone">+421 907 324 441</a>
         </div>
@@ -578,6 +623,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
           <label for="f-pack">O&nbsp;čo máte záujem</label>
           <select id="f-pack" name="pack">
             <option value="">Ešte nevieme, poraďte nám</option>
+            <option>Poriadok v dopytoch k súčasnému webu</option>
             <option>Web</option>
             <option>Web s rezerváciou</option>
             <option>Web s 3D scénou</option>
@@ -753,6 +799,24 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.08; l
       if (o.text === want) select.value = o.value;
     });
   });
+
+  /* Kalkulačka ušlých zákaziek */
+  (function () {
+    var n = document.getElementById('c-n'), v = document.getElementById('c-v'), p = document.getElementById('c-p');
+    if (!n) return;
+    function fmt(x) { return Math.round(x).toLocaleString('sk-SK').replace(/\s/g, NB) + NB + '€'; }
+    function calc() {
+      var lost = Math.round(n.value * p.value / 10) / 10, val = lost * v.value, gain = Math.round(val / 4);
+      document.getElementById('o-n').textContent = n.value;
+      document.getElementById('o-v').textContent = fmt(+v.value);
+      document.getElementById('o-p').textContent = p.value + NB + '%';
+      document.getElementById('r-lost').textContent = (Math.round(lost * 10) / 10).toLocaleString('sk-SK') + (lost % 1 ? ' dopytu' : lost === 1 ? ' dopyt' : lost < 5 ? ' dopyty' : ' dopytov') + ' v hodnote ' + fmt(val);
+      document.getElementById('r-gain').textContent = '+' + fmt(gain) + ' mesačne';
+      document.getElementById('r-year').textContent = 'to je ' + fmt(gain * 12) + ' za rok';
+    }
+    [n, v, p].forEach(function (el) { el.addEventListener('input', calc); });
+    calc();
+  })();
 
   /* Formulár skladá e-mail alebo SMS, nič neodosiela na server */
   var form = document.getElementById('form');
